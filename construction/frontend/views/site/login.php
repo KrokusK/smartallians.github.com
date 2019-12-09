@@ -19,16 +19,16 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-lg-5">
             <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
-                <?= $form->field($model, 'email_phone')->textInput(['autofocus' => true]) ?>
+                <?= $form->field($model, 'email_phone')->textInput(['autofocus' => true])->hint('Пожалуйста, введите email или телефон в формате: +7 (999) 999-99-99')->label('Email или телефон в формате: +7 (999) 999-99-99') ?>
 
-                <?= $form->field($model, 'password')->passwordInput() ?>
+                <?= $form->field($model, 'password')->passwordInput()->hint('Пожалуйста, введите пароль')->label('Пароль') ?>
 
-                <?= $form->field($model, 'rememberMe')->checkbox() ?>
+                <?= $form->field($model, 'rememberMe')->checkbox()->label('Запомнить меня') ?>
 
                 <div style="color:#999;margin:1em 0">
-                    If you forgot your password you can <?= Html::a('reset it', ['site/request-password-reset']) ?>.
+                    Если Вы забыли свой пароль, то перейдите по ссылке <?= Html::a('сбросить пароль', ['site/request-password-reset']) ?>.
                     <br>
-                    Need new verification email? <?= Html::a('Resend', ['site/resend-verification-email']) ?>
+                    Проверить почту? <?= Html::a('выслать ключ верификации', ['site/resend-verification-email']) ?>
                 </div>
 
                 <div class="form-group">
