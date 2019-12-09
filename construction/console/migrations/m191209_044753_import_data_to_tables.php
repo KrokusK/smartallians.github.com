@@ -42,6 +42,7 @@ class m191209_044753_import_data_to_tables extends Migration
             'password_hash' => '$2y$13$spHblbtmjJ3z9m1bMG37sOL32o9JHACU/zMAGYBjz2Z2DT47jd/u2', //password 123456
             'password_reset_token' => null,
             'email' => 'user1@test.test',
+            'phone' => '+7 (999) 999-99-91',
             'status' => 10,
             'created_at' => 1573193110,
             'updated_at' => 1573193110,
@@ -54,6 +55,7 @@ class m191209_044753_import_data_to_tables extends Migration
             'password_hash' => '$2y$13$bhWAaZFgXYvlvNio51hwx.7FyrefJZpn3AL.oB.0OGCW8.Up22jze', //password 123456
             'password_reset_token' => null,
             'email' => 'user2@test.test',
+            'phone' => '+7 (999) 999-99-92',
             'status' => 10,
             'created_at' => 1573193147,
             'updated_at' => 1573193147,
@@ -66,6 +68,7 @@ class m191209_044753_import_data_to_tables extends Migration
             'password_hash' => '$2y$13$EmF3VdlySgWBnTsziNl98uOB/BVK/0TOk2Vio2NSNSiS1yqpI2G9O', //password 123456
             'password_reset_token' => null,
             'email' => 'user3@test.test',
+            'phone' => '+7 (999) 999-99-93',
             'status' => 10,
             'created_at' => 1575869733,
             'updated_at' => 1575869733,
@@ -78,6 +81,7 @@ class m191209_044753_import_data_to_tables extends Migration
             'password_hash' => '$2y$13$rOYhOjjH.72lMnROTjuOr.1EKhXDvFdzSfS2LEcGjrMW0jzoZzo5.', //password 123456
             'password_reset_token' => null,
             'email' => 'user4@test.test',
+            'phone' => '+7 (999) 999-99-94',
             'status' => 10,
             'created_at' => 1575869895,
             'updated_at' => 1575869895,
@@ -90,6 +94,7 @@ class m191209_044753_import_data_to_tables extends Migration
             'password_hash' => '$2y$13$iMU8eim6QGH4xL1BRKfPvu2UP/ZJE7UuLj9CXYG0xk77jADT0uCUq', //password 123456
             'password_reset_token' => null,
             'email' => 'user5@test.test',
+            'phone' => '+7 (999) 999-99-95',
             'status' => 10,
             'created_at' => 1575875631,
             'updated_at' => 1575875631,
