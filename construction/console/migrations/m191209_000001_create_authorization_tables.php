@@ -241,21 +241,6 @@ class m191209_000001_create_authorization_tables extends Migration
         // drop profile specialization table
         $this->dropTable('{{%profile_specialization}}');
 
-        // drop index for column specialization_id
-        $this->dropIndex(
-            'idx-profile-specialization-specialization-id',
-            '{{%profile_specialization}}'
-        );
-
-        // drop index for column profile_id
-        $this->dropIndex(
-            'idx-profile-specialization-profile-id',
-            '{{%profile_specialization}}'
-        );
-
-        // drop profile specialization table
-        $this->dropTable('{{%profile_specialization}}');
-
         // drop region table
         $this->dropTable('{{%region}}');
 
