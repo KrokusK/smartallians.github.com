@@ -235,13 +235,14 @@ class m191209_044753_import_data_to_tables extends Migration
     public function safeDown()
     {
         // erase table records and sequences
-        $this->delete('{{%specialization}}');
-        $this->delete('{{%profile_specialization}}');
-        $this->delete('{{%region}}');
-        $this->delete('{{%city}}');
+
         $this->delete('{{%profile_city}}');
-        $this->delete('{{%kind_user}}');
+        $this->delete('{{%profile_specialization}}');
+        $this->delete('{{%specialization}}');
         $this->delete('{{%profile}}');
+        $this->delete('{{%city}}');
+        $this->delete('{{%region}}');
+        $this->delete('{{%kind_user}}');
         $this->delete('{{%user}}');
 
         $this->db->createCommand()->resetSequence('{{%specialization}}', 1)->execute();
