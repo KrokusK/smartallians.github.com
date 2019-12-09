@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-lg-5">
             <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
-                <?= $form->field($model, 'email_phone')->textInput(['autofocus' => true])->hint('Пожалуйста, введите email или телефон в формате: +7 (999) 999-99-99')->label('Email или телефон в формате: +7 (999) 999-99-99') ?>
+                <?= $form->field($model, 'email_phone')->textInput(['autofocus' => true])->hint('Пожалуйста, введите email или телефон в формате: +7 (999) 999-99-99')->label('Email / Телефон в формате: +7 (999) 999-99-99') ?>
 
                 <?= $form->field($model, 'password')->passwordInput()->hint('Пожалуйста, введите пароль')->label('Пароль') ?>
 
