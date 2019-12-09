@@ -84,6 +84,18 @@ class m191209_044753_import_data_to_tables extends Migration
             'verification_token' => '3dc9r--06f7lUdLjD1hpk3iXyeclb13R_1575869895'
         ]);
 
+        $this->insert('{{%user}}', [
+            'username' => 'user5',
+            'auth_key' => 'smiE6qgYWntIQfNSCfN86Pq3oOscc7Vt',
+            'password_hash' => '$2y$13$iMU8eim6QGH4xL1BRKfPvu2UP/ZJE7UuLj9CXYG0xk77jADT0uCUq', //password 123456
+            'password_reset_token' => null,
+            'email' => 'user5@test.test',
+            'status' => 10,
+            'created_at' => 1575875631,
+            'updated_at' => 1575875631,
+            'verification_token' => '1qOVmarLR16c-I8LujD8q6WanHWCxT4G_1575875631'
+        ]);
+
 
         // import to the region table
         $this->insert('{{%region}}', [
