@@ -41,7 +41,7 @@ class m191209_044753_import_data_to_tables extends Migration
             'auth_key' => 'NEzqJuqXo8wioifO2fvqlJx5USw00JJX',
             'password_hash' => '$2y$13$spHblbtmjJ3z9m1bMG37sOL32o9JHACU/zMAGYBjz2Z2DT47jd/u2', //password 123456
             'password_reset_token' => null,
-            'email' => 'user2@test.test',
+            'email' => 'user1@test.test',
             'status' => 10,
             'created_at' => 1573193110,
             'updated_at' => 1573193110,
