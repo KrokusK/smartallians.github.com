@@ -28,10 +28,8 @@ class m191209_044753_import_data_to_tables extends Migration
         $this->delete('{{%user}}');
 
         $this->db->createCommand()->resetSequence('{{%specialization}}', 1)->execute();
-        $this->db->createCommand()->resetSequence('{{%profile_specialization}}', 1)->execute();
         $this->db->createCommand()->resetSequence('{{%region}}', 1)->execute();
         $this->db->createCommand()->resetSequence('{{%city}}', 1)->execute();
-        $this->db->createCommand()->resetSequence('{{%profile_city}}', 1)->execute();
         $this->db->createCommand()->resetSequence('{{%kind_user}}', 1)->execute();
         $this->db->createCommand()->resetSequence('{{%profile}}', 1)->execute();
         $this->db->createCommand()->resetSequence('{{%user}}', 1)->execute();
@@ -235,10 +233,8 @@ class m191209_044753_import_data_to_tables extends Migration
         $this->delete('{{%user}}');
 
         $this->db->createCommand()->resetSequence('{{%specialization}}', 1)->execute();
-        $this->db->createCommand()->resetSequence('{{%profile_specialization}}', 1)->execute();
         $this->db->createCommand()->resetSequence('{{%region}}', 1)->execute();
         $this->db->createCommand()->resetSequence('{{%city}}', 1)->execute();
-        $this->db->createCommand()->resetSequence('{{%profile_city}}', 1)->execute();
         $this->db->createCommand()->resetSequence('{{%kind_user}}', 1)->execute();
         $this->db->createCommand()->resetSequence('{{%profile}}', 1)->execute();
         $this->db->createCommand()->resetSequence('{{%user}}', 1)->execute();
