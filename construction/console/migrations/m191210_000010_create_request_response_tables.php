@@ -207,7 +207,6 @@ class m191210_000010_create_request_response_tables extends Migration
             '{{%request}}',
             'id'
         );
-        /*
         $this->addForeignKey(
             'fk-request-kind-job-request-id',
             '{{%request_kind_job}}',
@@ -215,7 +214,6 @@ class m191210_000010_create_request_response_tables extends Migration
             '{{%kind_job}}',
             'id'
         );
-        */
 
         // add foreign keys for table response
         $this->addForeignKey(
@@ -254,12 +252,10 @@ class m191210_000010_create_request_response_tables extends Migration
             'fk-request-kind-job-request-id',
             '{{%request_kind_job}}'
         );
-        /*
         $this->dropForeignKey(
             'fk-request-kind-job-request-id',
             '{{%request_kind_job}}'
         );
-        */
 
         // drops foreign keys for table request
         $this->dropForeignKey(

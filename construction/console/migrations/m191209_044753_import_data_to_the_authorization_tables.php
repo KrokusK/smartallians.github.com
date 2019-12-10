@@ -4,9 +4,9 @@ use yii\db\Migration;
 //use yii\db\Command;
 
 /**
- * Class m191209_044753_import_data_to_tables
+ * Class m191209_044753_import_data_to_the_authorization_tables
  */
-class m191209_044753_import_data_to_tables extends Migration
+class m191209_044753_import_data_to_the_authorization_tables extends Migration
 {
     /**
      * {@inheritdoc}
