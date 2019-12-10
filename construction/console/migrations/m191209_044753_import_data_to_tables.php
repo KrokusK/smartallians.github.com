@@ -146,10 +146,23 @@ class m191209_044753_import_data_to_tables extends Migration
         ]);
 
 
+        // import to the type job table
+        $this->insert('{{%type_job}}', [
+            'name' => 'Фирма'
+        ]);
+        $this->insert('{{%type_job}}', [
+            'name' => 'Бригада'
+        ]);
+        $this->insert('{{%type_job}}', [
+            'name' => 'Частное лицо'
+        ]);
+
+
         // import to the profile table
         $this->insert('{{%profile}}', [
             'user_id' => 1,
             'kind_user_id' => 1,
+            'type_job_id' => 1,
             'fio' => 'Иванов Иван Иванович',
             'firm_name' => 'Фирма вариант 1',
             'inn' => '123456789012',
@@ -161,6 +174,7 @@ class m191209_044753_import_data_to_tables extends Migration
         $this->insert('{{%profile}}', [
             'user_id' => 2,
             'kind_user_id' => 2,
+            'type_job_id' => 1,
             'fio' => 'Петров Петр Петрович',
             'firm_name' => 'Фирма вариант 2',
             'inn' => '123456789012',
@@ -172,6 +186,7 @@ class m191209_044753_import_data_to_tables extends Migration
         $this->insert('{{%profile}}', [
             'user_id' => 3,
             'kind_user_id' => 3,
+            'type_job_id' => 1,
             'fio' => 'Сидоров Сидр Сидорович',
             'firm_name' => 'Фирма вариант 3',
             'inn' => '123456789012',
@@ -183,6 +198,7 @@ class m191209_044753_import_data_to_tables extends Migration
         $this->insert('{{%profile}}', [
             'user_id' => 4,
             'kind_user_id' => 4,
+            'type_job_id' => 1,
             'fio' => 'Путин Владимир Владимирович',
             'firm_name' => 'Фирма вариант 4',
             'inn' => '123456789012',
@@ -194,6 +210,7 @@ class m191209_044753_import_data_to_tables extends Migration
         $this->insert('{{%profile}}', [
             'user_id' => 5,
             'kind_user_id' => 5,
+            'type_job_id' => 1,
             'fio' => 'Медведев Дмитрий Анатольевич',
             'firm_name' => 'Фирма вариант 5',
             'inn' => '123456789012',

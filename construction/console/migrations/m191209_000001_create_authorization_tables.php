@@ -17,6 +17,7 @@ class m191209_000001_create_authorization_tables extends Migration
             'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
             'kind_user_id' => $this->integer()->notNull(),
+            'type_job_id' => $this->integer()->notNull(),
             'fio' => $this->string(),
             'firm_name' => $this->string(),
             'inn' => $this->string(),
@@ -42,6 +43,12 @@ class m191209_000001_create_authorization_tables extends Migration
 
         // create kind user table
         $this->createTable('{{%kind_user}}', [
+            'id' => $this->primaryKey(),
+            'name' => $this->string()->notNull()
+        ]);
+
+        // create type job table
+        $this->createTable('{{%type_job}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull()
         ]);
@@ -127,6 +134,15 @@ class m191209_000001_create_authorization_tables extends Migration
             '{{%profile}}',
             'kind_user_id',
             '{{%kind_user}}',
+            'id'
+        );
+
+        // add foreign key for table profile
+        $this->addForeignKey(
+            'fk-profile-type-job-id',
+            '{{%profile}}',
+            'type_job_id',
+            '{{%type_job}}',
             'id'
         );
 
@@ -267,6 +283,9 @@ class m191209_000001_create_authorization_tables extends Migration
 
         // drop profile city table
         $this->dropTable('{{%profile_city}}');
+
+        // drop type job table
+        $this->dropTable('{{%type_job}}');
 
         // drop kind user table
         $this->dropTable('{{%kind_user}}');
