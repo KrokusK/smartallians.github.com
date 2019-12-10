@@ -208,7 +208,7 @@ class m191210_000010_create_request_response_tables extends Migration
             'id'
         );
         $this->addForeignKey(
-            'fk-request-kind-job-request-id',
+            'fk-request-kind-job-kind_job_id',
             '{{%request_kind_job}}',
             'kind_job_id',
             '{{%kind_job}}',
