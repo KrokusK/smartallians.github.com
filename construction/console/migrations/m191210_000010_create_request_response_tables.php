@@ -253,7 +253,7 @@ class m191210_000010_create_request_response_tables extends Migration
             '{{%request_kind_job}}'
         );
         $this->dropForeignKey(
-            'fk-request-kind-job-request-id',
+            'fk-request-kind-job-kind-job-id',
             '{{%request_kind_job}}'
         );
 
