@@ -229,6 +229,12 @@ class m191209_000001_create_authorization_tables extends Migration
 
         // drop foreign key for table profile
         $this->dropForeignKey(
+            'fk-profile-type-job-id',
+            '{{%profile}}'
+        );
+
+        // drop foreign key for table profile
+        $this->dropForeignKey(
             'fk-profile-kind-user-id',
             '{{%profile}}'
         );
