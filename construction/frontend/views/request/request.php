@@ -140,6 +140,189 @@ $script = <<< JS
             return false;
 
         });
+        
+        
+        $("#btn-request-post").on('click', function (event) { 
+            //alert("test");
+
+            event.preventDefault();            
+            var form_data = new FormData($('#form-request-post')[0]);
+            $.ajax({
+                   url: $("#form-request-post").attr('action'), 
+                   dataType: 'JSON',  
+                   cache: false,
+                   contentType: false,
+                   processData: false,
+                   enctype: 'multipart/form-data',
+                   data: form_data, //$(this).serialize(), 
+                   //data: data, //$(this).serialize(),                     
+                   type: 'post',                        
+                   beforeSend: function() {
+                       //alert("beforeSend");                       
+                   },
+                   success: function(response){                      
+                       //alert("success");
+                       //toastr.success(response.message);
+                       //toastr["success"](response.message,response.status); 
+                       //alert(response.message);
+                       //message = response.message;
+                       if (parseInt(response.status) == 1) {
+                           inerHtmlMessage = "<div class=\"alert alert-success\" role=\"alert\">";
+                           inerHtmlMessage += "<div class=\"modal-header\">";                           
+                           inerHtmlMessage += "<button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>";
+                           inerHtmlMessage += "<h3 class=\"modal-title text-left\">Данные переданы!</h3>";
+                           inerHtmlMessage += "</div>";
+                           inerHtmlMessage += "<h4 class=\"text-center\">" + response.message + "</h4>";
+                           inerHtmlMessage += "</div>";  
+                           inerHtmlMessage += "<br>" + response.message;                           
+                           $('#modalAlert').modal('show').find('.modal-dialog').html(inerHtmlMessage);
+                           
+                           //$('#addAppFormModel').modal('hide');
+                       } else {
+                           inerHtmlMessage = "<div class=\"alert alert-danger\" role=\"alert\">";
+                           inerHtmlMessage += "<div class=\"modal-header\">";
+                           inerHtmlMessage += "<button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>";
+                           inerHtmlMessage += "<h3 class=\"modal-title text-left\">Внимание!</h3>";
+                           inerHtmlMessage += "</div>";
+                           inerHtmlMessage += "<h4 class=\"text-center\">" + response.message + "</h4>";
+                           inerHtmlMessage += "</div>";
+                           $('#modalAlert').modal('show').find('.modal-dialog').html(inerHtmlMessage);
+                           //$('#addAppFormModel').modal('hide');
+                       }
+                   },
+                   complete: function() {
+                       //alert("complete");
+                   },
+                   error: function (data) {
+                      //toastr.warning("","There may a error on uploading. Try again later");    
+                      //alert(response.message);
+                   }
+                });                
+            return false;
+
+        });
+        
+        
+        $("#btn-request-put").on('click', function (event) { 
+            //alert("test");
+
+            event.preventDefault();            
+            var form_data = new FormData($('#form-request-put')[0]);
+            $.ajax({
+                   url: $("#form-request-put").attr('action'), 
+                   dataType: 'JSON',  
+                   cache: false,
+                   contentType: false,
+                   processData: false,
+                   enctype: 'multipart/form-data',
+                   data: form_data, //$(this).serialize(), 
+                   //data: data, //$(this).serialize(),                     
+                   type: 'put',                        
+                   beforeSend: function() {
+                       //alert("beforeSend");                       
+                   },
+                   success: function(response){                      
+                       //alert("success");
+                       //toastr.success(response.message);
+                       //toastr["success"](response.message,response.status); 
+                       //alert(response.message);
+                       //message = response.message;
+                       if (parseInt(response.status) == 1) {
+                           inerHtmlMessage = "<div class=\"alert alert-success\" role=\"alert\">";
+                           inerHtmlMessage += "<div class=\"modal-header\">";                           
+                           inerHtmlMessage += "<button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>";
+                           inerHtmlMessage += "<h3 class=\"modal-title text-left\">Данные переданы!</h3>";
+                           inerHtmlMessage += "</div>";
+                           inerHtmlMessage += "<h4 class=\"text-center\">" + response.message + "</h4>";
+                           inerHtmlMessage += "</div>";  
+                           inerHtmlMessage += "<br>" + response.message;                           
+                           $('#modalAlert').modal('show').find('.modal-dialog').html(inerHtmlMessage);
+                           
+                           //$('#addAppFormModel').modal('hide');
+                       } else {
+                           inerHtmlMessage = "<div class=\"alert alert-danger\" role=\"alert\">";
+                           inerHtmlMessage += "<div class=\"modal-header\">";
+                           inerHtmlMessage += "<button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>";
+                           inerHtmlMessage += "<h3 class=\"modal-title text-left\">Внимание!</h3>";
+                           inerHtmlMessage += "</div>";
+                           inerHtmlMessage += "<h4 class=\"text-center\">" + response.message + "</h4>";
+                           inerHtmlMessage += "</div>";
+                           $('#modalAlert').modal('show').find('.modal-dialog').html(inerHtmlMessage);
+                           //$('#addAppFormModel').modal('hide');
+                       }
+                   },
+                   complete: function() {
+                       //alert("complete");
+                   },
+                   error: function (data) {
+                      //toastr.warning("","There may a error on uploading. Try again later");    
+                      //alert(response.message);
+                   }
+                });                
+            return false;
+
+        });
+        
+        
+                $("#btn-request-delete").on('click', function (event) { 
+            //alert("test");
+
+            event.preventDefault();            
+            var form_data = new FormData($('#form-request-delete')[0]);
+            $.ajax({
+                   url: $("#form-request-delete").attr('action'), 
+                   dataType: 'JSON',  
+                   cache: false,
+                   contentType: false,
+                   processData: false,
+                   enctype: 'multipart/form-data',
+                   data: form_data, //$(this).serialize(), 
+                   //data: data, //$(this).serialize(),                     
+                   type: 'delete',                        
+                   beforeSend: function() {
+                       //alert("beforeSend");                       
+                   },
+                   success: function(response){                      
+                       //alert("success");
+                       //toastr.success(response.message);
+                       //toastr["success"](response.message,response.status); 
+                       //alert(response.message);
+                       //message = response.message;
+                       if (parseInt(response.status) == 1) {
+                           inerHtmlMessage = "<div class=\"alert alert-success\" role=\"alert\">";
+                           inerHtmlMessage += "<div class=\"modal-header\">";                           
+                           inerHtmlMessage += "<button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>";
+                           inerHtmlMessage += "<h3 class=\"modal-title text-left\">Данные переданы!</h3>";
+                           inerHtmlMessage += "</div>";
+                           inerHtmlMessage += "<h4 class=\"text-center\">" + response.message + "</h4>";
+                           inerHtmlMessage += "</div>";  
+                           inerHtmlMessage += "<br>" + response.message;                           
+                           $('#modalAlert').modal('show').find('.modal-dialog').html(inerHtmlMessage);
+                           
+                           //$('#addAppFormModel').modal('hide');
+                       } else {
+                           inerHtmlMessage = "<div class=\"alert alert-danger\" role=\"alert\">";
+                           inerHtmlMessage += "<div class=\"modal-header\">";
+                           inerHtmlMessage += "<button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>";
+                           inerHtmlMessage += "<h3 class=\"modal-title text-left\">Внимание!</h3>";
+                           inerHtmlMessage += "</div>";
+                           inerHtmlMessage += "<h4 class=\"text-center\">" + response.message + "</h4>";
+                           inerHtmlMessage += "</div>";
+                           $('#modalAlert').modal('show').find('.modal-dialog').html(inerHtmlMessage);
+                           //$('#addAppFormModel').modal('hide');
+                       }
+                   },
+                   complete: function() {
+                       //alert("complete");
+                   },
+                   error: function (data) {
+                      //toastr.warning("","There may a error on uploading. Try again later");    
+                      //alert(response.message);
+                   }
+                });                
+            return false;
+
+        });
     });       
 
 JS;

@@ -123,4 +123,139 @@ class RequestController extends Controller
         }
 
     }
+
+
+    /**
+     * POST Method. Request table.
+     * Insert records by parameters
+     *
+     * @return json
+     */
+    public function actionCreate()
+    {
+        // check user is a guest
+        if (Yii::$app->user->isGuest) {
+            //return $this->goHome();
+        }
+
+        $modelRequest = new Request();
+        if (Yii::$app->request->isAjax && $modelRequest->load(Yii::$app->request->post())) {
+
+            // check input parametrs
+            //$cit = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cit'))) ? Yii::$app->request->get('cit') : null;
+            //$cat = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cat'))) ? Yii::$app->request->get('cat') : null;
+            //$ser = (preg_match("/^[a-zA-Z0-9]*$/",Yii::$app->request->get('ser'))) ? Yii::$app->request->get('ser') : null;
+
+            // select user ads by */*/* parametrs
+            if (false) {
+                // something
+            } else {
+                $query = Request::find();
+                //$query = Request::find()
+                //    ->where(['AND', ['city_id' => $var1], ['user_desc_id'=> $var2]]);
+
+                $requestList = $query->orderBy('created_at')
+                    //->offset($pagination->offset)
+                    //->limit($pagination->limit)
+                    //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
+                    //->with('adPhotos')
+                    ->all();
+            }
+
+            return Json::encode(array('status' => '1', 'type' => 'success', 'message' => 'Успешно'));
+        } else {
+            return Json::encode(array('status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
+        }
+
+    }
+
+
+    /**
+     * PUT, PATCH Method. Request table.
+     * Update records by parameters
+     *
+     * @return json
+     */
+    public function actionUpdate()
+    {
+        // check user is a guest
+        if (Yii::$app->user->isGuest) {
+            //return $this->goHome();
+        }
+
+        $modelRequest = new Request();
+        if (Yii::$app->request->isAjax && $modelRequest->load(Yii::$app->request->post())) {
+
+            // check input parametrs
+            //$cit = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cit'))) ? Yii::$app->request->get('cit') : null;
+            //$cat = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cat'))) ? Yii::$app->request->get('cat') : null;
+            //$ser = (preg_match("/^[a-zA-Z0-9]*$/",Yii::$app->request->get('ser'))) ? Yii::$app->request->get('ser') : null;
+
+            // select user ads by */*/* parametrs
+            if (false) {
+                // something
+            } else {
+                $query = Request::find();
+                //$query = Request::find()
+                //    ->where(['AND', ['city_id' => $var1], ['user_desc_id'=> $var2]]);
+
+                $requestList = $query->orderBy('created_at')
+                    //->offset($pagination->offset)
+                    //->limit($pagination->limit)
+                    //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
+                    //->with('adPhotos')
+                    ->all();
+            }
+
+            return Json::encode(array('status' => '1', 'type' => 'success', 'message' => 'Успешно'));
+        } else {
+            return Json::encode(array('status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
+        }
+
+    }
+
+
+    /**
+     * DELETE Method. Request table.
+     * Delete records by parameters
+     *
+     * @return json
+     */
+    public function actionDelete()
+    {
+        // check user is a guest
+        if (Yii::$app->user->isGuest) {
+            //return $this->goHome();
+        }
+
+        $modelRequest = new Request();
+        if (Yii::$app->request->isAjax && $modelRequest->load(Yii::$app->request->post())) {
+
+            // check input parametrs
+            //$cit = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cit'))) ? Yii::$app->request->get('cit') : null;
+            //$cat = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cat'))) ? Yii::$app->request->get('cat') : null;
+            //$ser = (preg_match("/^[a-zA-Z0-9]*$/",Yii::$app->request->get('ser'))) ? Yii::$app->request->get('ser') : null;
+
+            // select user ads by */*/* parametrs
+            if (false) {
+                // something
+            } else {
+                $query = Request::find();
+                //$query = Request::find()
+                //    ->where(['AND', ['city_id' => $var1], ['user_desc_id'=> $var2]]);
+
+                $requestList = $query->orderBy('created_at')
+                    //->offset($pagination->offset)
+                    //->limit($pagination->limit)
+                    //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
+                    //->with('adPhotos')
+                    ->all();
+            }
+
+            return Json::encode(array('status' => '1', 'type' => 'success', 'message' => 'Успешно'));
+        } else {
+            return Json::encode(array('status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
+        }
+
+    }
 }
