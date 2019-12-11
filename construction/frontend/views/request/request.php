@@ -29,10 +29,6 @@ use yii\widgets\ActiveForm;
 
     <?php echo $form->field($modelRequest, 'description')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('description'); ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
-    </div>
-
 <?php ActiveForm::end(); ?>
 
     <div class="form-group">
@@ -92,7 +88,7 @@ $script = <<< JS
                    cache: false,
                    contentType: false,
                    processData: false,
-                   enctype: 'multipart/form-data',
+                   //enctype: 'multipart/form-data',
                    data: form_data, //$(this).serialize(), 
                    //data: data, //$(this).serialize(),                     
                    type: 'get',                        
