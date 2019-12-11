@@ -4,7 +4,7 @@ use yii\widgets\ActiveForm;
 ?>
 <h1>Form for GET request</h1>
 
-<?php $form = ActiveForm::begin(['id' => 'form-request-get', 'method' => 'get', 'action' => Yii::$app->urlManager->createUrl('/request')]); ?>
+<?php $form = ActiveForm::begin(['id' => 'form-request-get', 'method' => 'get', 'action' => Yii::$app->urlManager->createUrl('request')]); ?>
 
     <?php echo $form->field($modelRequest, 'address')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('address'); ?>
 
@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
 
 <h1>Form for POST request</h1>
 
-<?php $form = ActiveForm::begin(['id' => 'form-request-post', 'method' => 'post', 'action' => Yii::$app->urlManager->createUrl('/request')]); ?>
+<?php $form = ActiveForm::begin(['id' => 'form-request-post', 'method' => 'post', 'action' => Yii::$app->urlManager->createUrl('request')]); ?>
 
     <?php echo $form->field($modelRequest, 'address')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('address'); ?>
 
@@ -41,7 +41,7 @@ use yii\widgets\ActiveForm;
 
 <h1>Form for PUT request</h1>
 
-<?php $form = ActiveForm::begin(['id' => 'form-request-put', 'method' => 'put', 'action' => Yii::$app->urlManager->createUrl('/request')]); ?>
+<?php $form = ActiveForm::begin(['id' => 'form-request-put', 'method' => 'put', 'action' => Yii::$app->urlManager->createUrl('request')]); ?>
 
     <?php echo $form->field($modelRequest, 'address')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('address'); ?>
 
@@ -95,7 +95,7 @@ $script = <<< JS
                    enctype: 'multipart/form-data',
                    data: form_data, //$(this).serialize(), 
                    //data: data, //$(this).serialize(),                     
-                   type: 'post',                        
+                   type: 'get',                        
                    beforeSend: function() {
                        //alert("beforeSend");                       
                    },
