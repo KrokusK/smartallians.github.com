@@ -30,8 +30,10 @@ class Request extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        /*
+
         return [
+            [['address', 'name', 'description'], 'required', 'message' => 'Поле должно быть заполнено'],
+            /*
             [['user_desc_id', 'status_id', 'header', 'content', 'city_id', 'amount', 'category_id'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['status_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
@@ -66,8 +68,9 @@ class Request extends \yii\db\ActiveRecord
                     return $categoriesIdStr;
                 },
                 'message' => 'Категория не выбрана из списка'],
+            */
         ];
-        */
+
     }
 
     /**
