@@ -73,7 +73,7 @@ class RequestController extends Controller
     public function actionTest()
     {
         $modelRequest = new Request();
-        return $this->render('entry', [
+        return $this->render('request', [
             'modelRequest' => $modelRequest,
         ]);
     }
