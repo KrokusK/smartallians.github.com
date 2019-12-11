@@ -117,9 +117,9 @@ class RequestController extends Controller
                     ->all();
             }
 
-            return Json::encode(array('status' => '1', 'type' => 'success', 'message' => 'Успешно'));
+            return Json::encode(array('method' => 'GET', 'status' => '1', 'type' => 'success', 'message' => 'Успешно'));
         } else {
-            return Json::encode(array('status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
+            return Json::encode(array('method' => 'GET', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
 
     }
@@ -162,9 +162,9 @@ class RequestController extends Controller
                     ->all();
             }
 
-            return Json::encode(array('status' => '1', 'type' => 'success', 'message' => 'Успешно'));
+            return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'success', 'message' => 'Успешно'));
         } else {
-            return Json::encode(array('status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
+            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
 
     }
@@ -207,9 +207,9 @@ class RequestController extends Controller
                     ->all();
             }
 
-            return Json::encode(array('status' => '1', 'type' => 'success', 'message' => 'Успешно'));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно'));
         } else {
-            return Json::encode(array('status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
+            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
 
     }
@@ -252,9 +252,9 @@ class RequestController extends Controller
                     ->all();
             }
 
-            return Json::encode(array('status' => '1', 'type' => 'success', 'message' => 'Успешно'));
+            return Json::encode(array('method' => 'DELETE', 'status' => '1', 'type' => 'success', 'message' => 'Успешно'));
         } else {
-            return Json::encode(array('status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
+            return Json::encode(array('method' => 'DELETE', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
 
     }
