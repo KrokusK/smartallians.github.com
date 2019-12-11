@@ -63,6 +63,7 @@ class m191210_000010_create_request_response_tables extends Migration
             'city_id' => $this->integer()->notNull(),
             'address' => $this->string()->notNull(),
             'name' => $this->string()->notNull(),
+            'description' => $this->string()->notNull(),
             'task' => $this->string()->notNull(),
             'budjet' => $this->string()->notNull(),
             'period' => $this->integer()->notNull(),
