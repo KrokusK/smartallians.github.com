@@ -6,7 +6,7 @@ use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin(['id' => 'form-request-get', 'method' => 'get', 'action' => Yii::$app->urlManager->createUrl('request')]); ?>
 
-    <?= $form->field($modelRequest, 'adress') ?>
+    <?= $form->field($modelRequest, 'address') ?>
 
     <?= $form->field($modelRequest, 'name') ?>
 
@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin(['id' => 'form-request-get', 'method' => 'post', 'action' => Yii::$app->urlManager->createUrl('request')]); ?>
 
-<?= $form->field($modelRequest, 'adress') ?>
+<?= $form->field($modelRequest, 'address') ?>
 
 <?= $form->field($modelRequest, 'name') ?>
 
@@ -39,7 +39,7 @@ use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin(['id' => 'form-request-get', 'method' => 'put', 'action' => Yii::$app->urlManager->createUrl('request')]); ?>
 
-<?= $form->field($modelRequest, 'adress') ?>
+<?= $form->field($modelRequest, 'address') ?>
 
 <?= $form->field($modelRequest, 'name') ?>
 
@@ -55,7 +55,7 @@ use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin(['id' => 'form-request-get', 'method' => 'delete', 'action' => Yii::$app->urlManager->createUrl('request')]); ?>
 
-<?= $form->field($modelRequest, 'adress') ?>
+<?= $form->field($modelRequest, 'address') ?>
 
 <?= $form->field($modelRequest, 'name') ?>
 
