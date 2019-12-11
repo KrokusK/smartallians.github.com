@@ -6,11 +6,11 @@ use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin(['id' => 'form-request-get', 'method' => 'get', 'action' => Yii::$app->urlManager->createUrl('request')]); ?>
 
-    <?= $form->field($modelRequest, 'address') ?>
+    <?php echo $form->field($modelRequest, 'address')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('address'); ?>
 
-    <?= $form->field($modelRequest, 'name') ?>
+    <?php echo $form->field($modelRequest, 'name')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('name'); ?>
 
-    <?= $form->field($modelRequest, 'description') ?>
+    <?php echo $form->field($modelRequest, 'description')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('description'); ?>
 
     <div class="form-group">
         <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
@@ -23,11 +23,11 @@ use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin(['id' => 'form-request-get', 'method' => 'post', 'action' => Yii::$app->urlManager->createUrl('request')]); ?>
 
-<?= $form->field($modelRequest, 'address') ?>
+    <?php echo $form->field($modelRequest, 'address')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('address'); ?>
 
-<?= $form->field($modelRequest, 'name') ?>
+    <?php echo $form->field($modelRequest, 'name')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('name'); ?>
 
-<?= $form->field($modelRequest, 'description') ?>
+    <?php echo $form->field($modelRequest, 'description')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('description'); ?>
 
     <div class="form-group">
         <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
@@ -39,11 +39,11 @@ use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin(['id' => 'form-request-get', 'method' => 'put', 'action' => Yii::$app->urlManager->createUrl('request')]); ?>
 
-<?= $form->field($modelRequest, 'address') ?>
+    <?php echo $form->field($modelRequest, 'address')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('address'); ?>
 
-<?= $form->field($modelRequest, 'name') ?>
+    <?php echo $form->field($modelRequest, 'name')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('name'); ?>
 
-<?= $form->field($modelRequest, 'description') ?>
+    <?php echo $form->field($modelRequest, 'description')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('description'); ?>
 
     <div class="form-group">
         <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
@@ -55,11 +55,11 @@ use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin(['id' => 'form-request-get', 'method' => 'delete', 'action' => Yii::$app->urlManager->createUrl('request')]); ?>
 
-<?= $form->field($modelRequest, 'address') ?>
+    <?php echo $form->field($modelRequest, 'address')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('address'); ?>
 
-<?= $form->field($modelRequest, 'name') ?>
+    <?php echo $form->field($modelRequest, 'name')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('name'); ?>
 
-<?= $form->field($modelRequest, 'description') ?>
+    <?php echo $form->field($modelRequest, 'description')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('description'); ?>
 
     <div class="form-group">
         <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
