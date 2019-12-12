@@ -210,10 +210,11 @@ class RequestController extends Controller
             }
 
             //Получаем данные из PUT
+            //Yii::$app->request->getBodyParams()
             $fh = fopen("php://input", 'r');
             $put_string=stream_get_contents($fh);
 
-            $put_param = explode("&", Yii::$app->request->getBodyParams());
+            $put_param = explode("&", $put_string);
             $array_put=array();
 
             foreach($put_param as $put_val)
