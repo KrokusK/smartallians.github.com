@@ -212,8 +212,8 @@ class RequestController extends Controller
             //Получаем данные из PUT
             //Yii::$app->request->getBodyParams()
             $fh = fopen("php://input", 'r');
-            //$put_string=stream_get_contents($fh);
-            $put_string=Yii::$app->request->getBodyParams();
+            $put_string=stream_get_contents($fh);
+            //$put_string=Yii::$app->request->getBodyParams();
 
             $put_param = explode("&", $put_string);
             $array_put=array();
