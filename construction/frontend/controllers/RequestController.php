@@ -217,7 +217,7 @@ class RequestController extends Controller
             $array_put = $this->parsingRequest($put_string);
 
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($array_put), 'modelRequest->address' => $modelRequest->address));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($array_put)));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
@@ -271,7 +271,7 @@ class RequestController extends Controller
             $put_string = urldecode($put_string);
             $array_put = $this->parsingRequest($put_string);
 
-            return Json::encode(array('method' => 'DELETE', 'status' => '1', 'type' => 'success', 'message' => 'Успешно'));
+            return Json::encode(array('method' => 'DELETE', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($array_put)));
         } else {
             return Json::encode(array('method' => 'DELETE', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
