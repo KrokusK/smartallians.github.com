@@ -258,20 +258,20 @@ class RequestController extends Controller
             if($found) {
                 foreach($found as $pos) {
                     //$temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
-                    //$string_temp = substr($string, ($pos + strlen($search)), (strlen($string) - $pos));
+
                     $key = substr($string, ($pos + strlen($search)), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search))));
 
                     $pos_begin = strpos($string, '"', ($pos + strlen($search))) + 4;
                     $pos_end = strpos($string, '-', $pos_begin) - 2;
                     $value = substr($string, $pos_begin + 1, $pos_end - ($pos_begin + 1));
-                    
+
                     $array_put[$key] = $value;
                 }
             } else {
                 //$temp = '"'.$search.'" not found in "'.$string.'"';
             }
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => var_dump($array_put), 'modelRequest->address' => $modelRequest->address));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', $key => $array_put[$key], 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
