@@ -94,7 +94,7 @@ class RequestController extends Controller
         }
 
         $modelRequest = new Request();
-        if (Yii::$app->request->isAjax) {
+        if (Yii::$app->request->isAjax && $modelRequest->load(Yii::$app->request->get())) {
 
             // check input parametrs
             //$cit = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cit'))) ? Yii::$app->request->get('cit') : null;
