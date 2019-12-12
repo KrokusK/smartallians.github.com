@@ -47,6 +47,8 @@ use yii\widgets\ActiveForm;
 
     <?php echo Html::input('Request[address]', $modelRequest->address); ?>
 
+    <?= Html::hiddenInput('nad', 'test') ?>
+
 <?php ActiveForm::end(); ?>
 
     <div class="form-group">
