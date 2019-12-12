@@ -222,7 +222,7 @@ class RequestController extends Controller
             $array_put=array();
             parse_str($put_string, $array_put);
 
-            foreach($put_param as $put_val)
+            foreach($array_put as $put_val)
             {
                 $param = explode("=", $put_val);
                 $array_put[$param[0]]=urldecode($param[1]);
