@@ -260,13 +260,13 @@ class RequestController extends Controller
                     //$temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
                     //$string_temp = substr($string, ($pos + strlen($search)), (strlen($string) - $pos));
                     $key = substr($string, ($pos + strlen($search)), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search))));
-                    $results[$key] = "yes";
+                    $array_put[$key] = "yes";
                 }
             } else {
                 //$temp = '"'.$search.'" not found in "'.$string.'"';
             }
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => $temp, 'modelRequest->address' => $modelRequest->address));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => var_dump($array_put), 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
