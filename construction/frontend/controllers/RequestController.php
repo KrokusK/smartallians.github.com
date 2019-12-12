@@ -240,7 +240,29 @@ class RequestController extends Controller
             // returns the parameter "id"
             //$param = $request->getBodyParam('nad');
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => Yii::$app->request->getBodyParams(), 'modelRequest->address' => $modelRequest->address));
+            function strpos_recursive($haystack, $needle, $offset = 0, &$results = array()) {
+                $offset = strpos($haystack, $needle, $offset);
+                if($offset === false) {
+                    return $results;
+                } else {
+                    $results[] = $offset;
+                    return strpos_recursive($haystack, $needle, ($offset + 1), $results);
+                }
+            }
+
+            $string = $put_string;
+            $search = 'name=';
+            $found = strpos_recursive($string, $search);
+
+            if($found) {
+                foreach($found as $pos) {
+                    $temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
+                }
+            } else {
+                $temp = '"'.$search.'" not found in "'.$string.'"';
+            }
+
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => $temp, 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
