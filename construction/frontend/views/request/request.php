@@ -39,11 +39,13 @@ use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin(['id' => 'form-request-put', 'method' => 'put', 'action' => Yii::$app->urlManager->createUrl('request')]); ?>
 
-    <?php echo $form->field($modelRequest, 'address')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('address'); ?>
+    <?php //echo $form->field($modelRequest, 'address')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('address'); ?>
 
     <?php echo $form->field($modelRequest, 'name')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('name'); ?>
 
     <?php echo $form->field($modelRequest, 'description')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('description'); ?>
+
+    <?php echo Html::input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('address'); ?>
 
 <?php ActiveForm::end(); ?>
 
