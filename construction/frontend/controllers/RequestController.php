@@ -260,10 +260,11 @@ class RequestController extends Controller
                     //$temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
                     //$string_temp = substr($string, ($pos + strlen($search)), (strlen($string) - $pos));
                     $key = substr($string, ($pos + strlen($search)), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search))));
+
                     $pos_begin = strpos($string, '"', ($pos + strlen($search))) + 4;
                     $pos_end = strpos($string, '-', $pos_begin) - 2;
-
-                    $value = substr($string, $pos_begin + 2, $pos_end - $pos_begin);
+                    $value = substr($string, $pos_begin + 1, $pos_end - ($pos_begin + 1));
+                    
                     $array_put[$key] = $value;
                 }
             } else {
