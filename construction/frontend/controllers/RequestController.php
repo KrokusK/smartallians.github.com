@@ -224,7 +224,7 @@ class RequestController extends Controller
                 $array_put[$param[0]]=urldecode($param[1]);
             }
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'nad' => var_dump($put_string), 'modelRequest->address' => $modelRequest->address));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'nad' => var_dump(Yii::$app->request->getBodyParam('nad')), 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
