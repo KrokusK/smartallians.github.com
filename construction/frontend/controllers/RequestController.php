@@ -263,7 +263,7 @@ class RequestController extends Controller
                     $pos_begin = strpos($string, '"', ($pos + strlen($search))) + 4;
                     $pos_end = strpos($string, '-', $pos_begin) - 2;
 
-                    $value = substr($string, $pos_begin, $pos_end - $pos_begin);
+                    $value = substr($string, $pos_begin + 2, $pos_end - $pos_begin);
                     $array_put[$key] = $value;
                 }
             } else {
