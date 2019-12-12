@@ -263,7 +263,7 @@ class RequestController extends Controller
                     //strpos($string, '"', ($pos + strlen($search) + 2))
                     //strpos($string, '-', strpos($string, '"', ($pos + strlen($search) + 2)))
 
-                    $value = substr($string, strpos($string, '"', ($pos + strlen($search) + 2)), (strpos($string, '-', strpos($string, '"', ($pos + strlen($search) + 2))) - strpos($string, '"', ($pos + strlen($search) + 2))));
+                    $value = substr($string, strpos($string, '"', ($pos + strlen($search))) + 2, (strpos($string, '-', strpos($string, '"', ($pos + strlen($search))) + 2) - strpos($string, '"', ($pos + strlen($search))) - 2));
                     $array_put[$key] = $value;
                 }
             } else {
