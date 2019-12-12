@@ -224,6 +224,54 @@ class RequestController extends Controller
 
     }
 
+
+    /**
+     * DELETE Method. Request table.
+     * Delete records by parameters
+     *
+     * @return json
+     */
+    public function actionDelete()
+    {
+        // check user is a guest
+        if (Yii::$app->user->isGuest) {
+            //return $this->goHome();
+        }
+
+        $modelRequest = new Request();
+        if (Yii::$app->request->isAjax) {
+
+            $modelRequest->load(Yii::$app->request->post());
+
+            // check input parametrs
+            //$cit = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cit'))) ? Yii::$app->request->get('cit') : null;
+            //$cat = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cat'))) ? Yii::$app->request->get('cat') : null;
+            //$ser = (preg_match("/^[a-zA-Z0-9]*$/",Yii::$app->request->get('ser'))) ? Yii::$app->request->get('ser') : null;
+
+            // select user ads by */*/* parametrs
+            if (false) {
+                // something
+            } else {
+                $query = Request::find();
+                //$query = Request::find()
+                //    ->where(['AND', ['city_id' => $var1], ['user_desc_id'=> $var2]]);
+
+                $requestList = $query->orderBy('created_at')
+                    //->offset($pagination->offset)
+                    //->limit($pagination->limit)
+                    //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
+                    //->with('adPhotos')
+                    ->all();
+            }
+
+            return Json::encode(array('method' => 'DELETE', 'status' => '1', 'type' => 'success', 'message' => 'Успешно'));
+        } else {
+            return Json::encode(array('method' => 'DELETE', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
+        }
+
+    }
+
+
     /**
      * Parsing request Method.
      *
@@ -273,68 +321,21 @@ class RequestController extends Controller
         $found = strpos_recursive($string, $search);
 
         if($found) {
-        foreach($found as $pos) {
-            //$temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
+            foreach($found as $pos) {
+                //$temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
 
-        $key = substr($string, ($pos + strlen($search)), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search))));
+                $key = substr($string, ($pos + strlen($search)), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search))));
 
-        $pos_begin = strpos($string, '"', ($pos + strlen($search))) + 4;
-        $pos_end = strpos($string, '-', $pos_begin) - 2;
-        $value = substr($string, $pos_begin + 1, $pos_end - ($pos_begin + 1));
+                $pos_begin = strpos($string, '"', ($pos + strlen($search))) + 4;
+                $pos_end = strpos($string, '-', $pos_begin) - 2;
+                $value = substr($string, $pos_begin + 1, $pos_end - ($pos_begin + 1));
 
-        $array_put[$key] = $value;
-        }
+                $array_put[$key] = $value;
+            }
         } else {
             //$temp = '"'.$search.'" not found in "'.$string.'"';
         }
 
         return $array_put;
-    }
-
-
-    /**
-     * DELETE Method. Request table.
-     * Delete records by parameters
-     *
-     * @return json
-     */
-    public function actionDelete()
-    {
-        // check user is a guest
-        if (Yii::$app->user->isGuest) {
-            //return $this->goHome();
-        }
-
-        $modelRequest = new Request();
-        if (Yii::$app->request->isAjax) {
-
-            $modelRequest->load(Yii::$app->request->post());
-
-            // check input parametrs
-            //$cit = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cit'))) ? Yii::$app->request->get('cit') : null;
-            //$cat = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cat'))) ? Yii::$app->request->get('cat') : null;
-            //$ser = (preg_match("/^[a-zA-Z0-9]*$/",Yii::$app->request->get('ser'))) ? Yii::$app->request->get('ser') : null;
-
-            // select user ads by */*/* parametrs
-            if (false) {
-                // something
-            } else {
-                $query = Request::find();
-                //$query = Request::find()
-                //    ->where(['AND', ['city_id' => $var1], ['user_desc_id'=> $var2]]);
-
-                $requestList = $query->orderBy('created_at')
-                    //->offset($pagination->offset)
-                    //->limit($pagination->limit)
-                    //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
-                    //->with('adPhotos')
-                    ->all();
-            }
-
-            return Json::encode(array('method' => 'DELETE', 'status' => '1', 'type' => 'success', 'message' => 'Успешно'));
-        } else {
-            return Json::encode(array('method' => 'DELETE', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
-        }
-
     }
 }

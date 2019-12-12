@@ -45,8 +45,6 @@ use yii\widgets\ActiveForm;
 
     <?php echo $form->field($modelRequest, 'description')->input(['class' => 'form-control', 'value' => $modelRequest->address])->hint('Пожалуйста, заполните поле')->label('description'); ?>
 
-    <?php echo Html::input('Request[address]', $modelRequest->address); ?>
-
     <?php //echo Html::hiddenInput('nad', 'test') ?>
 
 <?php ActiveForm::end(); ?>
