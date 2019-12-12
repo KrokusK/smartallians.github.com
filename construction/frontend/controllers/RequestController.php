@@ -214,68 +214,81 @@ class RequestController extends Controller
             $fh = fopen("php://input", 'r');
             $put_string = stream_get_contents($fh);
             $put_string = urldecode($put_string);
-            //$put_string = json_decode($put_string_json, TRUE);
-            //$put_string=Yii::$app->request->getBodyParams();
-
-            //$temp = json_decode($put_string, TRUE);
-
-            //$put_param = explode("&", $put_string);
-            //$array_put=array();
-            //parse_str($put_string, $array_put);
+            $array_put = parsingRequest($put_string);
 
 
-
-            //foreach($array_put as $put_val)
-            //{
-            //    $param = explode("=", $put_val);
-            //    $array_put[$param[0]]=urldecode($param[1]);
-            //}
-
-            //$request = Yii::$app->request;
-
-            // returns all parameters
-            //$params = $request->getBodyParams();
-
-            //name=\"Request[name]\"\r\n\r\ntest\r\n-----------------------------4833311154639"
-
-            // returns the parameter "id"
-            //$param = $request->getBodyParam('nad');
-
-            function strpos_recursive($haystack, $needle, $offset = 0, &$results = array()) {
-                $offset = strpos($haystack, $needle, $offset);
-                if($offset === false) {
-                    return $results;
-                } else {
-                    $results[] = $offset;
-                    return strpos_recursive($haystack, $needle, ($offset + 1), $results);
-                }
-            }
-
-            $string = $put_string;
-            $search = 'name="';
-            $found = strpos_recursive($string, $search);
-
-            if($found) {
-                foreach($found as $pos) {
-                    //$temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
-
-                    $key = substr($string, ($pos + strlen($search)), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search))));
-
-                    $pos_begin = strpos($string, '"', ($pos + strlen($search))) + 4;
-                    $pos_end = strpos($string, '-', $pos_begin) - 2;
-                    $value = substr($string, $pos_begin + 1, $pos_end - ($pos_begin + 1));
-
-                    $array_put[$key] = $value;
-                }
-            } else {
-                //$temp = '"'.$search.'" not found in "'.$string.'"';
-            }
-
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', $key => $array_put[$key], 'modelRequest->address' => $modelRequest->address));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($array_put), 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
 
+    }
+
+    /**
+     * Parsing request Method.
+     *
+     * @return array
+     */
+    public function parsingRequest($put_string)
+    {
+        //            //$put_string = json_decode($put_string_json, TRUE);
+        //            //$put_string=Yii::$app->request->getBodyParams();
+        //
+        //            //$temp = json_decode($put_string, TRUE);
+        //
+        //            //$put_param = explode("&", $put_string);
+        //            //$array_put=array();
+        //            //parse_str($put_string, $array_put);
+        //
+        //
+        //
+        //            //foreach($array_put as $put_val)
+        //            //{
+        //            //    $param = explode("=", $put_val);
+        //            //    $array_put[$paam[0]]=urldecode($param[1]);
+        //}
+
+        //$request = Yii::$app->request;
+
+        // returns all parameters
+        //$params = $request->getBodyParams();
+
+        //name=\"Request[name]\"\r\n\r\ntest\r\n-----------------------------4833311154639"
+
+        // returns the parameter "id"
+        //$param = $request->getBodyParam('nad');
+
+        function strpos_recursive($haystack, $needle, $offset = 0, &$results = array()) {
+            $offset = strpos($haystack, $needle, $offset);
+            if($offset === false) {
+                return $results;
+            } else {
+                $results[] = $offset;
+                return strpos_recursive($haystack, $needle, ($offset + 1), $results);
+            }
+        }
+
+        $string = $put_string;
+        $search = 'name="';
+        $found = strpos_recursive($string, $search);
+
+        if($found) {
+        foreach($found as $pos) {
+            //$temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
+
+        $key = substr($string, ($pos + strlen($search)), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search))));
+
+        $pos_begin = strpos($string, '"', ($pos + strlen($search))) + 4;
+        $pos_end = strpos($string, '-', $pos_begin) - 2;
+        $value = substr($string, $pos_begin + 1, $pos_end - ($pos_begin + 1));
+
+        $array_put[$key] = $value;
+        }
+        } else {
+            //$temp = '"'.$search.'" not found in "'.$string.'"';
+        }
+
+        return $array_put;
     }
 
 
