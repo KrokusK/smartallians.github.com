@@ -259,7 +259,8 @@ class RequestController extends Controller
                 foreach($found as $pos) {
                     //$temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
                     //$string_temp = substr($string, ($pos + strlen($search)), (strlen($string) - $pos));
-                    $temp = substr($string, ($pos + strlen($search)), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search))));
+                    $key = substr($string, ($pos + strlen($search)), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search))));
+                    $results[$key] = "yes";
                 }
             } else {
                 //$temp = '"'.$search.'" not found in "'.$string.'"';
