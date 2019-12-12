@@ -83,7 +83,7 @@ $script = <<< JS
             event.preventDefault();            
             var form_data = new FormData($('#form-request-get')[0]);
             $.ajax({
-                   url: $("#form-request-get").attr('action') + '?Request[address]=test&, Request[name]=test, Request[description]=test', 
+                   url: $("#form-request-get").attr('action') + '?Request[address]=test&Request[name]=testRequest[description]=test', 
                    dataType: 'JSON',  
                    cache: false,
                    contentType: false,
