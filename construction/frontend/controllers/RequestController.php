@@ -209,7 +209,7 @@ class RequestController extends Controller
                     ->all();
             }
 
-            //Получаем данные из PUT
+            //GET data from body request
             //Yii::$app->request->getBodyParams()
             $fh = fopen("php://input", 'r');
             $put_string = stream_get_contents($fh);
@@ -263,6 +263,13 @@ class RequestController extends Controller
                     //->with('adPhotos')
                     ->all();
             }
+
+            //GET data from body request
+            //Yii::$app->request->getBodyParams()
+            $fh = fopen("php://input", 'r');
+            $put_string = stream_get_contents($fh);
+            $put_string = urldecode($put_string);
+            $array_put = $this->parsingRequest($put_string);
 
             return Json::encode(array('method' => 'DELETE', 'status' => '1', 'type' => 'success', 'message' => 'Успешно'));
         } else {
