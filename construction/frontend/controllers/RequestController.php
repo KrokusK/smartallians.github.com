@@ -220,7 +220,9 @@ class RequestController extends Controller
 
             //$put_param = explode("&", $put_string);
             $array_put=array();
-            parse_str($put_string, $array_put);
+            //parse_str($put_string, $array_put);
+
+
 
             foreach($array_put as $put_val)
             {
@@ -238,7 +240,7 @@ class RequestController extends Controller
             // returns the parameter "id"
             //$param = $request->getBodyParam('nad');
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => var_dump($put_string), 'modelRequest->address' => $modelRequest->address));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => Yii::$app->request->getBodyParams(), 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
