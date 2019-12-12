@@ -224,7 +224,15 @@ class RequestController extends Controller
                 $array_put[$param[0]]=urldecode($param[1]);
             }
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'nad' => var_dump(Yii::$app->request->getBodyParam('nad')), 'modelRequest->address' => $modelRequest->address));
+            $request = Yii::$app->request;
+
+            // returns all parameters
+            $params = $request->getBodyParams();
+
+            // returns the parameter "id"
+            $param = $request->getBodyParam('nad');
+
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'nad' => $param, 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
