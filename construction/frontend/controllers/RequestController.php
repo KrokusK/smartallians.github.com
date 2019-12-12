@@ -259,7 +259,7 @@ class RequestController extends Controller
                 foreach($found as $pos) {
                     //$temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
                     //$string_temp = substr($string, ($pos + strlen($search)), (strlen($string) - $pos));
-                    $key = substr($string, ($pos + strlen($search)), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search))));
+                    $key = substr($string, ($pos + strlen($search) + 1), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search) + 1)));
                     $array_put[$key] = "yes";
                 }
             } else {
