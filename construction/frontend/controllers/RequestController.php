@@ -209,7 +209,16 @@ class RequestController extends Controller
                     ->all();
             }
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'nad' => var_dump(Yii::$app->request->getBodyParams()), 'modelRequest->address' => $modelRequest->address));
+            $put_param = explode("&", Yii::$app->request->getBodyParams());
+            $array_put=array();
+
+            foreach($put_param as $put_val)
+            {
+                $param = explode("=", $put_val);
+                $array_put[$param[0]]=urldecode($param[1]);
+            }
+
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'nad' => var_dump($array_put), 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
