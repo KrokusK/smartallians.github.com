@@ -235,7 +235,7 @@ class RequestController extends Controller
             // returns all parameters
             //$params = $request->getBodyParams();
 
-            //Request[name]\"\r\n\r\n"
+            //name=\"Request[name]\"\r\n\r\ntest\r\n-----------------------------4833311154639"
 
             // returns the parameter "id"
             //$param = $request->getBodyParam('nad');
@@ -251,18 +251,19 @@ class RequestController extends Controller
             }
 
             $string = $put_string;
-            $search = 'name=';
+            $search = 'name="';
             $found = strpos_recursive($string, $search);
 
             if($found) {
                 foreach($found as $pos) {
-                    $temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
+                    //$temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
+                    substr()
                 }
             } else {
-                $temp = '"'.$search.'" not found in "'.$string.'"';
+                //$temp = '"'.$search.'" not found in "'.$string.'"';
             }
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => Yii::$app->request->getBodyParams(), 'modelRequest->address' => $modelRequest->address));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => var_dump($found), 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
