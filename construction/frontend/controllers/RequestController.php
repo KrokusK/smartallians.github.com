@@ -212,23 +212,24 @@ class RequestController extends Controller
             //Получаем данные из PUT
             //Yii::$app->request->getBodyParams()
             $fh = fopen("php://input", 'r');
-            $put_string=stream_get_contents($fh);
+            $put_string = stream_get_contents($fh);
+            $put_string = urldecode($put_string);
             //$put_string = json_decode($put_string_json, TRUE);
             //$put_string=Yii::$app->request->getBodyParams();
 
             //$temp = json_decode($put_string, TRUE);
 
             //$put_param = explode("&", $put_string);
-            $array_put=array();
+            //$array_put=array();
             //parse_str($put_string, $array_put);
 
 
 
-            foreach($array_put as $put_val)
-            {
-                $param = explode("=", $put_val);
-                $array_put[$param[0]]=urldecode($param[1]);
-            }
+            //foreach($array_put as $put_val)
+            //{
+            //    $param = explode("=", $put_val);
+            //    $array_put[$param[0]]=urldecode($param[1]);
+            //}
 
             //$request = Yii::$app->request;
 
@@ -257,13 +258,14 @@ class RequestController extends Controller
             if($found) {
                 foreach($found as $pos) {
                     //$temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
-                   //substr()
+                    //$string_temp = substr($string, ($pos + strlen($search)), (strlen($string) - $pos));
+                    $temp = substr($string, ($pos + strlen($search)), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search))));
                 }
             } else {
                 //$temp = '"'.$search.'" not found in "'.$string.'"';
             }
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => var_dump($found), 'modelRequest->address' => $modelRequest->address));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => $temp, 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
