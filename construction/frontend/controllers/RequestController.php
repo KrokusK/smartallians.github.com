@@ -209,7 +209,7 @@ class RequestController extends Controller
                     ->all();
             }
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'nad' => Yii::$app->request->post('nad'), 'modelRequest->address' => $modelRequest->address));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'nad' => Yii::$app->getRequest()->getPut('nad'), 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
