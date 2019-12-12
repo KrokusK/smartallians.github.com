@@ -215,7 +215,7 @@ $script = <<< JS
                    enctype: 'multipart/form-data',
                    data: form_data, //$(this).serialize(), 
                    //data: data, //$(this).serialize(),                     
-                   type: 'post',                        
+                   type: 'put',                        
                    beforeSend: function() {
                        //alert("beforeSend");                       
                    },
