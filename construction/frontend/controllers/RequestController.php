@@ -209,6 +209,10 @@ class RequestController extends Controller
                     ->all();
             }
 
+            //Получаем данные из PUT
+            $fh = fopen("php://input", 'r');
+            $put_string=stream_get_contents($fh);
+
             $put_param = explode("&", Yii::$app->request->getBodyParams());
             $array_put=array();
 
