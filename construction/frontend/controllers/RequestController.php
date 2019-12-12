@@ -211,15 +211,16 @@ class RequestController extends Controller
 
             //Получаем данные из PUT
             //Yii::$app->request->getBodyParams()
-            $fh = fopen("php://input", 'r');
-            $put_string=stream_get_contents($fh);
+            //$fh = fopen("php://input", 'r');
+            //$put_string=stream_get_contents($fh);
             //$put_string = json_decode($put_string_json, TRUE);
             //$put_string=Yii::$app->request->getBodyParams();
 
-            $temp = json_decode($put_string, TRUE);
+            //$temp = json_decode($put_string, TRUE);
 
-            $put_param = explode("&", $put_string);
+            //$put_param = explode("&", $put_string);
             $array_put=array();
+            parse_str(Yii::$app->request->getBodyParams(), $array_put);
 
             foreach($put_param as $put_val)
             {
@@ -227,17 +228,17 @@ class RequestController extends Controller
                 $array_put[$param[0]]=urldecode($param[1]);
             }
 
-            $request = Yii::$app->request;
+            //$request = Yii::$app->request;
 
             // returns all parameters
-            $params = $request->getBodyParams();
+            //$params = $request->getBodyParams();
 
             //Request[name]\"\r\n\r\n"
 
             // returns the parameter "id"
             //$param = $request->getBodyParam('nad');
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => var_dump($temp), 'modelRequest->address' => $modelRequest->address));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => var_dump($array_put), 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
