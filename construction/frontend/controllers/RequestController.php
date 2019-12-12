@@ -216,7 +216,7 @@ class RequestController extends Controller
             //$put_string = json_decode($put_string_json, TRUE);
             //$put_string=Yii::$app->request->getBodyParams();
 
-            $temp = json_decode(Yii::$app->request->getBodyParams(), TRUE);
+            $temp = json_decode($put_string, TRUE);
 
             $put_param = explode("&", $put_string);
             $array_put=array();
