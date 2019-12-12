@@ -213,7 +213,10 @@ class RequestController extends Controller
             //Yii::$app->request->getBodyParams()
             $fh = fopen("php://input", 'r');
             $put_string=stream_get_contents($fh);
+            //$put_string = json_decode($put_string_json, TRUE);
             //$put_string=Yii::$app->request->getBodyParams();
+
+            $temp = json_decode(Yii::$app->request->getBodyParams(), TRUE);
 
             $put_param = explode("&", $put_string);
             $array_put=array();
@@ -229,10 +232,12 @@ class RequestController extends Controller
             // returns all parameters
             $params = $request->getBodyParams();
 
+            Request[name]\"\r\n\r\n"
+
             // returns the parameter "id"
             //$param = $request->getBodyParam('nad');
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => $params, 'modelRequest->address' => $modelRequest->address));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', 'params' => var_dump($temp), 'modelRequest->address' => $modelRequest->address));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
