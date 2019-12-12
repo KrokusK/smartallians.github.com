@@ -232,7 +232,7 @@ class RequestController extends Controller
             // returns all parameters
             $params = $request->getBodyParams();
 
-            Request[name]\"\r\n\r\n"
+            //Request[name]\"\r\n\r\n"
 
             // returns the parameter "id"
             //$param = $request->getBodyParam('nad');
