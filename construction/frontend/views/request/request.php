@@ -210,7 +210,7 @@ $script = <<< JS
                    url: $("#form-request-put").attr('action'), 
                    dataType: 'JSON',  
                    cache: false,
-                   contentType: 'application/json',
+                   contentType: false,
                    processData: false,
                    enctype: 'multipart/form-data',
                    //data: {"Request[address]":"test","Request[name]":"test","Request[description]":"test"}, //$(this).serialize(),
