@@ -426,6 +426,7 @@ class RequestController extends Controller
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
             $modelRequest->setAttributes($bodyRaw);
+            // yiisoft/yii2/base/Model.php
             //if (is_array($value)) {
             //    $attributes = array_flip($safeOnly ? $this->safeAttributes() : $this->attributes());
             //    foreach ($values as $name => $value) {
@@ -442,7 +443,7 @@ class RequestController extends Controller
             //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($bodyRaw)));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', $modelRequest->address));
         //} else {
         //    return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         //}
