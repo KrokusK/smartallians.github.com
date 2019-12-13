@@ -425,6 +425,20 @@ class RequestController extends Controller
             //$array_put = $this->parsingRequest($put_string);
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+            $modelRequest->setAttributes($bodyRaw);
+            //if (is_array($value)) {
+            //    $attributes = array_flip($safeOnly ? $this->safeAttributes() : $this->attributes());
+            //    foreach ($values as $name => $value) {
+            //        if (isset($attributes[$name])) {
+            //            $this->$name = $value;
+            //        } elseif ($safeOnly) {
+            //            $this->onUnsafeAttribute($name, $value);
+            //        }
+            //
+            //    }
+            //}
+
+
             //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
 
