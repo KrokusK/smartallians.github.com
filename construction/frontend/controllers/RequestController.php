@@ -424,10 +424,11 @@ class RequestController extends Controller
             $put_string = urldecode($put_string);
             $array_put = $this->parsingRequest($put_string);
 
-            $body = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+            $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+            $body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($body)));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($body), var_dump($bodyRaw)));
         //} else {
         //    return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         //}
