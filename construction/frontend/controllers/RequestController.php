@@ -422,7 +422,7 @@ class RequestController extends Controller
             $fh = fopen("php://input", 'r');
             $put_string = stream_get_contents($fh);
             $put_string = urldecode($put_string);
-            $array_put = $this->parsingRequest($put_string);
+            //$array_put = $this->parsingRequest($put_string);
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
             $body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
