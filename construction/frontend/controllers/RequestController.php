@@ -1,11 +1,19 @@
 <?php
 namespace frontend\controllers;
 
+use frontend\models\AdCategory;
+use frontend\models\PhotoAd;
 use frontend\models\Request;
 //use frontend\models\ResendVerificationEmailForm;
 //use frontend\models\UserAd;
 //use frontend\models\UserDesc;
 //use frontend\models\VerifyEmailForm;
+//use frontend\models\UserAd;
+//use frontend\models\UserCity;
+//use frontend\models\UserDesc;
+//use frontend\models\UserAd;
+//use frontend\models\UserCity;
+//use frontend\models\UserDesc;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -162,6 +170,8 @@ class RequestController extends Controller
                     ->all();
             }
 
+
+
             return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'success', 'message' => 'Успешно'));
         } else {
             return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
@@ -169,7 +179,205 @@ class RequestController extends Controller
 
     }
 
+/*    public function actionCreateAd()
+    {
+        // Is user a guest?
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
 
+        // if user profile is empty go to Homepage
+        $modelUserDesc = UserDesc::find()->where(['user_id' => Yii::$app->user->getId()])->one();
+        if (empty($modelUserDesc)) {
+            return $this->goHome();
+        }
+
+        // create new models for ad and photos
+        $modelUserAd = new UserAd();
+        $modelPhotoAd = new PhotoAd();
+
+        // get attbutes for Ad and Photos objects from Post request
+        if (Yii::$app->request->isAjax && $modelUserAd->load(Yii::$app->request->post()) && $modelPhotoAd->load(Yii::$app->request->post())) {
+            $modelPhotoAd->imageFiles = UploadedFile::getInstances($modelPhotoAd, 'imageFiles');
+            if ($modelPhotoAd->upload()) { // save ad photos
+                $modelUserAd->user_desc_id = $modelUserDesc->id;
+                $modelUserAd->status_id = UserAd::STATUS_ACTIVE; // default for new ad
+                $modelUserAd->created_at = time(); // updating Create time
+                $modelUserAd->updated_at = time(); // updating Update time
+
+                if ($modelUserAd->validate()) { // check new ad
+                    $transactionUserAd = \Yii::$app->db->beginTransaction();
+                    try {
+                        $flagUserAd = $modelUserAd->save(false); // insert new ad
+                        if ($flagUserAd == true) {
+                            $transactionUserAd->commit();
+
+                            //$modelPhotoAd->ad_id = $modelUserAd->id;
+                        } else {
+                            $transactionUserAd->rollBack();
+                            return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var1'));
+                        }
+                    } catch (Exception $ex) {
+                        $transactionUserAd->rollBack();
+                        return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var2'));
+                    }
+
+                    // Insert each new Photo in database
+                    foreach ($modelPhotoAd->arrayWebFilename as $file) {
+                        $transactionAdPhoto = \Yii::$app->db->beginTransaction();
+                        try {
+                            $modelPhotoAdFile = new PhotoAd();
+                            $modelPhotoAdFile->ad_id = $modelUserAd->id;
+                            $modelPhotoAdFile->created_at = time();
+                            $modelPhotoAdFile->updated_at = time();
+                            $modelPhotoAdFile->photo_path = '/uploads/PhotoAd/'.$file;
+                            //$modelPhotoAd->id = null;
+                            //$modelPhotoAd->isNewRecord = true;
+                            $flagPhotoAd = $modelPhotoAdFile->save(false); // insert
+
+                            if ($flagPhotoAd == true) {
+                                $transactionAdPhoto->commit();
+                            } else {
+                                $transactionAdPhoto->rollBack();
+                                return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше фото не может быть сохранено. var3'));
+                            }
+                        } catch (Exception $ex) {
+                            $transactionAdPhoto->rollBack();
+                            return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше фото не может быть сохранено. var4'));
+                        }
+                    }
+
+                    return Json::encode(array('status' => '1', 'type' => 'success', 'message' => 'Ваше объявление успешно сохранено.'));
+
+                } else {
+                    return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var5'.var_dump($modelUserAd->user_desc_id, $modelUserAd->status_id, $modelUserAd->created_at, $modelUserAd->updated_at, $modelUserAd->header, $modelUserAd->content, $modelUserAd->city_id, $modelUserAd->amount, $modelUserAd->category_id)));
+                }
+            } else {
+                return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var6'.$modelPhotoAd->msg));
+            }
+        } else {
+            // get cities and cxategories arrays for Select tags in Form
+            $cities = UserCity::find()
+                ->orderBy('city_name')
+                //->asArray()
+                ->all();
+            $categories = AdCategory::find()
+                ->orderBy('name')
+                //->asArray()
+                ->all();
+
+            // go to create ad form
+            return $this->render('EditeAd', [
+                'selectCity' => $cities,
+                'selectCategory' => $categories,
+                'modelUserAd' => $modelUserAd,
+                'modelPhotoAd' => $modelPhotoAd,
+            ]);
+        }
+    }
+*/
+/*    public function actionUpdateAd()
+    {
+        // check user is a guest
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        // if user profile is empty go to Homepage
+        $modelUserDesc = UserDesc::find()->where(['user_id' => Yii::$app->user->getId()])->one();
+        if (empty($modelUserDesc)) {
+            return $this->goHome();
+        }
+
+        // check input parametrs (id for ad) for PUT method
+        $nad = (preg_match("/^[0-9]*$/",Yii::$app->request->post('nad'))) ? Yii::$app->request->post('nad') : null;
+        if (is_null($nad)) return $this->goHome();
+
+        // check access to update your ads
+        $modelUserAdId = UserAd::find()->where(['AND', ['id' => $nad], ['user_desc_id' => $modelUserDesc->id], ['status_id' => UserAd::STATUS_ACTIVE]])->one();
+        if (empty($modelUserAdId)) {
+            return $this->goHome();
+        }
+
+        //$modelUserAd = new UserAd();
+        $modelPhotoAd = new PhotoAd();
+
+        // get attbutes for Ad and Photos objects from Post request
+        if (Yii::$app->request->isAjax && $modelUserAdId->load(Yii::$app->request->post()) && $modelPhotoAd->load(Yii::$app->request->post())) {
+            $modelPhotoAd->imageFiles = UploadedFile::getInstances($modelPhotoAd, 'imageFiles');
+            if ($modelPhotoAd->upload()) { //upload ad photos to the server
+                $modelUserAdId->updated_at = time(); // updating Update time fo ad
+
+                if ($modelUserAdId->validate()) {
+                    $transactionUserAd = \Yii::$app->db->beginTransaction();
+                    try {
+                        $flagUserAdDelete = PhotoAd::deleteAll(['ad_id' => $modelUserAdId->id]); // delete old record of photos in database
+                        $flagUserAdUpdate = $modelUserAdId->save(false); // update ad
+                        if ($flagUserAdUpdate && $flagUserAdDelete) {
+                            $transactionUserAd->commit();
+                        } else {
+                            $transactionUserAd->rollBack();
+                            return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var1'));
+                        }
+                    } catch (Exception $ex) {
+                        $transactionUserAd->rollBack();
+                        return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var2'));
+                    }
+
+                    // Insert each new Photo in database
+                    foreach ($modelPhotoAd->arrayWebFilename as $file) {
+                        $transactionAdPhoto = \Yii::$app->db->beginTransaction();
+                        try {
+                            $modelPhotoAdFile = new PhotoAd();
+                            $modelPhotoAdFile->ad_id = $modelUserAdId->id;
+                            $modelPhotoAdFile->created_at = time();
+                            $modelPhotoAdFile->updated_at = time();
+                            $modelPhotoAdFile->photo_path = '/uploads/PhotoAd/'.$file;
+                            //$modelPhotoAd->id = null;
+                            //$modelPhotoAd->isNewRecord = true;
+                            $flagPhotoAd = $modelPhotoAdFile->save(false);
+
+                            if ($flagPhotoAd == true) {
+                                $transactionAdPhoto->commit();
+                            } else {
+                                $transactionAdPhoto->rollBack();
+                                return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше фото не может быть сохранено. var3'));
+                            }
+                        } catch (Exception $ex) {
+                            $transactionAdPhoto->rollBack();
+                            return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше фото не может быть сохранено. var4'));
+                        }
+                    }
+
+                    return Json::encode(array('status' => '1', 'type' => 'success', 'message' => 'Ваше объявление успешно сохранено.'));
+
+                } else {
+                    return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var5'.var_dump($modelUserAd->user_desc_id, $modelUserAd->status_id, $modelUserAd->created_at, $modelUserAd->updated_at, $modelUserAd->header, $modelUserAd->content, $modelUserAd->city_id, $modelUserAd->amount, $modelUserAd->category_id)));
+                }
+            } else {
+                return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var6'.$modelPhotoAd->msg));
+            }
+        } else {
+            // get cities and categories arrays for Select tags in Form
+            $cities = UserCity::find()
+                ->orderBy('city_name')
+                //->asArray()
+                ->all();
+            $categories = AdCategory::find()
+                ->orderBy('name')
+                //->asArray()
+                ->all();
+
+            // go to the Update form
+            return $this->render('EditeAd', [
+                'selectCity' => $cities,
+                'selectCategory' => $categories,
+                'modelUserAd' => $modelUserAdId,
+                'modelPhotoAd' => $modelPhotoAd,
+            ]);
+        }
+    }
+*/
     /**
      * PUT, PATCH Method. Request table.
      * Update records by parameters
@@ -184,7 +392,7 @@ class RequestController extends Controller
         }
 
         $modelRequest = new Request();
-        if (Yii::$app->request->isAjax) {
+        //if (Yii::$app->request->isAjax) {
 
             $modelRequest->load(Yii::$app->request->post());
 
@@ -216,11 +424,13 @@ class RequestController extends Controller
             $put_string = urldecode($put_string);
             $array_put = $this->parsingRequest($put_string);
 
+            $body = json_decode(Yii::$app->getRequest()->getRawBody(), true);
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($array_put)));
-        } else {
-            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
-        }
+
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($array_put), var_dump($body)));
+        //} else {
+        //    return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
+        //}
 
     }
 
