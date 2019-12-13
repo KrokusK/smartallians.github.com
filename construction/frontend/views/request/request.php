@@ -213,7 +213,7 @@ $script = <<< JS
                    contentType: false,
                    processData: false,
                    enctype: 'multipart/form-data',
-                   data: form_data, //$(this).serialize(), 
+                   data: {"Request[address]":"test","Request[name]":"test","Request[description]":"test"}, //$(this).serialize(), 
                    //data: data, //$(this).serialize(),                     
                    type: 'put',                        
                    beforeSend: function() {
