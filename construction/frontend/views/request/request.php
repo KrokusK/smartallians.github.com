@@ -213,7 +213,7 @@ $script = <<< JS
                    //contentType: false,
                    contentType: 'application/json',
                    processData: false,
-                   data: {"method":"PUT","status":"1","type":"success","message":"Успешно"},
+                   data: JSON.stringify({username: 'username',password: 'password'}),
                    //enctype: 'multipart/form-data',
                    //data: {"Request[address]":"test","Request[name]":"test","Request[description]":"test"}, //$(this).serialize(),
                    //data: form_data, //$(this).serialize(), 
