@@ -393,10 +393,17 @@ class RequestController extends Controller
         }
 
         $modelRequest = new Request();
-        $modelRequest->description = 'qqq';
+        $modelRequest->description = '';
+        //foreach($userDatas as $key => $value) {
+        //    if (property_exists($this, $key)) {
+        //        $this->$key = $value;
+        //    }
+        //}
+
+
         //if (Yii::$app->request->isAjax) {
 
-            $modelRequest->load(Yii::$app->request->post());
+            //$modelRequest->load(Yii::$app->request->post());
 
             // check input parametrs
             //$cit = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cit'))) ? Yii::$app->request->get('cit') : null;
@@ -427,24 +434,9 @@ class RequestController extends Controller
             //$array_put = $this->parsingRequestFormData($put_string);
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+            //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
             //$modelRequest->setAttributes($bodyRaw);
-
-            $name = '';
-            $value = '';
-            if (is_array($bodyRaw)) {
-                foreach ($bodyRaw as $name => $value) {
-                    $pos_begin = strpos($name, '[') + 1;
-                    $pos_end = strpos($name, ']');
-                    $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                    //$value = substr($value, 1, strlen($value)-2);
-                    if (isset($modelRequest->$name)) {
-                        $modelRequest->$name = $value;
-                    } elseif ($safeOnly) {
-                        // do nothig
-                    }
-                }
-            }
 
             //array(3) { ["Request[address]"]=> string(4) "test" ["Request[name]"]=> string(4) "test" ["Request[description]"]=> string(4) "test" }
             // yiisoft/yii2/base/Model.php
@@ -460,8 +452,22 @@ class RequestController extends Controller
             //    }
             //}
 
+            $name = '';
+            $value = '';
+            if (is_array($bodyRaw)) {
+                foreach ($bodyRaw as $name => $value) {
+                    $pos_begin = strpos($name, '[') + 1;
+                    $pos_end = strpos($name, ']');
+                    $name = substr($name, $pos_begin, $pos_end-$pos_begin);
+                    //if (isset($modelRequest->$name)) {
+                    //    $modelRequest->$name = $value;
+                    //}
+                    if (property_exists($modelRequest, >$name)) {
+                        $modelRequest->$name = $value;
+                    }
+                }
+            }
 
-            //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
 
             return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', $name, $value, $modelRequest->address, var_dump($bodyRaw),  var_dump(ArrayHelper::toArray($modelRequest))));
