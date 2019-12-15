@@ -393,13 +393,6 @@ class RequestController extends Controller
         }
 
         $modelRequest = new Request();
-        $modelRequest->description = '';
-        //foreach($userDatas as $key => $value) {
-        //    if (property_exists($this, $key)) {
-        //        $this->$key = $value;
-        //    }
-        //}
-
 
         //if (Yii::$app->request->isAjax) {
 
@@ -454,9 +447,6 @@ class RequestController extends Controller
                 }
             }
 
-
-            // var_dump(ArrayHelper::toArray($modelRequest)
-            // , $modelRequest->address
             return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
         //} else {
         //    return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
