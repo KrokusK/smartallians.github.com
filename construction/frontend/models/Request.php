@@ -43,6 +43,17 @@ class Request extends \yii\db\ActiveRecord
                     return $statusesRequestIdStr;
                 },
                 'message' => 'Статус заявки не выбран из списка'],
+            [['city_id'], 'in', 'range' =>
+                function ( $attribute, $params ) {
+                    $statusesCitesId = City::find()->select(['id'])->asArray()->all();
+                    $statusesCitesIdStr = [];
+                    foreach ($statusesCitesId as $item) {
+                        array_push($statusesCitesIdStr, "{$item['id']}");
+                    }
+                    return $statusesCitesIdStr;
+                },
+                'message' => 'Город не выбран из списка'],
+            [['address'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             /*
             [['user_desc_id', 'status_id', 'header', 'content', 'city_id', 'amount', 'category_id'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['status_id'], 'in', 'range' =>
