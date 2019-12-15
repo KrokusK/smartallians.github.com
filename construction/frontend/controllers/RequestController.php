@@ -21,7 +21,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
-use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 //use common\models\LoginForm;
 //use frontend\models\PasswordResetRequestForm;
 //use frontend\models\ResetPasswordForm;
