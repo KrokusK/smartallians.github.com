@@ -33,6 +33,16 @@ class Request extends \yii\db\ActiveRecord
 
         return [
             [['id', 'status_request_id', 'address', 'name', 'description'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['status_request_id'], 'in', 'range' =>
+                function ( $attribute, $params ) {
+                    $statusesRequestId = StatusRequest::find()->select(['id'])->asArray()->all();
+                    $statusesRequestIdStr = [];
+                    foreach ($statusesRequestId as $item) {
+                        array_push($statusesRequestIdStr, "{$item['id']}");
+                    }
+                    return $statusesRequestIdStr;
+                },
+                'message' => 'Статус заявки не выбран из списка'],
             /*
             [['user_desc_id', 'status_id', 'header', 'content', 'city_id', 'amount', 'category_id'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['status_id'], 'in', 'range' =>
