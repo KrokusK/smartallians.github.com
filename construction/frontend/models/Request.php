@@ -32,7 +32,7 @@ class Request extends \yii\db\ActiveRecord
     {
 
         return [
-            [['address', 'name', 'description'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['id', 'status_request_id', 'address', 'name', 'description'], 'required', 'message' => 'Поле должно быть заполнено'],
             /*
             [['user_desc_id', 'status_id', 'header', 'content', 'city_id', 'amount', 'category_id'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['status_id'], 'in', 'range' =>
