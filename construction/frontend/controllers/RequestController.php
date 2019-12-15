@@ -438,22 +438,7 @@ class RequestController extends Controller
 
             //$modelRequest->setAttributes($bodyRaw);
 
-            //array(3) { ["Request[address]"]=> string(4) "test" ["Request[name]"]=> string(4) "test" ["Request[description]"]=> string(4) "test" }
-            // yiisoft/yii2/base/Model.php
-            //if (is_array($value)) {
-            //    $attributes = array_flip($safeOnly ? $this->safeAttributes() : $this->attributes());
-            //    foreach ($values as $name => $value) {
-            //        if (isset($attributes[$name])) {
-            //            $this->$name = $value;
-            //        } elseif ($safeOnly) {
-            //            $this->onUnsafeAttribute($name, $value);
-            //        }
-            //
-            //    }
-            //}
-
-            $name = '';
-            $value = '';
+            // example: yiisoft/yii2/base/Model.php
             if (is_array($bodyRaw)) {
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[') + 1;
@@ -472,7 +457,7 @@ class RequestController extends Controller
 
             // var_dump(ArrayHelper::toArray($modelRequest)
             // , $modelRequest->address
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', $name, $value, $modelRequest->address, var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
         //} else {
         //    return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         //}
