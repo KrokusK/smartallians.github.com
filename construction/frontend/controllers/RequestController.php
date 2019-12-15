@@ -426,18 +426,17 @@ class RequestController extends Controller
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
 
-            $modelRequest->setAttributes($bodyRaw);
-            //if (is_array($value)) {
-            //
-            //    foreach ($values as $name => $value) {
-            //        if (isset($attributes[$name])) {
-            //            $this->$name = $value;
-            //        } elseif ($safeOnly) {
-            //            $this->onUnsafeAttribute($name, $value);
-            //        }
-            //
-            //    }
-            //}
+            //$modelRequest->setAttributes($bodyRaw);
+
+            if (is_array($bodyRaw)) {
+                foreach ($bodyRaw as $name => $value) {
+                    if (isset($modelRequest->$name)) {
+                        $modelRequest->$name = $value;
+                    } elseif ($safeOnly) {
+                        // do nothig
+                    }
+                }
+            }
 
             //array(3) { ["Request[address]"]=> string(4) "test" ["Request[name]"]=> string(4) "test" ["Request[description]"]=> string(4) "test" }
             // yiisoft/yii2/base/Model.php
