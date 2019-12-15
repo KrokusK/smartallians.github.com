@@ -432,8 +432,8 @@ class RequestController extends Controller
             $value = '';
             if (is_array($bodyRaw)) {
                 foreach ($bodyRaw as $name => $value) {
-                    $name = substr($name, 1, strlen($name)-2);
-                    $value = substr($value, 1, strlen($value)-2);
+                    //$name = substr($name, 1, strlen($name)-2);
+                    //$value = substr($value, 1, strlen($value)-2);
                     if (isset($modelRequest->$name)) {
                         $modelRequest->$name = $value;
                     } elseif ($safeOnly) {
