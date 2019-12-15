@@ -422,7 +422,7 @@ class RequestController extends Controller
             $fh = fopen("php://input", 'r');
             $put_string = stream_get_contents($fh);
             $put_string = urldecode($put_string);
-            //$array_put = $this->parsingRequest($put_string);
+            //$array_put = $this->parsingRequestFormData($put_string);
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
 
@@ -432,7 +432,9 @@ class RequestController extends Controller
             $value = '';
             if (is_array($bodyRaw)) {
                 foreach ($bodyRaw as $name => $value) {
-                    //$name = substr($name, 1, strlen($name)-2);
+                    $pos_begin = strpos($name, '[');
+                    $pos_end = strpos($name, ']');
+                    $name = substr($name, 0, $pos_end-$pos_begin);
                     //$value = substr($value, 1, strlen($value)-2);
                     if (isset($modelRequest->$name)) {
                         $modelRequest->$name = $value;
@@ -527,7 +529,7 @@ class RequestController extends Controller
      *
      * @return array
      */
-    public function parsingRequest($put_string)
+    public function parsingRequestFormData($put_string)
     {
         //            //$put_string = json_decode($put_string_json, TRUE);
         //            //$put_string=Yii::$app->request->getBodyParams();
