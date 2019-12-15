@@ -462,8 +462,10 @@ class RequestController extends Controller
                     //if (isset($modelRequest->$name)) {
                     //    $modelRequest->$name = $value;
                     //}
-                    if (property_exists($modelRequest, $name)) {
+                    //if (property_exists($modelRequest, $name)) {
+                    if ($modelRequest->hasAttribute($name)) {
                         $modelRequest->$name = $value;
+                    }
                     }
                 }
             }
