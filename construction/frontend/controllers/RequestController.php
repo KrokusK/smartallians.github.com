@@ -1,8 +1,8 @@
 <?php
 namespace frontend\controllers;
 
-use frontend\models\AdCategory;
-use frontend\models\PhotoAd;
+//use frontend\models\AdCategory;
+//use frontend\models\PhotoAd;
 use frontend\models\Request;
 //use frontend\models\ResendVerificationEmailForm;
 //use frontend\models\UserAd;
@@ -393,6 +393,7 @@ class RequestController extends Controller
         }
 
         $modelRequest = new Request();
+        $modelRequest->description = 'qqq';
         //if (Yii::$app->request->isAjax) {
 
             $modelRequest->load(Yii::$app->request->post());
