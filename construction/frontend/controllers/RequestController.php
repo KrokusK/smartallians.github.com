@@ -395,6 +395,7 @@ class RequestController extends Controller
         $modelRequest = new Request();
 
         //if (Yii::$app->request->isAjax) {
+        //}
 
             //$modelRequest->load(Yii::$app->request->post());
 
@@ -447,10 +448,11 @@ class RequestController extends Controller
                 }
             }
 
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
-        //} else {
-        //    return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
-        //}
+            if ($modelRequest->validate()) {
+                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+            } else {
+                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
+            }
 
     }
 
