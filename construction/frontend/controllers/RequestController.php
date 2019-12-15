@@ -434,7 +434,7 @@ class RequestController extends Controller
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[');
                     $pos_end = strpos($name, ']');
-                    $name = substr($name, 0, $pos_end-$pos_begin);
+                    $name = substr($name, $pos_begin, $pos_end-$pos_begin);
                     //$value = substr($value, 1, strlen($value)-2);
                     if (isset($modelRequest->$name)) {
                         $modelRequest->$name = $value;
