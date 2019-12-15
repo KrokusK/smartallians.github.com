@@ -466,14 +466,13 @@ class RequestController extends Controller
                     if ($modelRequest->hasAttribute($name)) {
                         $modelRequest->$name = $value;
                     }
-                    }
                 }
             }
 
 
             // var_dump(ArrayHelper::toArray($modelRequest)
             // , $modelRequest->address
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', $name, $value, var_dump($bodyRaw))));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', $name, $value, $modelRequest->address, var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
         //} else {
         //    return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         //}
