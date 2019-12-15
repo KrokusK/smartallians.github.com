@@ -471,8 +471,8 @@ class RequestController extends Controller
             }
 
 
-
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', $name, $value, $modelRequest->address, var_dump($bodyRaw),  var_dump(ArrayHelper::toArray($modelRequest))));
+            // var_dump(ArrayHelper::toArray($modelRequest)
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', $name, $value, $modelRequest->address, var_dump($bodyRaw))));
         //} else {
         //    return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         //}
