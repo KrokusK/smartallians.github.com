@@ -397,7 +397,6 @@ class RequestController extends Controller
         //if (Yii::$app->request->isAjax) {
         //}
 
-            //$modelRequest->load(Yii::$app->request->post());
 
             // check input parametrs
             //$cit = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cit'))) ? Yii::$app->request->get('cit') : null;
@@ -432,6 +431,7 @@ class RequestController extends Controller
 
             //$modelRequest->setAttributes($bodyRaw);
 
+            // load attributes in Request object
             // example: yiisoft/yii2/base/Model.php
             if (is_array($bodyRaw)) {
                 foreach ($bodyRaw as $name => $value) {
@@ -446,6 +446,8 @@ class RequestController extends Controller
                         $modelRequest->$name = $value;
                     }
                 }
+
+
             }
 
             if ($modelRequest->validate()) {
