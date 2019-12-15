@@ -432,7 +432,7 @@ class RequestController extends Controller
             $value = '';
             if (is_array($bodyRaw)) {
                 foreach ($bodyRaw as $name => $value) {
-                    $pos_begin = strpos($name, '[');
+                    $pos_begin = strpos($name, '[') + 1;
                     $pos_end = strpos($name, ']');
                     $name = substr($name, $pos_begin, $pos_end-$pos_begin);
                     //$value = substr($value, 1, strlen($value)-2);
