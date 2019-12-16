@@ -25,7 +25,7 @@ class City extends \yii\db\ActiveRecord
     {
 
         return [
-            [['name'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['name', 'region_id'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
             [['region_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {

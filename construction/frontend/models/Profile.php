@@ -25,7 +25,7 @@ class Profile extends \yii\db\ActiveRecord
     {
 
         return [
-            [['name'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['name', 'user_id', 'kind_user_id', 'type_job_id', 'inn', 'site', 'avatar', 'updated_at', 'created_at'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
             [['user_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
@@ -57,7 +57,7 @@ class Profile extends \yii\db\ActiveRecord
                     return $statusesTypeJobIdStr;
                 },
                 'message' => 'Форма работы не выбрана из списка'],
-            [['FIO'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
+            [['fio'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['firm_name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['inn'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['site'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
