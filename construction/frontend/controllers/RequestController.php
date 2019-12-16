@@ -245,15 +245,19 @@ class RequestController extends Controller
                         //->with('adPhotos')
                         ->one();
 
-                    // update in the properties in the Request object
-                    foreach ($bodyRaw as $name => $value) {
-                        $pos_begin = strpos($name, '[') + 1;
-                        $pos_end = strpos($name, ']');
-                        $name = substr($name, $pos_begin, $pos_end-$pos_begin);
+                    if (!empty($modelRequest)) {
+                        // update in the properties in the Request object
+                        foreach ($bodyRaw as $name => $value) {
+                            $pos_begin = strpos($name, '[') + 1;
+                            $pos_end = strpos($name, ']');
+                            $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                        if ($name != 'id') $modelRequest->$name = $value;
+                            if ($name != 'id') $modelRequest->$name = $value;
 
-                        $modelRequest->updated_at = time();
+                            $modelRequest->updated_at = time();
+                        }
+                    } else {
+                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
                 } else {
                     $modelRequest = new Request();
@@ -352,23 +356,26 @@ class RequestController extends Controller
             }
         }
 
-        $transaction = \Yii::$app->db->beginTransaction();
-        try {
-            $flag = $modelRequest->delete($bodyRaw['Request[id]']); // delete
+        if (!empty($modelRequest)) {
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                $flag = $modelRequest->delete($bodyRaw['Request[id]']); // delete
 
-            if ($flag == true) {
-                $transaction->commit();
-            } else {
+                if ($flag == true) {
+                    $transaction->commit();
+                } else {
+                    $transaction->rollBack();
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                }
+            } catch (Exception $ex) {
                 $transaction->rollBack();
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
             }
-        } catch (Exception $ex) {
-            $transaction->rollBack();
+
+            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно удалена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+        } else {
             return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
         }
-
-        return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно удалена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
-
         //}
     }
 
