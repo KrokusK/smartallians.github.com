@@ -1,7 +1,7 @@
 <?php
 namespace frontend\controllers;
 
-use frontend\models\StatusRequest;
+use frontend\models\StatusResponse;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -15,7 +15,7 @@ use yii\helpers\Html;
 /**
  * Site controller
  */
-class StatusRequestController extends Controller
+class StatusResponseController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -66,7 +66,7 @@ class StatusRequestController extends Controller
 
 
     /**
-     * GET Method. status_request table.
+     * GET Method. status_response table.
      * Get records by parameters
      *
      * @return json
@@ -80,7 +80,7 @@ class StatusRequestController extends Controller
 
         //if (Yii::$app->request->isAjax) {
         //GET data from GET request
-        $model = new StatusRequest();
+        $model = new StatusResponse();
         if ($model->load(Yii::$app->request->get())) {
 
             // Search record by parametrs in the database
@@ -88,18 +88,18 @@ class StatusRequestController extends Controller
             //foreach (ArrayHelper::toArray($model) as $key => $value) {
             //    array_push($sqlParametrs, [$key => $value]);
             //}
-            $query = StatusRequest::find();
+            $query = StatusResponse::find();
             foreach (ArrayHelper::toArray($model) as $key => $value) {
                 $query->andWhere([$key => $value]);
             }
 
-            $modelStatusRequest = $query->orderBy('name')->all();
+            $modelStatusResponse = $query->orderBy('name')->all();
 
-            // get properties from StatusRequest object
-            $StatusRequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            array_push($StatusRequestResponse, ArrayHelper::toArray($modelStatusRequest));
+            // get properties from StatusResponse object
+            $StatusResponseResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($StatusResponseResponse, ArrayHelper::toArray($modelStatusResponse));
 
-            return Json::encode($StatusRequestResponse);
+            return Json::encode($StatusResponseResponse);
 
         }
         //}
@@ -107,7 +107,7 @@ class StatusRequestController extends Controller
 
 
     /**
-     * POST Method. status_request table.
+     * POST Method. status_response table.
      * Insert records by parameters
      *
      * @return json
@@ -130,24 +130,24 @@ class StatusRequestController extends Controller
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
+        //$modelResponse->setAttributes($bodyRaw);
 
-        // load attributes in Request object
+        // load attributes in Response object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('StatusRequest[id]', $bodyRaw)) {
+            if (array_key_exists('StatusResponse[id]', $bodyRaw)) {
                 return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Недопустимый параметр: id'));
             } else {
-                $modelStatusRequest = new StatusRequest();
+                $modelStatusResponse = new StatusResponse();
 
-                // fill in the properties in the StatusRequest object
+                // fill in the properties in the StatusResponse object
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[') + 1;
                     $pos_end = strpos($name, ']');
                     $name = substr($name, $pos_begin, $pos_end-$pos_begin);
 
-                    if ($modelStatusRequest->hasAttribute($name)) {
-                        if ($name != 'id') $modelStatusRequest->$name = $value;
+                    if ($modelStatusResponse->hasAttribute($name)) {
+                        if ($name != 'id') $modelStatusResponse->$name = $value;
                     }
                 }
             }
@@ -155,23 +155,23 @@ class StatusRequestController extends Controller
 
         }
 
-        if ($modelStatusRequest->validate()) {
+        if ($modelStatusResponse->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelStatusRequest->save(false); // insert
+                $flag = $modelStatusResponse->save(false); // insert
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть сохранен'));
+                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отклика не может быть сохранен'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть сохранен'));
+                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отклика не может быть сохранен'));
             }
 
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Статус заявки успешно сохранен'));
+            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Статус отклика успешно сохранен'));
         } else {
             return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
         }
@@ -203,46 +203,46 @@ class StatusRequestController extends Controller
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
             //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-            //$modelRequest->setAttributes($bodyRaw);
+            //$modelResponse->setAttributes($bodyRaw);
 
-            // load attributes in Request object
+            // load attributes in Response object
             // example: yiisoft/yii2/base/Model.php
             if (is_array($bodyRaw)) {
-                if (array_key_exists('StatusRequest[id]', $bodyRaw)) {
+                if (array_key_exists('StatusResponse[id]', $bodyRaw)) {
                     // check input parametrs
-                    if (!preg_match("/^[0-9]*$/",$bodyRaw['StatusRequest[id]'])) {
+                    if (!preg_match("/^[0-9]*$/",$bodyRaw['StatusResponse[id]'])) {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
 
                     // Search record by id in the database
-                    $query = StatusRequest::find()
-                        ->where(['id' => $bodyRaw['StatusRequest[id]']]);
+                    $query = StatusResponse::find()
+                        ->where(['id' => $bodyRaw['StatusResponse[id]']]);
 
-                    $modelStatusRequest = $query->orderBy('name')->one();
+                    $modelStatusResponse = $query->orderBy('name')->one();
 
-                    if (!empty($modelStatusRequest)) {
-                        // update in the properties in the StatusRequest object
+                    if (!empty($modelStatusResponse)) {
+                        // update in the properties in the StatusResponse object
                         foreach ($bodyRaw as $name => $value) {
                             $pos_begin = strpos($name, '[') + 1;
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                            if ($name != 'id') $modelStatusRequest->$name = $value;
+                            if ($name != 'id') $modelStatusResponse->$name = $value;
                         }
                     } else {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
                 } else {
-                    $modelStatusRequest = new StatusRequest();
+                    $modelStatusResponse = new StatusResponse();
 
-                    // fill in the properties in the StatusRequest object
+                    // fill in the properties in the StatusResponse object
                     foreach ($bodyRaw as $name => $value) {
                         $pos_begin = strpos($name, '[') + 1;
                         $pos_end = strpos($name, ']');
                         $name = substr($name, $pos_begin, $pos_end-$pos_begin);
 
-                        if ($modelStatusRequest->hasAttribute($name)) {
-                            if ($name != 'id') $modelStatusRequest->$name = $value;
+                        if ($modelStatusResponse->hasAttribute($name)) {
+                            if ($name != 'id') $modelStatusResponse->$name = $value;
                         }
                     }
                 }
@@ -250,23 +250,23 @@ class StatusRequestController extends Controller
 
             }
 
-            if ($modelStatusRequest->validate()) {
+            if ($modelStatusResponse->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flag = $modelStatusRequest->save(false); // insert
+                    $flag = $modelStatusResponse->save(false); // insert
 
                     if ($flag == true) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть сохранен (обновлена)'));
+                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отклика не может быть сохранен (обновлена)'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть сохранен (обновлен)'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отклика не может быть сохранен (обновлен)'));
                 }
 
-                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Статус заявки успешно сохранен (обновлен)'));
+                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Статус отклика успешно сохранен (обновлен)'));
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
@@ -275,7 +275,7 @@ class StatusRequestController extends Controller
 
 
     /**
-     * DELETE Method. Request table.
+     * DELETE Method. Response table.
      * Delete records by parameters
      *
      * @return json
@@ -298,48 +298,45 @@ class StatusRequestController extends Controller
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
+        //$modelResponse->setAttributes($bodyRaw);
 
-        // load attributes in Request object
+        // load attributes in Response object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('StatusRequest[id]', $bodyRaw)) {
+            if (array_key_exists('StatusResponse[id]', $bodyRaw)) {
                 // check input parametrs
-                if (!preg_match("/^[0-9]*$/",$bodyRaw['StatusRequest[id]'])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw['StatusResponse[id]'])) {
                     return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $query = StatusRequest::find()
-                    ->where(['id' => $bodyRaw['StatusRequest[id]']]);
+                $query = StatusResponse::find()
+                    ->where(['id' => $bodyRaw['StatusResponse[id]']]);
 
-                $modelStatusRequest = $query->orderBy('name')->one();
+                $modelStatusResponse = $query->orderBy('name')->one();
             }
         }
 
-        if (!empty($modelStatusRequest)) {
+        if (!empty($modelStatusResponse)) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelStatusRequest->delete($bodyRaw['StatusRequest[id]']); // delete
+                $flag = $modelStatusResponse->delete($bodyRaw['StatusResponse[id]']); // delete
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть удален'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отклика не может быть удален'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть удален'));
+                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отклика не может быть удален'));
             }
 
-            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Статус заявки успешно удален'));
+            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Статус отклика успешно удален'));
         } else {
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть удален'));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отклика не может быть удален'));
         }
-
-
-
         //}
     }
 
