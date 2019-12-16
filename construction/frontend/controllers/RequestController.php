@@ -437,7 +437,7 @@ class RequestController extends Controller
             if (is_array($bodyRaw)) {
                 if (array_key_exists('Request[id]', $bodyRaw)) {
                     $query = Request::find()
-                        ->where(['id' => $modelRequest->id]);
+                        ->where(['id' => $bodyRaw['Request[id]']]);
                     //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
 
                     $modelRequest = $query->orderBy('created_at')
