@@ -434,6 +434,8 @@ class RequestController extends Controller
                         $name = substr($name, $pos_begin, $pos_end-$pos_begin);
 
                         if ($name != 'id') $modelRequest->$name = $value;
+
+                        $modelRequest->updated_at = time();
                     }
                 } else {
                     $modelRequest = new Request();
@@ -449,6 +451,9 @@ class RequestController extends Controller
                         //if (property_exists($modelRequest, $name)) {
                         if ($modelRequest->hasAttribute($name)) {
                             if ($name != 'id') $modelRequest->$name = $value;
+
+                            $modelRequest->created_at = time();
+                            $modelRequest->updated_at = time();
                         }
                     }
                 }
