@@ -392,35 +392,8 @@ class RequestController extends Controller
         if (Yii::$app->user->isGuest) {
             //return $this->goHome();
         }
-
-
-
+        
         //if (Yii::$app->request->isAjax) {
-        //}
-
-
-            // check input parametrs
-            //$cit = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cit'))) ? Yii::$app->request->get('cit') : null;
-            //$cat = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cat'))) ? Yii::$app->request->get('cat') : null;
-            //$ser = (preg_match("/^[a-zA-Z0-9]*$/",Yii::$app->request->get('ser'))) ? Yii::$app->request->get('ser') : null;
-
-            // select user ads by */*/* parametrs
-            /*if (false) {
-                // something
-            } else {
-                $query = Request::find();
-                //$query = Request::find()
-                //    ->where(['AND', ['city_id' => $var1], ['user_desc_id'=> $var2]]);
-
-                $requestList = $query->orderBy('created_at')
-                    //->offset($pagination->offset)
-                    //->limit($pagination->limit)
-                    //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
-                    //->with('adPhotos')
-                    ->all();
-            }
-            */
-
             //GET data from body request
             //Yii::$app->request->getBodyParams()
             $fh = fopen("php://input", 'r');
@@ -442,6 +415,7 @@ class RequestController extends Controller
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
 
+                    // Search record by id in the database
                     $query = Request::find()
                         ->where(['id' => $bodyRaw['Request[id]']]);
                     //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
@@ -453,6 +427,7 @@ class RequestController extends Controller
                         //->with('adPhotos')
                         ->one();
 
+                    // update in the properties in the Request object
                     foreach ($bodyRaw as $name => $value) {
                         $pos_begin = strpos($name, '[') + 1;
                         $pos_end = strpos($name, ']');
@@ -463,6 +438,7 @@ class RequestController extends Controller
                 } else {
                     $modelRequest = new Request();
 
+                    // fill in the properties in the Request object
                     foreach ($bodyRaw as $name => $value) {
                         $pos_begin = strpos($name, '[') + 1;
                         $pos_end = strpos($name, ']');
@@ -485,7 +461,7 @@ class RequestController extends Controller
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
-
+        //}
     }
 
 
