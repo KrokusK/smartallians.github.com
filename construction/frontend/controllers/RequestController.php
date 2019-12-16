@@ -104,30 +104,14 @@ class RequestController extends Controller
         }
 
         //if (Yii::$app->request->isAjax) {
-        //GET data from body request
-        //Yii::$app->request->getBodyParams()
-        $fh = fopen("php://input", 'r');
-        $put_string = stream_get_contents($fh);
-        $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
+        //GET data from GET request
+        $model = new Request();
+        if ($model->load(Yii::$app->request->get())) {
 
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
-
-        //$modelRequest->setAttributes($bodyRaw);
-
-        // load attributes in Request object
-        // example: yiisoft/yii2/base/Model.php
-        if (is_array($bodyRaw)) {
-            if (array_key_exists('Request[id]', $bodyRaw)) {
-                // check input parametrs
-                if (!preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
-                }
 
                 // Search record by id in the database
                 $query = Request::find()
-                    ->where(['id' => $bodyRaw['Request[id]']]);
+                    ->where(['id' => $model->id]);
                 //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
 
                 $modelRequest = $query->orderBy('created_at')
@@ -139,16 +123,12 @@ class RequestController extends Controller
 
                 // get properties from Request object
                 $RequestResponse = array('method' => 'PUT', 'status' => '0', 'type' => 'success');
-                foreach ($bodyRaw as $name => $value) {
-                    $pos_begin = strpos($name, '[') + 1;
-                    $pos_end = strpos($name, ']');
-                    $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-
-                    array_push($RequestResponse, array($name => $value));
+                foreach ($modelRequest as $property => $value) {  
+                    array_push($RequestResponse, array($modelRequest->$property => $modelRequest->$value));
                 }
-            }
 
-            return Json::encode($RequestResponse);
+                return Json::encode($RequestResponse);
+
         }
         //}
     }
