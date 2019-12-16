@@ -437,7 +437,7 @@ class RequestController extends Controller
             if (is_array($bodyRaw)) {
                 if (array_key_exists('Request[id]', $bodyRaw)) {
                     // check input parametrs
-                    if (preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
+                    if (!preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
 
