@@ -392,7 +392,7 @@ class RequestController extends Controller
         if (Yii::$app->user->isGuest) {
             //return $this->goHome();
         }
-        
+
         //if (Yii::$app->request->isAjax) {
             //GET data from body request
             //Yii::$app->request->getBodyParams()

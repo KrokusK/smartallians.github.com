@@ -26,6 +26,7 @@ class Region extends \yii\db\ActiveRecord
 
         return [
             [['name'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
             [['name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
         ];
 
