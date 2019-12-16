@@ -4,6 +4,7 @@ namespace frontend\controllers;
 //use frontend\models\AdCategory;
 //use frontend\models\PhotoAd;
 use frontend\models\Request;
+use frontend\models\StatusRequest;
 //use frontend\models\ResendVerificationEmailForm;
 //use frontend\models\UserAd;
 //use frontend\models\UserDesc;

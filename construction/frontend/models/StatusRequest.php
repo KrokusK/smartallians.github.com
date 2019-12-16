@@ -25,7 +25,7 @@ class StatusRequest extends \yii\db\ActiveRecord
     {
 
         return [
-            [['status_request_id', 'city_id', 'address', 'name', 'description'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['name'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
         ];
 
