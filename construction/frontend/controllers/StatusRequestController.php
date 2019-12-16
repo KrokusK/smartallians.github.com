@@ -221,13 +221,17 @@ class StatusRequestController extends Controller
 
                     $modelStatusRequest = $query->orderBy('name')->one();
 
-                    // update in the properties in the StatusRequest object
-                    foreach ($bodyRaw as $name => $value) {
-                        $pos_begin = strpos($name, '[') + 1;
-                        $pos_end = strpos($name, ']');
-                        $name = substr($name, $pos_begin, $pos_end-$pos_begin);
+                    if (!empty($modelStatusRequest)) {
+                        // update in the properties in the StatusRequest object
+                        foreach ($bodyRaw as $name => $value) {
+                            $pos_begin = strpos($name, '[') + 1;
+                            $pos_end = strpos($name, ']');
+                            $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                        if ($name != 'id') $modelStatusRequest->$name = $value;
+                            if ($name != 'id') $modelStatusRequest->$name = $value;
+                        }
+                    } else {
+                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
                 } else {
                     $modelStatusRequest = new StatusRequest();
