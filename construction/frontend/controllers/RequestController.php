@@ -111,7 +111,7 @@ class RequestController extends Controller
             // Search record by parametrs in the database
             $sqlParametrs = array(['AND']);
             foreach (ArrayHelper::toArray($model) as $key => $value) {
-                array_push($sqlParametrs, array($key => $value));
+                array_push($sqlParametrs, [$key => $value]);
             }
             $query = Request::find()
                 ->where($sqlParametrs);
