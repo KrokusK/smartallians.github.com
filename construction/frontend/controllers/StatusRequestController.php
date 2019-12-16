@@ -149,9 +149,6 @@ class StatusRequestController extends Controller
 
                     if ($modelStatusRequest->hasAttribute($name)) {
                         if ($name != 'id') $modelStatusRequest->$name = $value;
-
-                        $modelStatusRequest->created_at = time();
-                        $modelStatusRequest->updated_at = time();
                     }
                 }
             }
@@ -231,8 +228,6 @@ class StatusRequestController extends Controller
                         $name = substr($name, $pos_begin, $pos_end-$pos_begin);
 
                         if ($name != 'id') $modelStatusRequest->$name = $value;
-
-                        $modelStatusRequest->updated_at = time();
                     }
                 } else {
                     $modelStatusRequest = new StatusRequest();
@@ -245,9 +240,6 @@ class StatusRequestController extends Controller
 
                         if ($modelStatusRequest->hasAttribute($name)) {
                             if ($name != 'id') $modelStatusRequest->$name = $value;
-
-                            $modelStatusRequest->created_at = time();
-                            $modelStatusRequest->updated_at = time();
                         }
                     }
                 }
