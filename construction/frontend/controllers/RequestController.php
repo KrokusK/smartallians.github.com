@@ -117,8 +117,8 @@ class RequestController extends Controller
                 //Html::encode($key." => ".$value)
             }
             $query = Request::find()
-                ->where(['period' => 1000000]);
-                //->where($sqlParametrs);
+                //->where(['period' => 1000000]);
+                ->where($sqlParametrs);
             //->where(['id' => $model->id]);
             //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
 
