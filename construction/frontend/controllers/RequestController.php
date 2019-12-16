@@ -111,7 +111,8 @@ class RequestController extends Controller
 
                 // Search record by id in the database
                 $query = Request::find()
-                    ->where(['id' => $model->id]);
+                    ->where(['period' => 1000000]);
+                    //->where(['id' => $model->id]);
                 //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
 
                 $modelRequest = $query->orderBy('created_at')
@@ -123,7 +124,7 @@ class RequestController extends Controller
 
                 // get properties from Request object
                 $RequestResponse = array('method' => 'PUT', 'status' => '0', 'type' => 'success');
-                foreach ($modelRequest as $property => $value) {  
+                foreach ($modelRequest as $property => $value) {
                     array_push($RequestResponse, array($property => $value));
                 }
 
