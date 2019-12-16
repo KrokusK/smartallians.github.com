@@ -129,7 +129,6 @@ class RequestController extends Controller
             // get properties from Request object
             $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
             array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
-            array_push($RequestResponse, var_dump($sqlParametrs));
 
             return Json::encode($RequestResponse);
 
