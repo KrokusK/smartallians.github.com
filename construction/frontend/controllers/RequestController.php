@@ -156,6 +156,7 @@ class RequestController extends Controller
                 // fill in the properties in the Request object
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[') + 1;
+                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'request') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                     $pos_end = strpos($name, ']');
                     $name = substr($name, $pos_begin, $pos_end-$pos_begin);
                     //if (isset($modelRequest->$name)) {
@@ -249,6 +250,7 @@ class RequestController extends Controller
                         // update in the properties in the Request object
                         foreach ($bodyRaw as $name => $value) {
                             $pos_begin = strpos($name, '[') + 1;
+                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'request') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
@@ -265,6 +267,7 @@ class RequestController extends Controller
                     // fill in the properties in the Request object
                     foreach ($bodyRaw as $name => $value) {
                         $pos_begin = strpos($name, '[') + 1;
+                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'request') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                         $pos_end = strpos($name, ']');
                         $name = substr($name, $pos_begin, $pos_end-$pos_begin);
                         //if (isset($modelRequest->$name)) {
