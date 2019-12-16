@@ -108,28 +108,31 @@ class RequestController extends Controller
         $model = new Request();
         if ($model->load(Yii::$app->request->get())) {
 
+            // Search record by parametrs in the database
+            $sqlParametrs = array();
+            foreach (ArrayHelper::toArray($model) as $key => $value) {
+                //$sqlParametrs =
+            }
+            $query = Request::find()
+                ->where(['AND', ['period' => 1000000]]);
+            //->where(['id' => $model->id]);
+            //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
 
-                // Search record by id in the database
-                $query = Request::find()
-                    ->where(['period' => 1000000]);
-                    //->where(['id' => $model->id]);
-                //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
+            $modelRequest = $query->orderBy('created_at')
+                //->offset($pagination->offset)
+                //->limit($pagination->limit)
+                //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
+                //->with('adPhotos')
+                ->all();
 
-                $modelRequest = $query->orderBy('created_at')
-                    //->offset($pagination->offset)
-                    //->limit($pagination->limit)
-                    //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
-                    //->with('adPhotos')
-                    ->all();
+            // get properties from Request object
+            $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            //foreach ($modelRequest as $property => $value) {
+            //    array_push($RequestResponse, array($property => $value));
+            //}
+            array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
 
-                // get properties from Request object
-                $RequestResponse = array('method' => 'PUT', 'status' => '0', 'type' => 'success');
-                //foreach ($modelRequest as $property => $value) {
-                //    array_push($RequestResponse, array($property => $value));
-                //}
-                array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
-
-                return Json::encode($RequestResponse);
+            return Json::encode($RequestResponse);
 
         }
         //}
