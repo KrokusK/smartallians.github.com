@@ -120,13 +120,16 @@ class RequestController extends Controller
                 //array_push($sqlParametrs, ["'$key' => '$value'"]);
                 //array_push($sqlParametrs, ['$key' => '$value']);
                 //array_push($sqlParametrs, ["'$key'" => "'$value'"]);
-                array_push($sqlParametrs, ["$key" => "$value"]);
+                //array_push($sqlParametrs, ["$key" => "$value"]);
             }
-            $query = Request::find()
+            $query = Request::find();
                 //->where(['period' => 1000000]);
-                ->where($sqlParametrs);
+                //->where($sqlParametrs);
             //->where(['id' => $model->id]);
             //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
+            foreach (ArrayHelper::toArray($model) as $key => $value) {
+                $query->andWhere([$key => $value]);
+            }
 
             $modelRequest = $query->orderBy('created_at')
                 //->offset($pagination->offset)
