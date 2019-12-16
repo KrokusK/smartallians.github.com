@@ -436,6 +436,11 @@ class RequestController extends Controller
             // example: yiisoft/yii2/base/Model.php
             if (is_array($bodyRaw)) {
                 if (array_key_exists('Request[id]', $bodyRaw)) {
+                    // check input parametrs
+                    if (preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
+                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
+                    }
+
                     $query = Request::find()
                         ->where(['id' => $bodyRaw['Request[id]']]);
                     //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
@@ -474,7 +479,7 @@ class RequestController extends Controller
 
             }
 
-            if ($modelRequest->validate('address')) {
+            if ($modelRequest->validate()) {
                 return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Успешно', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
