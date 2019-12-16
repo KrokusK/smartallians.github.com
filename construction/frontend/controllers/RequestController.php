@@ -113,7 +113,7 @@ class RequestController extends Controller
             $sqlParametrs = array(['AND']);
             foreach (ArrayHelper::toArray($model) as $key => $value) {
                 //array_push($sqlParametrs, [$key => $value]);
-                array_push($sqlParametrs, [Html::encode($key." => ".$value)]);
+                array_push($sqlParametrs, [$key." => ".$value]);
                 //Html::encode($key." => ".$value)
             }
             $query = Request::find()
