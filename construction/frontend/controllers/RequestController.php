@@ -110,23 +110,11 @@ class RequestController extends Controller
         if ($model->load(Yii::$app->request->get())) {
 
             // Search record by parametrs in the database
-            $sqlParametrs = array(['AND']);
-            foreach (ArrayHelper::toArray($model) as $key => $value) {
-                //$pos_begin = strpos($key, '[') + 1;
-                //$pos_end = strpos($key, ']');
-                //$key = substr($key, $pos_begin, $pos_end-$pos_begin);
-                //array_push($sqlParametrs, [$key => $value]);
-                //array_push($sqlParametrs, [$key." => ".$value]);
-                //array_push($sqlParametrs, ["'$key' => '$value'"]);
-                //array_push($sqlParametrs, ['$key' => '$value']);
-                //array_push($sqlParametrs, ["'$key'" => "'$value'"]);
-                //array_push($sqlParametrs, ["$key" => "$value"]);
-            }
+            //$sqlParametrs = array(['AND']);
+            //foreach (ArrayHelper::toArray($model) as $key => $value) {
+            //    array_push($sqlParametrs, [$key => $value]);
+            //}
             $query = Request::find();
-                //->where(['period' => 1000000]);
-                //->where($sqlParametrs);
-            //->where(['id' => $model->id]);
-            //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
             foreach (ArrayHelper::toArray($model) as $key => $value) {
                 $query->andWhere([$key => $value]);
             }
@@ -140,9 +128,6 @@ class RequestController extends Controller
 
             // get properties from Request object
             $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            //foreach ($modelRequest as $property => $value) {
-            //    array_push($RequestResponse, array($property => $value));
-            //}
             array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
             array_push($RequestResponse, var_dump($sqlParametrs));
 
