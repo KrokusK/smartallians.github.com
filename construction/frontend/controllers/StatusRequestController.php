@@ -314,22 +314,28 @@ class StatusRequestController extends Controller
             }
         }
 
-        $transaction = \Yii::$app->db->beginTransaction();
-        try {
-            $flag = $modelStatusRequest->delete($bodyRaw['StatusRequest[id]']); // delete
+        if (!empty($modelStatusRequest)) {
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                $flag = $modelStatusRequest->delete($bodyRaw['StatusRequest[id]']); // delete
 
-            if ($flag == true) {
-                $transaction->commit();
-            } else {
+                if ($flag == true) {
+                    $transaction->commit();
+                } else {
+                    $transaction->rollBack();
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                }
+            } catch (Exception $ex) {
                 $transaction->rollBack();
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
             }
-        } catch (Exception $ex) {
-            $transaction->rollBack();
+
+            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно удалена'));
+        } else {
             return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
         }
 
-        return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно удалена'));
+
 
         //}
     }
