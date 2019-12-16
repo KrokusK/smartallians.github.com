@@ -33,7 +33,7 @@ class Request extends \yii\db\ActiveRecord
 
         return [
             [['status_request_id', 'city_id', 'address', 'name', 'description'], 'required', 'message' => 'Поле должно быть заполнено'],
-            [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer'],
+            [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
             [['status_request_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
                     $statusesRequestId = StatusRequest::find()->select(['id'])->asArray()->all();
