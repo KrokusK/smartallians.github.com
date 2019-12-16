@@ -63,42 +63,6 @@ class Request extends \yii\db\ActiveRecord
             [['date_begin'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['updated_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['created_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
-            /*
-            [['user_desc_id', 'status_id', 'header', 'content', 'city_id', 'amount', 'category_id'], 'required', 'message' => 'Поле должно быть заполнено'],
-            [['status_id'], 'in', 'range' =>
-                function ( $attribute, $params ) {
-                    $statusesId = AdStatus::find()->select(['id'])->asArray()->all();
-                    $statusesIdStr = [];
-                    foreach ($statusesId as $item) {
-                        array_push($statusesIdStr, "{$item['id']}");
-                    }
-                    return $statusesIdStr;
-                },
-                'message' => 'Статус не выбран из списка'],
-            [['header'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['content'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['city_id'], 'in', 'range' =>
-                function ( $attribute, $params ) {
-                    $citiesId = UserCity::find()->select(['id'])->asArray()->all();
-                    $citiesIdStr = [];
-                    foreach ($citiesId as $item) {
-                        array_push($citiesIdStr, "{$item['id']}");
-                    }
-                    return $citiesIdStr;
-                },
-                'message' => 'Город не выбран из списка'],
-            [['amount'], 'double', 'message' => 'Значение должно быить числом'],
-            [['category_id'], 'in', 'range' =>
-                function ( $attribute, $params ) {
-                    $categoriesId = AdCategory::find()->select(['id'])->asArray()->all();
-                    $categoriesIdStr = [];
-                    foreach ($categoriesId as $item) {
-                        array_push($categoriesIdStr, "{$item['id']}");
-                    }
-                    return $categoriesIdStr;
-                },
-                'message' => 'Категория не выбрана из списка'],
-            */
         ];
 
     }

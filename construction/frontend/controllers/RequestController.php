@@ -148,37 +148,69 @@ class RequestController extends Controller
             //return $this->goHome();
         }
 
-        $modelRequest = new Request();
-        if (Yii::$app->request->isAjax && $modelRequest->load(Yii::$app->request->post())) {
+        //if (Yii::$app->request->isAjax) {
+        //GET data from body request
+        //Yii::$app->request->getBodyParams()
+        $fh = fopen("php://input", 'r');
+        $put_string = stream_get_contents($fh);
+        $put_string = urldecode($put_string);
+        //$array_put = $this->parsingRequestFormData($put_string);
 
-            // check input parametrs
-            //$cit = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cit'))) ? Yii::$app->request->get('cit') : null;
-            //$cat = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cat'))) ? Yii::$app->request->get('cat') : null;
-            //$ser = (preg_match("/^[a-zA-Z0-9]*$/",Yii::$app->request->get('ser'))) ? Yii::$app->request->get('ser') : null;
+        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-            // select user ads by */*/* parametrs
-            if (false) {
-                // something
+        //$modelRequest->setAttributes($bodyRaw);
+
+        // load attributes in Request object
+        // example: yiisoft/yii2/base/Model.php
+        if (is_array($bodyRaw)) {
+            if (array_key_exists('Request[id]', $bodyRaw)) {
+                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Недопустимый параметр: id'));
             } else {
-                $query = Request::find();
-                //$query = Request::find()
-                //    ->where(['AND', ['city_id' => $var1], ['user_desc_id'=> $var2]]);
+                $modelRequest = new Request();
 
-                $requestList = $query->orderBy('created_at')
-                    //->offset($pagination->offset)
-                    //->limit($pagination->limit)
-                    //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
-                    //->with('adPhotos')
-                    ->all();
+                // fill in the properties in the Request object
+                foreach ($bodyRaw as $name => $value) {
+                    $pos_begin = strpos($name, '[') + 1;
+                    $pos_end = strpos($name, ']');
+                    $name = substr($name, $pos_begin, $pos_end-$pos_begin);
+                    //if (isset($modelRequest->$name)) {
+                    //    $modelRequest->$name = $value;
+                    //}
+                    //if (property_exists($modelRequest, $name)) {
+                    if ($modelRequest->hasAttribute($name)) {
+                        if ($name != 'id') $modelRequest->$name = $value;
+
+                        $modelRequest->created_at = time();
+                        $modelRequest->updated_at = time();
+                    }
+                }
             }
 
 
-
-            return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'success', 'message' => 'Успешно'));
-        } else {
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
 
+        if ($modelRequest->validate()) {
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                $flag = $modelRequest->save(false); // insert
+
+                if ($flag == true) {
+                    $transaction->commit();
+                } else {
+                    $transaction->rollBack();
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+                }
+            } catch (Exception $ex) {
+                $transaction->rollBack();
+                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+            }
+
+            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Ошибка: Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+        } else {
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
+        }
+        //}
     }
 
 /*    public function actionCreateAd()
@@ -470,14 +502,14 @@ class RequestController extends Controller
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Заявка не может быть сохранена (обновлена)'));
+                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Заявка не может быть сохранена (обновлена)'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
                 }
 
-                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Ошибка: Заявка успешно сохранена (обновлена)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
