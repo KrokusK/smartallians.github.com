@@ -81,7 +81,7 @@ class StatusRequestController extends Controller
 
         //if (Yii::$app->request->isAjax) {
         //GET data from GET request
-        $model = new StatusRequest()Request();
+        $model = new StatusRequest();
         if ($model->load(Yii::$app->request->get())) {
 
             // Search record by parametrs in the database
