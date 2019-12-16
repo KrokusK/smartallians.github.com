@@ -392,7 +392,7 @@ class RequestController extends Controller
             //return $this->goHome();
         }
 
-        $modelRequest = new Request();
+
 
         //if (Yii::$app->request->isAjax) {
         //}
@@ -404,7 +404,7 @@ class RequestController extends Controller
             //$ser = (preg_match("/^[a-zA-Z0-9]*$/",Yii::$app->request->get('ser'))) ? Yii::$app->request->get('ser') : null;
 
             // select user ads by */*/* parametrs
-            if (false) {
+            /*if (false) {
                 // something
             } else {
                 $query = Request::find();
@@ -418,6 +418,7 @@ class RequestController extends Controller
                     //->with('adPhotos')
                     ->all();
             }
+            */
 
             //GET data from body request
             //Yii::$app->request->getBodyParams()
@@ -434,23 +435,46 @@ class RequestController extends Controller
             // load attributes in Request object
             // example: yiisoft/yii2/base/Model.php
             if (is_array($bodyRaw)) {
-                foreach ($bodyRaw as $name => $value) {
-                    $pos_begin = strpos($name, '[') + 1;
-                    $pos_end = strpos($name, ']');
-                    $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                    //if (isset($modelRequest->$name)) {
-                    //    $modelRequest->$name = $value;
-                    //}
-                    //if (property_exists($modelRequest, $name)) {
-                    if ($modelRequest->hasAttribute($name)) {
-                        $modelRequest->$name = $value;
+                if (array_key_exists('Request[id]', $bodyRaw)) {
+                    $query = Request::find()
+                        ->where(['id' => $modelRequest->id]);
+                    //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
+
+                    $modelRequest = $query->orderBy('created_at')
+                        //->offset($pagination->offset)
+                        //->limit($pagination->limit)
+                        //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
+                        //->with('adPhotos')
+                        ->one();
+
+                    foreach ($bodyRaw as $name => $value) {
+                        $pos_begin = strpos($name, '[') + 1;
+                        $pos_end = strpos($name, ']');
+                        $name = substr($name, $pos_begin, $pos_end-$pos_begin);
+
+                        if ($name != 'id') $modelRequest->$name = $value;
+                    }
+                } else {
+                    $modelRequest = new Request();
+
+                    foreach ($bodyRaw as $name => $value) {
+                        $pos_begin = strpos($name, '[') + 1;
+                        $pos_end = strpos($name, ']');
+                        $name = substr($name, $pos_begin, $pos_end-$pos_begin);
+                        //if (isset($modelRequest->$name)) {
+                        //    $modelRequest->$name = $value;
+                        //}
+                        //if (property_exists($modelRequest, $name)) {
+                        if ($modelRequest->hasAttribute($name)) {
+                            if ($name != 'id') $modelRequest->$name = $value;
+                        }
                     }
                 }
 
 
             }
 
-            if ($modelRequest->validate()) {
+            if ($modelRequest->validate('address')) {
                 return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Успешно', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
