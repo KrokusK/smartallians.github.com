@@ -33,7 +33,7 @@ class Request extends \yii\db\ActiveRecord
 
         return [
             [['status_request_id', 'city_id', 'address', 'name', 'description'], 'required', 'message' => 'Поле должно быть заполнено'],
-            [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
+            [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer', 'skipOnEmpty' => true],
             [['status_request_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
                     $statusesRequestId = StatusRequest::find()->select(['id'])->asArray()->all();
@@ -57,6 +57,12 @@ class Request extends \yii\db\ActiveRecord
             [['address'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['description'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
+            [['task'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
+            [['budjet'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
+            [['period'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
+            [['date_begin'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
+            [['update_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
+            [['create_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             /*
             [['user_desc_id', 'status_id', 'header', 'content', 'city_id', 'amount', 'category_id'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['status_id'], 'in', 'range' =>
