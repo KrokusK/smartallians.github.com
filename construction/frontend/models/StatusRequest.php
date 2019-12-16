@@ -8,7 +8,7 @@ use yii\db\ActiveRecord;
  * This is the model class for table "status_request".
  *
  */
-class Request extends \yii\db\ActiveRecord
+class StatusRequest extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
