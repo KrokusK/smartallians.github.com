@@ -109,12 +109,12 @@ class RequestController extends Controller
         if ($model->load(Yii::$app->request->get())) {
 
             // Search record by parametrs in the database
-            $sqlParametrs = array();
+            $sqlParametrs = array(['AND']);
             foreach (ArrayHelper::toArray($model) as $key => $value) {
-                //$sqlParametrs =
+                array_push($sqlParametrs, array($key => $value));
             }
             $query = Request::find()
-                ->where(['AND', ['period' => 1000000]]);
+                ->where($sqlParametrs);
             //->where(['id' => $model->id]);
             //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
 
