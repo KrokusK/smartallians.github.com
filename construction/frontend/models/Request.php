@@ -3,6 +3,7 @@ namespace frontend\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use frontend\models\StatusRequest
 
 /**
  * This is the model class for table "request".
@@ -32,7 +33,7 @@ class Request extends \yii\db\ActiveRecord
     {
 
         return [
-            [['id', 'status_request_id', 'city_id', 'address', 'name', 'description'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['status_request_id', 'city_id', 'address', 'name', 'description'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['status_request_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
                     $statusesRequestId = StatusRequest::find()->select(['id'])->asArray()->all();
