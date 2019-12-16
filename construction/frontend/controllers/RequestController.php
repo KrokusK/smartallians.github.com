@@ -479,7 +479,7 @@ class RequestController extends Controller
 
             }
 
-            if ($modelRequest->validate()) {
+            if ($modelRequest->validate('address')) {
                 return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Успешно', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
