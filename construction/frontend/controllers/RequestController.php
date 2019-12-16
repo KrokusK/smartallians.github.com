@@ -462,7 +462,7 @@ class RequestController extends Controller
                     $flag = $modelRequest->save(false); // insert
 
                     if ($flag == true) {
-                        $transactionAdPhoto->commit();
+                        $transaction->commit();
                     } else {
                         $transaction->rollBack();
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Заявка не может быть сохранена (обновлена)'));
