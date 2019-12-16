@@ -530,44 +530,60 @@ class RequestController extends Controller
             //return $this->goHome();
         }
 
-        $modelRequest = new Request();
-        if (Yii::$app->request->isAjax) {
+        //if (Yii::$app->request->isAjax) {
+        //GET data from body request
+        //Yii::$app->request->getBodyParams()
+        $fh = fopen("php://input", 'r');
+        $put_string = stream_get_contents($fh);
+        $put_string = urldecode($put_string);
+        //$array_put = $this->parsingRequestFormData($put_string);
 
-            $modelRequest->load(Yii::$app->request->post());
+        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-            // check input parametrs
-            //$cit = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cit'))) ? Yii::$app->request->get('cit') : null;
-            //$cat = (preg_match("/^[0-9]*$/",Yii::$app->request->get('cat'))) ? Yii::$app->request->get('cat') : null;
-            //$ser = (preg_match("/^[a-zA-Z0-9]*$/",Yii::$app->request->get('ser'))) ? Yii::$app->request->get('ser') : null;
+        //$modelRequest->setAttributes($bodyRaw);
 
-            // select user ads by */*/* parametrs
-            if (false) {
-                // something
-            } else {
-                $query = Request::find();
-                //$query = Request::find()
-                //    ->where(['AND', ['city_id' => $var1], ['user_desc_id'=> $var2]]);
+        // load attributes in Request object
+        // example: yiisoft/yii2/base/Model.php
+        if (is_array($bodyRaw)) {
+            if (array_key_exists('Request[id]', $bodyRaw)) {
+                // check input parametrs
+                if (!preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
+                }
 
-                $requestList = $query->orderBy('created_at')
+                // Search record by id in the database
+                $query = Request::find()
+                    ->where(['id' => $bodyRaw['Request[id]']]);
+                //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
+
+                $modelRequest = $query->orderBy('created_at')
                     //->offset($pagination->offset)
                     //->limit($pagination->limit)
                     //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
                     //->with('adPhotos')
-                    ->all();
+                    ->one();
             }
-
-            //GET data from body request
-            //Yii::$app->request->getBodyParams()
-            $fh = fopen("php://input", 'r');
-            $put_string = stream_get_contents($fh);
-            $put_string = urldecode($put_string);
-            $array_put = $this->parsingRequest($put_string);
-
-            return Json::encode(array('method' => 'DELETE', 'status' => '1', 'type' => 'success', 'message' => 'Успешно', var_dump($array_put)));
-        } else {
-            return Json::encode(array('method' => 'DELETE', 'status' => '0', 'type' => 'error', 'message' => 'Ошибка'));
         }
 
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $flag = $modelRequest->delete($bodyRaw['Request[id]']); // delete
+
+            if ($flag == true) {
+                $transaction->commit();
+            } else {
+                $transaction->rollBack();
+                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+            }
+        } catch (Exception $ex) {
+            $transaction->rollBack();
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+        }
+
+        return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно удалена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+
+        //}
     }
 
 
