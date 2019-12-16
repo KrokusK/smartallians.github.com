@@ -132,8 +132,9 @@ class RequestController extends Controller
             //    array_push($RequestResponse, array($property => $value));
             //}
             array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
+            array_push($RequestResponse, var_dump($sqlParametrs));
 
-            return Json::encode(Html::encode($RequestResponse), var_dump($sqlParametrs));
+            return Json::encode($RequestResponse);
 
         }
         //}
