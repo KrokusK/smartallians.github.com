@@ -117,7 +117,8 @@ class RequestController extends Controller
                 //$key = substr($key, $pos_begin, $pos_end-$pos_begin);
                 //array_push($sqlParametrs, [$key => $value]);
                 //array_push($sqlParametrs, [$key." => ".$value]);
-                array_push($sqlParametrs, ["'$key' => '$value'"]);
+                //array_push($sqlParametrs, ["'$key' => '$value'"]);
+                array_push($sqlParametrs, ['$key' => '$value']);
             }
             $query = Request::find()
                 //->where(['period' => 1000000]);
