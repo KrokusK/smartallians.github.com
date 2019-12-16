@@ -94,7 +94,7 @@ class StatusRequestController extends Controller
                 $query->andWhere([$key => $value]);
             }
 
-            $modelStatusRequest = $query->orderBy('created_at')->all();
+            $modelStatusRequest = $query->orderBy('name')->all();
 
             // get properties from StatusRequest object
             $StatusRequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
@@ -222,7 +222,7 @@ class StatusRequestController extends Controller
                     $query = StatusRequest::find()
                         ->where(['id' => $bodyRaw['StatusRequest[id]']]);
 
-                    $modelStatusRequest = $query->orderBy('created_at')->one();
+                    $modelStatusRequest = $query->orderBy('name')->one();
 
                     // update in the properties in the StatusRequest object
                     foreach ($bodyRaw as $name => $value) {
@@ -318,7 +318,7 @@ class StatusRequestController extends Controller
                 $query = StatusRequest::find()
                     ->where(['id' => $bodyRaw['StatusRequest[id]']]);
 
-                $modelStatusRequest = $query->orderBy('created_at')->one();
+                $modelStatusRequest = $query->orderBy('name')->one();
             }
         }
 
