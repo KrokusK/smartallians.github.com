@@ -3,7 +3,7 @@ namespace frontend\models;
 
 use Yii;
 use yii\db\ActiveRecord;
-use frontend\models\StatusRequest
+use frontend\models\StatusRequest;
 
 /**
  * This is the model class for table "request".
