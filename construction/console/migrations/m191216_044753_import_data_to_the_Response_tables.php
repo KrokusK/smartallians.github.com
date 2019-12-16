@@ -4,7 +4,7 @@ use yii\db\Migration;
 //use yii\db\Command;
 
 /**
- * Class m191216_044753_import_data_to_the_Reponse_tables
+ * Class m191216_044753_import_data_to_the_Response_tables
  */
 class m191216_044753_import_data_to_the_Response_tables extends Migration
 {
@@ -21,25 +21,25 @@ class m191216_044753_import_data_to_the_Response_tables extends Migration
         $this->delete('{{%response}}');
         $this->delete('{{%status_response}}');
 
-        $this->db->createCommand()->resetSequence('{{%reponse}}', 1)->execute();
-        $this->db->createCommand()->resetSequence('{{%status_reponse}}', 1)->execute();
+        $this->db->createCommand()->resetSequence('{{%response}}', 1)->execute();
+        $this->db->createCommand()->resetSequence('{{%status_response}}', 1)->execute();
 
 
-        // import to the status_reponse table
-        $this->insert('{{%status_reponse}}', [
+        // import to the status_response table
+        $this->insert('{{%status_response}}', [
             'name' => 'На рассмотрении',
         ]);
-        $this->insert('{{%status_reponse}}', [
+        $this->insert('{{%status_response}}', [
             'name' => 'Отклонена',
         ]);
-        $this->insert('{{%status_reponse}}', [
+        $this->insert('{{%status_response}}', [
             'name' => 'Принята',
         ]);
 
 
-        // import to the reponse table
-        $this->insert('{{%reponse}}', [
-            'status_reponse_id' => 1,
+        // import to the response table
+        $this->insert('{{%response}}', [
+            'status_response_id' => 1,
             'request_id' => 1,
             'description' => 'Описание № 1',
             'cost' => '1 000 000 руб.',
@@ -47,8 +47,8 @@ class m191216_044753_import_data_to_the_Response_tables extends Migration
             'created_at' => 1573193110,
             'updated_at' => 1573193110
         ]);
-        $this->insert('{{%reponse}}', [
-            'status_reponse_id' => 1,
+        $this->insert('{{%response}}', [
+            'status_response_id' => 1,
             'request_id' => 1,
             'description' => 'Описание № 2',
             'cost' => '2 000 000 руб.',
@@ -56,8 +56,8 @@ class m191216_044753_import_data_to_the_Response_tables extends Migration
             'created_at' => 1573193110,
             'updated_at' => 1573193110
         ]);
-        $this->insert('{{%reponse}}', [
-            'status_reponse_id' => 1,
+        $this->insert('{{%response}}', [
+            'status_response_id' => 1,
             'request_id' => 3,
             'description' => 'Описание № 3',
             'cost' => '3 000 000 руб.',
@@ -73,10 +73,10 @@ class m191216_044753_import_data_to_the_Response_tables extends Migration
     public function safeDown()
     {
         // erase table records and sequences
-        $this->delete('{{%reponse}}');
-        $this->delete('{{%status_reponse}}');
+        $this->delete('{{%response}}');
+        $this->delete('{{%status_response}}');
 
-        $this->db->createCommand()->resetSequence('{{%reponse}}', 1)->execute();
-        $this->db->createCommand()->resetSequence('{{%status_reponse}}', 1)->execute();
+        $this->db->createCommand()->resetSequence('{{%response}}', 1)->execute();
+        $this->db->createCommand()->resetSequence('{{%status_response}}', 1)->execute();
     }
 }
