@@ -124,9 +124,10 @@ class RequestController extends Controller
 
                 // get properties from Request object
                 $RequestResponse = array('method' => 'PUT', 'status' => '0', 'type' => 'success');
-                foreach ($modelRequest as $property => $value) {
-                    array_push($RequestResponse, array($property => $value));
-                }
+                //foreach ($modelRequest as $property => $value) {
+                //    array_push($RequestResponse, array($property => $value));
+                //}
+                array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
 
                 return Json::encode($RequestResponse);
 
