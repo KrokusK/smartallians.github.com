@@ -1,7 +1,7 @@
 <?php
 namespace frontend\controllers;
 
-use frontend\models\Region;
+use frontend\models\City;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -13,9 +13,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * API Region controller
+ * API City controller
  */
-class RegionController extends Controller
+class CityController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -66,7 +66,7 @@ class RegionController extends Controller
 
 
     /**
-     * GET Method. Region table.
+     * GET Method. City table.
      * Get records by parameters
      *
      * @return json
@@ -80,22 +80,22 @@ class RegionController extends Controller
 
         //if (Yii::$app->request->isAjax) {
         //GET data from GET request
-        $model = new Region();
+        $model = new City();
         if ($model->load(Yii::$app->request->get())) {
 
             // Search record by parametrs in the database
-            $query = Region::find();
+            $query = City::find();
             foreach (ArrayHelper::toArray($model) as $key => $value) {
                 $query->andWhere([$key => $value]);
             }
 
-            $modelRegion = $query->orderBy('name')->all();
+            $modelCity = $query->orderBy('name')->all();
 
-            // get properties from Region object
-            $RegionResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            array_push($RegionResponse, ArrayHelper::toArray($modelRegion));
+            // get properties from City object
+            $CityResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($CityResponse, ArrayHelper::toArray($modelCity));
 
-            return Json::encode($RegionResponse);
+            return Json::encode($CityResponse);
 
         }
         //}
@@ -103,7 +103,7 @@ class RegionController extends Controller
 
 
     /**
-     * POST Method. Region table.
+     * POST Method. City table.
      * Insert records by parameters
      *
      * @return json
@@ -121,33 +121,33 @@ class RegionController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRegionFormData($put_string);
+        //$array_put = $this->parsingCityFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRegion->setAttributes($bodyRaw);
+        //$modelCity->setAttributes($bodyRaw);
 
-        // load attributes in Region object
+        // load attributes in City object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('Region[id]', $bodyRaw)) {
+            if (array_key_exists('City[id]', $bodyRaw)) {
                 return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Недопустимый параметр: id'));
             } else {
-                $modelRegion = new Region();
+                $modelCity = new City();
 
-                // fill in the properties in the Region object
+                // fill in the properties in the City object
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[') + 1;
-                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'region') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                     $pos_end = strpos($name, ']');
                     $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                    //if (isset($modelRegion->$name)) {
-                    //    $modelRegion->$name = $value;
+                    //if (isset($modelCity->$name)) {
+                    //    $modelCity->$name = $value;
                     //}
-                    //if (property_exists($modelRegion, $name)) {
-                    if ($modelRegion->hasAttribute($name)) {
-                        if ($name != 'id') $modelRegion->$name = $value;
+                    //if (property_exists($modelCity, $name)) {
+                    if ($modelCity->hasAttribute($name)) {
+                        if ($name != 'id') $modelCity->$name = $value;
                     }
                 }
             }
@@ -155,10 +155,10 @@ class RegionController extends Controller
 
         }
 
-        if ($modelRegion->validate()) {
+        if ($modelCity->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelRegion->save(false); // insert
+                $flag = $modelCity->save(false); // insert
 
                 if ($flag == true) {
                     $transaction->commit();
@@ -171,7 +171,7 @@ class RegionController extends Controller
                 return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть сохранен'));
             }
 
-            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRegion))));
+            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
             return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен'));
         } else {
             return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
@@ -181,7 +181,7 @@ class RegionController extends Controller
 
 
     /**
-     * PUT, PATCH Method. Region table.
+     * PUT, PATCH Method. City table.
      * Update records by parameters
      *
      * @return json
@@ -199,59 +199,59 @@ class RegionController extends Controller
             $fh = fopen("php://input", 'r');
             $put_string = stream_get_contents($fh);
             $put_string = urldecode($put_string);
-            //$array_put = $this->parsingRegionFormData($put_string);
+            //$array_put = $this->parsingCityFormData($put_string);
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
             //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-            //$modelRegion->setAttributes($bodyRaw);
+            //$modelCity->setAttributes($bodyRaw);
 
-            // load attributes in Region object
+            // load attributes in City object
             // example: yiisoft/yii2/base/Model.php
             if (is_array($bodyRaw)) {
-                if (array_key_exists('Region[id]', $bodyRaw)) {
+                if (array_key_exists('City[id]', $bodyRaw)) {
                     // check input parametrs
-                    if (!preg_match("/^[0-9]*$/",$bodyRaw['Region[id]'])) {
+                    if (!preg_match("/^[0-9]*$/",$bodyRaw['City[id]'])) {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
 
                     // Search record by id in the database
-                    $query = Region::find()
-                        ->where(['id' => $bodyRaw['Region[id]']]);
-                    //->where(['AND', ['id' => $modelRegion->id], ['user_desc_id'=> $var2]]);
+                    $query = City::find()
+                        ->where(['id' => $bodyRaw['City[id]']]);
+                    //->where(['AND', ['id' => $modelCity->id], ['user_desc_id'=> $var2]]);
 
-                    $modelRegion = $query->orderBy('name')->one();
+                    $modelCity = $query->orderBy('name')->one();
 
-                    if (!empty($modelRegion)) {
-                        // update in the properties in the Region object
+                    if (!empty($modelCity)) {
+                        // update in the properties in the City object
                         foreach ($bodyRaw as $name => $value) {
                             $pos_begin = strpos($name, '[') + 1;
-                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'region') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                            if ($name != 'id') $modelRegion->$name = $value;
+                            if ($name != 'id') $modelCity->$name = $value;
 
-                            $modelRegion->updated_at = time();
+                            $modelCity->updated_at = time();
                         }
                     } else {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
                 } else {
-                    $modelRegion = new Region();
+                    $modelCity = new City();
 
-                    // fill in the properties in the Region object
+                    // fill in the properties in the City object
                     foreach ($bodyRaw as $name => $value) {
                         $pos_begin = strpos($name, '[') + 1;
-                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'region') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                         $pos_end = strpos($name, ']');
                         $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                        //if (isset($modelRegion->$name)) {
-                        //    $modelRegion->$name = $value;
+                        //if (isset($modelCity->$name)) {
+                        //    $modelCity->$name = $value;
                         //}
-                        //if (property_exists($modelRegion, $name)) {
-                        if ($modelRegion->hasAttribute($name)) {
-                            if ($name != 'id') $modelRegion->$name = $value;
+                        //if (property_exists($modelCity, $name)) {
+                        if ($modelCity->hasAttribute($name)) {
+                            if ($name != 'id') $modelCity->$name = $value;
                         }
                     }
                 }
@@ -259,10 +259,10 @@ class RegionController extends Controller
 
             }
 
-            if ($modelRegion->validate()) {
+            if ($modelCity->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flag = $modelRegion->save(false); // insert
+                    $flag = $modelCity->save(false); // insert
 
                     if ($flag == true) {
                         $transaction->commit();
@@ -275,7 +275,7 @@ class RegionController extends Controller
                     return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть сохранен (обновлен)'));
                 }
 
-                //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен (обновлен)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRegion))));
+                //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен (обновлен)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
                 return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен (обновлен)'));
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
@@ -285,7 +285,7 @@ class RegionController extends Controller
 
 
     /**
-     * DELETE Method. Region table.
+     * DELETE Method. City table.
      * Delete records by parameters
      *
      * @return json
@@ -303,35 +303,35 @@ class RegionController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRegionFormData($put_string);
+        //$array_put = $this->parsingCityFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRegion->setAttributes($bodyRaw);
+        //$modelCity->setAttributes($bodyRaw);
 
-        // load attributes in Region object
+        // load attributes in City object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('Region[id]', $bodyRaw)) {
+            if (array_key_exists('City[id]', $bodyRaw)) {
                 // check input parametrs
-                if (!preg_match("/^[0-9]*$/",$bodyRaw['Region[id]'])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw['City[id]'])) {
                     return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $query = Region::find()
-                    ->where(['id' => $bodyRaw['Region[id]']]);
-                //->where(['AND', ['id' => $modelRegion->id], ['user_desc_id'=> $var2]]);
+                $query = City::find()
+                    ->where(['id' => $bodyRaw['City[id]']]);
+                //->where(['AND', ['id' => $modelCity->id], ['user_desc_id'=> $var2]]);
 
-                $modelRegion = $query->orderBy('name')->one();
+                $modelCity = $query->orderBy('name')->one();
             }
         }
 
-        if (!empty($modelRegion)) {
+        if (!empty($modelCity)) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelRegion->delete($bodyRaw['Region[id]']); // delete
+                $flag = $modelCity->delete($bodyRaw['City[id]']); // delete
 
                 if ($flag == true) {
                     $transaction->commit();
@@ -344,7 +344,7 @@ class RegionController extends Controller
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть удален'));
             }
 
-            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно удален', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRegion))));
+            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно удален', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
             return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно удален'));
         } else {
             return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть удален'));
@@ -358,7 +358,7 @@ class RegionController extends Controller
      *
      * @return array
      */
-    public function parsingRegionFormData($put_string)
+    public function parsingCityFormData($put_string)
     {
         //            //$put_string = json_decode($put_string_json, TRUE);
         //            //$put_string=Yii::$app->request->getBodyParams();
