@@ -97,6 +97,17 @@ class ProfileController extends Controller
 
             return Json::encode($ProfileResponse);
 
+        } else {
+            // Search all records in the database
+            $query = Profile::find();
+
+            $modelProfile = $query->orderBy('created_at')->all();
+
+            // get properties from Profile object
+            $ProfileResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($ProfileResponse, ArrayHelper::toArray($modelProfile));
+
+            return Json::encode($ProfileResponse);
         }
         //}
     }

@@ -97,6 +97,17 @@ class ContractorController extends Controller
 
             return Json::encode($ContractorResponse);
 
+        } else {
+            // Search all records in the database
+            $query = Contractor::find();
+
+            $modelContractor = $query->orderBy('name')->all();
+
+            // get properties from Contractor object
+            $ContractorResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($ContractorResponse, ArrayHelper::toArray($modelContractor));
+
+            return Json::encode($ContractorResponse);
         }
         //}
     }

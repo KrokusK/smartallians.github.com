@@ -97,6 +97,17 @@ class SpecializationController extends Controller
 
             return Json::encode($SpecializationResponse);
 
+        } else {
+            // Search all records in the database
+            $query = Specialization::find();
+
+            $modelSpecialization = $query->orderBy('name')->all();
+
+            // get properties from Specialization object
+            $SpecializationResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($SpecializationResponse, ArrayHelper::toArray($modelSpecialization));
+
+            return Json::encode($SpecializationResponse);
         }
         //}
     }

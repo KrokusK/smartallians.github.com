@@ -97,6 +97,17 @@ class KindJobController extends Controller
 
             return Json::encode($KindJobResponse);
 
+        } else {
+            // Search all records in the database
+            $query = KindJob::find();
+
+            $modelKindJob = $query->orderBy('name')->all();
+
+            // get properties from KindJob object
+            $KindJobResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($KindJobResponse, ArrayHelper::toArray($modelKindJob));
+
+            return Json::encode($KindJobResponse);
         }
         //}
     }

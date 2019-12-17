@@ -97,6 +97,17 @@ class PhotoController extends Controller
 
             return Json::encode($PhotoResponse);
 
+        } else {
+            // Search all records in the database
+            $query = Photo::find();
+
+            $modelPhoto = $query->orderBy('name')->all();
+
+            // get properties from Photo object
+            $PhotoResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
+
+            return Json::encode($PhotoResponse);
         }
         //}
     }
