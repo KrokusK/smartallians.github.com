@@ -5,7 +5,7 @@ use Yii;
 use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "request".
+ * This is the model class for table "response".
  *
  */
 class Response extends \yii\db\ActiveRecord
@@ -53,7 +53,7 @@ class Response extends \yii\db\ActiveRecord
                     }
                     return $statusesRequestIdStr;
                 },
-                'message' => 'Заявка не выбран из списка'],
+                'message' => 'Заявка не выбрана из списка'],
             [['description'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['cost'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['period'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
