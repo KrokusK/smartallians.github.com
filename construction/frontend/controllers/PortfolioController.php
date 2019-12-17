@@ -97,6 +97,17 @@ class PortfolioController extends Controller
 
             return Json::encode($PortfolioResponse);
 
+        } else {
+            // Search all records in the database
+            $query = Portfolio::find();
+
+            $modelPortfolio = $query->orderBy('name')->all();
+
+            // get properties from Portfolio object
+            $PortfolioResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($PortfolioResponse, ArrayHelper::toArray($modelPortfolio));
+
+            return Json::encode($PortfolioResponse);
         }
         //}
     }

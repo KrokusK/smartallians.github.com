@@ -101,6 +101,17 @@ class StatusResponseController extends Controller
 
             return Json::encode($StatusResponseResponse);
 
+        } else {
+            // Search all records in the database
+            $query = StatusResponse::find();
+
+            $modelStatusResponse = $query->orderBy('name')->all();
+
+            // get properties from StatusResponse object
+            $StatusResponseResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($StatusResponseResponse, ArrayHelper::toArray($modelStatusResponse));
+
+            return Json::encode($StatusResponseResponse);
         }
         //}
     }

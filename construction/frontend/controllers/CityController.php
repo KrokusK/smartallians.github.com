@@ -97,6 +97,17 @@ class CityController extends Controller
 
             return Json::encode($CityResponse);
 
+        } else {
+            // Search all records in the database
+            $query = City::find();
+
+            $modelCity = $query->orderBy('name')->all();
+
+            // get properties from City object
+            $CityResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($CityResponse, ArrayHelper::toArray($modelCity));
+
+            return Json::encode($CityResponse);
         }
         //}
     }

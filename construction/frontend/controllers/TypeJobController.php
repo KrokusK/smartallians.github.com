@@ -97,6 +97,17 @@ class TypeJobController extends Controller
 
             return Json::encode($TypeJobResponse);
 
+        } else {
+            // Search all records in the database
+            $query = TypeJob::find();
+
+            $modelTypeJob = $query->orderBy('name')->all();
+
+            // get properties from TypeJob object
+            $TypeJobResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($TypeJobResponse, ArrayHelper::toArray($modelTypeJob));
+
+            return Json::encode($TypeJobResponse);
         }
         //}
     }

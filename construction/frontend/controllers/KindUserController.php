@@ -97,6 +97,17 @@ class KindUserController extends Controller
 
             return Json::encode($KindUserResponse);
 
+        } else {
+            // Search all records in the database
+            $query = KindUser::find();
+
+            $modelKindUser = $query->orderBy('name')->all();
+
+            // get properties from KindUser object
+            $KindUserResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($KindUserResponse, ArrayHelper::toArray($modelKindUser));
+
+            return Json::encode($KindUserResponse);
         }
         //}
     }

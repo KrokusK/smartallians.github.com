@@ -97,6 +97,17 @@ class RegionController extends Controller
 
             return Json::encode($RegionResponse);
 
+        } else {
+            // Search all records in the database
+            $query = Region::find();
+
+            $modelRegion = $query->orderBy('name')->all();
+
+            // get properties from Region object
+            $RegionResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($RegionResponse, ArrayHelper::toArray($modelRegion));
+
+            return Json::encode($RegionResponse);
         }
         //}
     }

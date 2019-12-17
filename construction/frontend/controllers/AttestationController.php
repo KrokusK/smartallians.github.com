@@ -97,6 +97,17 @@ class AttestationController extends Controller
 
             return Json::encode($AttestationResponse);
 
+        } else {
+            // Search all records in the database
+            $query = Attestation::find();
+
+            $modelAttestation = $query->orderBy('name')->all();
+
+            // get properties from Attestation object
+            $AttestationResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($AttestationResponse, ArrayHelper::toArray($modelAttestation));
+
+            return Json::encode($AttestationResponse);
         }
         //}
     }

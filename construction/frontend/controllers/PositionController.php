@@ -97,6 +97,17 @@ class PositionController extends Controller
 
             return Json::encode($PositionResponse);
 
+        } else {
+            // Search all records in the database
+            $query = Position::find();
+
+            $modelPosition = $query->orderBy('name')->all();
+
+            // get properties from Position object
+            $PositionResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($PositionResponse, ArrayHelper::toArray($modelPosition));
+
+            return Json::encode($PositionResponse);
         }
         //}
     }
