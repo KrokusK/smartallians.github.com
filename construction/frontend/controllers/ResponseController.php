@@ -1,20 +1,7 @@
 <?php
 namespace frontend\controllers;
 
-//use frontend\models\AdCategory;
-//use frontend\models\PhotoAd;
-use frontend\models\Request;
-use frontend\models\StatusRequest;
-//use frontend\models\ResendVerificationEmailForm;
-//use frontend\models\UserAd;
-//use frontend\models\UserDesc;
-//use frontend\models\VerifyEmailForm;
-//use frontend\models\UserAd;
-//use frontend\models\UserCity;
-//use frontend\models\UserDesc;
-//use frontend\models\UserAd;
-//use frontend\models\UserCity;
-//use frontend\models\UserDesc;
+use frontend\models\Response;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -24,11 +11,6 @@ use yii\filters\AccessControl;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-//use common\models\LoginForm;
-//use frontend\models\PasswordResetRequestForm;
-//use frontend\models\ResetPasswordForm;
-//use frontend\models\SignupForm;
-//use frontend\models\ContactForm;
 
 /**
  * Site controller
@@ -82,17 +64,9 @@ class ResponseController extends Controller
         ];
     }
 
-    public function actionTest()
-    {
-        $modelRequest = new Request();
-        return $this->render('request', [
-            'modelRequest' => $modelRequest,
-        ]);
-    }
-
 
     /**
-     * GET Method. Request table.
+     * GET Method. Response table.
      * Get records by parameters
      *
      * @return json
@@ -106,31 +80,22 @@ class ResponseController extends Controller
 
         //if (Yii::$app->request->isAjax) {
         //GET data from GET request
-        $model = new Request();
+        $model = new Response();
         if ($model->load(Yii::$app->request->get())) {
 
             // Search record by parametrs in the database
-            //$sqlParametrs = array(['AND']);
-            //foreach (ArrayHelper::toArray($model) as $key => $value) {
-            //    array_push($sqlParametrs, [$key => $value]);
-            //}
-            $query = Request::find();
+            $query = Response::find();
             foreach (ArrayHelper::toArray($model) as $key => $value) {
                 $query->andWhere([$key => $value]);
             }
 
-            $modelRequest = $query->orderBy('created_at')
-                //->offset($pagination->offset)
-                //->limit($pagination->limit)
-                //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
-                //->with('adPhotos')
-                ->all();
+            $modelResponse = $query->orderBy('created_at')->all();
 
-            // get properties from Request object
-            $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
+            // get properties from Response object
+            $ResponseResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($ResponseResponse, ArrayHelper::toArray($modelResponse));
 
-            return Json::encode($RequestResponse);
+            return Json::encode($ResponseResponse);
 
         }
         //}
@@ -138,7 +103,7 @@ class ResponseController extends Controller
 
 
     /**
-     * POST Method. Request table.
+     * POST Method. Response table.
      * Insert records by parameters
      *
      * @return json
@@ -156,35 +121,36 @@ class ResponseController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
+        //$array_put = $this->parsingResponseFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
+        //$modelResponse->setAttributes($bodyRaw);
 
-        // load attributes in Request object
+        // load attributes in Response object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('Request[id]', $bodyRaw)) {
+            if (array_key_exists('Response[id]', $bodyRaw)) {
                 return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Недопустимый параметр: id'));
             } else {
-                $modelRequest = new Request();
+                $modelResponse = new Response();
 
-                // fill in the properties in the Request object
+                // fill in the properties in the Response object
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[') + 1;
+                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'response') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                     $pos_end = strpos($name, ']');
                     $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                    //if (isset($modelRequest->$name)) {
-                    //    $modelRequest->$name = $value;
+                    //if (isset($modelResponse->$name)) {
+                    //    $modelResponse->$name = $value;
                     //}
-                    //if (property_exists($modelRequest, $name)) {
-                    if ($modelRequest->hasAttribute($name)) {
-                        if ($name != 'id') $modelRequest->$name = $value;
+                    //if (property_exists($modelResponse, $name)) {
+                    if ($modelResponse->hasAttribute($name)) {
+                        if ($name != 'id') $modelResponse->$name = $value;
 
-                        $modelRequest->created_at = time();
-                        $modelRequest->updated_at = time();
+                        $modelResponse->created_at = time();
+                        $modelResponse->updated_at = time();
                     }
                 }
             }
@@ -192,230 +158,33 @@ class ResponseController extends Controller
 
         }
 
-        if ($modelRequest->validate()) {
+        if ($modelResponse->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelRequest->save(false); // insert
+                $flag = $modelResponse->save(false); // insert
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть сохранен'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть сохранен'));
             }
 
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelResponse))));
+            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен'));
         } else {
             return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
         }
         //}
     }
 
-/*    public function actionCreateAd()
-    {
-        // Is user a guest?
-        if (Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
 
-        // if user profile is empty go to Homepage
-        $modelUserDesc = UserDesc::find()->where(['user_id' => Yii::$app->user->getId()])->one();
-        if (empty($modelUserDesc)) {
-            return $this->goHome();
-        }
-
-        // create new models for ad and photos
-        $modelUserAd = new UserAd();
-        $modelPhotoAd = new PhotoAd();
-
-        // get attbutes for Ad and Photos objects from Post request
-        if (Yii::$app->request->isAjax && $modelUserAd->load(Yii::$app->request->post()) && $modelPhotoAd->load(Yii::$app->request->post())) {
-            $modelPhotoAd->imageFiles = UploadedFile::getInstances($modelPhotoAd, 'imageFiles');
-            if ($modelPhotoAd->upload()) { // save ad photos
-                $modelUserAd->user_desc_id = $modelUserDesc->id;
-                $modelUserAd->status_id = UserAd::STATUS_ACTIVE; // default for new ad
-                $modelUserAd->created_at = time(); // updating Create time
-                $modelUserAd->updated_at = time(); // updating Update time
-
-                if ($modelUserAd->validate()) { // check new ad
-                    $transactionUserAd = \Yii::$app->db->beginTransaction();
-                    try {
-                        $flagUserAd = $modelUserAd->save(false); // insert new ad
-                        if ($flagUserAd == true) {
-                            $transactionUserAd->commit();
-
-                            //$modelPhotoAd->ad_id = $modelUserAd->id;
-                        } else {
-                            $transactionUserAd->rollBack();
-                            return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var1'));
-                        }
-                    } catch (Exception $ex) {
-                        $transactionUserAd->rollBack();
-                        return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var2'));
-                    }
-
-                    // Insert each new Photo in database
-                    foreach ($modelPhotoAd->arrayWebFilename as $file) {
-                        $transactionAdPhoto = \Yii::$app->db->beginTransaction();
-                        try {
-                            $modelPhotoAdFile = new PhotoAd();
-                            $modelPhotoAdFile->ad_id = $modelUserAd->id;
-                            $modelPhotoAdFile->created_at = time();
-                            $modelPhotoAdFile->updated_at = time();
-                            $modelPhotoAdFile->photo_path = '/uploads/PhotoAd/'.$file;
-                            //$modelPhotoAd->id = null;
-                            //$modelPhotoAd->isNewRecord = true;
-                            $flagPhotoAd = $modelPhotoAdFile->save(false); // insert
-
-                            if ($flagPhotoAd == true) {
-                                $transactionAdPhoto->commit();
-                            } else {
-                                $transactionAdPhoto->rollBack();
-                                return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше фото не может быть сохранено. var3'));
-                            }
-                        } catch (Exception $ex) {
-                            $transactionAdPhoto->rollBack();
-                            return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше фото не может быть сохранено. var4'));
-                        }
-                    }
-
-                    return Json::encode(array('status' => '1', 'type' => 'success', 'message' => 'Ваше объявление успешно сохранено.'));
-
-                } else {
-                    return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var5'.var_dump($modelUserAd->user_desc_id, $modelUserAd->status_id, $modelUserAd->created_at, $modelUserAd->updated_at, $modelUserAd->header, $modelUserAd->content, $modelUserAd->city_id, $modelUserAd->amount, $modelUserAd->category_id)));
-                }
-            } else {
-                return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var6'.$modelPhotoAd->msg));
-            }
-        } else {
-            // get cities and cxategories arrays for Select tags in Form
-            $cities = UserCity::find()
-                ->orderBy('city_name')
-                //->asArray()
-                ->all();
-            $categories = AdCategory::find()
-                ->orderBy('name')
-                //->asArray()
-                ->all();
-
-            // go to create ad form
-            return $this->render('EditeAd', [
-                'selectCity' => $cities,
-                'selectCategory' => $categories,
-                'modelUserAd' => $modelUserAd,
-                'modelPhotoAd' => $modelPhotoAd,
-            ]);
-        }
-    }
-*/
-/*    public function actionUpdateAd()
-    {
-        // check user is a guest
-        if (Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        // if user profile is empty go to Homepage
-        $modelUserDesc = UserDesc::find()->where(['user_id' => Yii::$app->user->getId()])->one();
-        if (empty($modelUserDesc)) {
-            return $this->goHome();
-        }
-
-        // check input parametrs (id for ad) for PUT method
-        $nad = (preg_match("/^[0-9]*$/",Yii::$app->request->post('nad'))) ? Yii::$app->request->post('nad') : null;
-        if (is_null($nad)) return $this->goHome();
-
-        // check access to update your ads
-        $modelUserAdId = UserAd::find()->where(['AND', ['id' => $nad], ['user_desc_id' => $modelUserDesc->id], ['status_id' => UserAd::STATUS_ACTIVE]])->one();
-        if (empty($modelUserAdId)) {
-            return $this->goHome();
-        }
-
-        //$modelUserAd = new UserAd();
-        $modelPhotoAd = new PhotoAd();
-
-        // get attbutes for Ad and Photos objects from Post request
-        if (Yii::$app->request->isAjax && $modelUserAdId->load(Yii::$app->request->post()) && $modelPhotoAd->load(Yii::$app->request->post())) {
-            $modelPhotoAd->imageFiles = UploadedFile::getInstances($modelPhotoAd, 'imageFiles');
-            if ($modelPhotoAd->upload()) { //upload ad photos to the server
-                $modelUserAdId->updated_at = time(); // updating Update time fo ad
-
-                if ($modelUserAdId->validate()) {
-                    $transactionUserAd = \Yii::$app->db->beginTransaction();
-                    try {
-                        $flagUserAdDelete = PhotoAd::deleteAll(['ad_id' => $modelUserAdId->id]); // delete old record of photos in database
-                        $flagUserAdUpdate = $modelUserAdId->save(false); // update ad
-                        if ($flagUserAdUpdate && $flagUserAdDelete) {
-                            $transactionUserAd->commit();
-                        } else {
-                            $transactionUserAd->rollBack();
-                            return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var1'));
-                        }
-                    } catch (Exception $ex) {
-                        $transactionUserAd->rollBack();
-                        return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var2'));
-                    }
-
-                    // Insert each new Photo in database
-                    foreach ($modelPhotoAd->arrayWebFilename as $file) {
-                        $transactionAdPhoto = \Yii::$app->db->beginTransaction();
-                        try {
-                            $modelPhotoAdFile = new PhotoAd();
-                            $modelPhotoAdFile->ad_id = $modelUserAdId->id;
-                            $modelPhotoAdFile->created_at = time();
-                            $modelPhotoAdFile->updated_at = time();
-                            $modelPhotoAdFile->photo_path = '/uploads/PhotoAd/'.$file;
-                            //$modelPhotoAd->id = null;
-                            //$modelPhotoAd->isNewRecord = true;
-                            $flagPhotoAd = $modelPhotoAdFile->save(false);
-
-                            if ($flagPhotoAd == true) {
-                                $transactionAdPhoto->commit();
-                            } else {
-                                $transactionAdPhoto->rollBack();
-                                return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше фото не может быть сохранено. var3'));
-                            }
-                        } catch (Exception $ex) {
-                            $transactionAdPhoto->rollBack();
-                            return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше фото не может быть сохранено. var4'));
-                        }
-                    }
-
-                    return Json::encode(array('status' => '1', 'type' => 'success', 'message' => 'Ваше объявление успешно сохранено.'));
-
-                } else {
-                    return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var5'.var_dump($modelUserAd->user_desc_id, $modelUserAd->status_id, $modelUserAd->created_at, $modelUserAd->updated_at, $modelUserAd->header, $modelUserAd->content, $modelUserAd->city_id, $modelUserAd->amount, $modelUserAd->category_id)));
-                }
-            } else {
-                return Json::encode(array('status' => '0', 'type' => 'warning', 'message' => 'Ваше объявление не может быть сохранено. var6'.$modelPhotoAd->msg));
-            }
-        } else {
-            // get cities and categories arrays for Select tags in Form
-            $cities = UserCity::find()
-                ->orderBy('city_name')
-                //->asArray()
-                ->all();
-            $categories = AdCategory::find()
-                ->orderBy('name')
-                //->asArray()
-                ->all();
-
-            // go to the Update form
-            return $this->render('EditeAd', [
-                'selectCity' => $cities,
-                'selectCategory' => $categories,
-                'modelUserAd' => $modelUserAdId,
-                'modelPhotoAd' => $modelPhotoAd,
-            ]);
-        }
-    }
-*/
     /**
-     * PUT, PATCH Method. Request table.
+     * PUT, PATCH Method. Response table.
      * Update records by parameters
      *
      * @return json
@@ -433,65 +202,62 @@ class ResponseController extends Controller
             $fh = fopen("php://input", 'r');
             $put_string = stream_get_contents($fh);
             $put_string = urldecode($put_string);
-            //$array_put = $this->parsingRequestFormData($put_string);
+            //$array_put = $this->parsingResponseFormData($put_string);
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
             //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-            //$modelRequest->setAttributes($bodyRaw);
+            //$modelResponse->setAttributes($bodyRaw);
 
-            // load attributes in Request object
+            // load attributes in Response object
             // example: yiisoft/yii2/base/Model.php
             if (is_array($bodyRaw)) {
-                if (array_key_exists('Request[id]', $bodyRaw)) {
+                if (array_key_exists('Response[id]', $bodyRaw)) {
                     // check input parametrs
-                    if (!preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
+                    if (!preg_match("/^[0-9]*$/",$bodyRaw['Response[id]'])) {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
 
                     // Search record by id in the database
-                    $query = Request::find()
-                        ->where(['id' => $bodyRaw['Request[id]']]);
-                    //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
+                    $query = Response::find()
+                        ->where(['id' => $bodyRaw['Response[id]']]);
+                    //->where(['AND', ['id' => $modelResponse->id], ['user_desc_id'=> $var2]]);
 
-                    $modelRequest = $query->orderBy('created_at')
-                        //->offset($pagination->offset)
-                        //->limit($pagination->limit)
-                        //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
-                        //->with('adPhotos')
-                        ->one();
+                    $modelResponse = $query->orderBy('created_at')->one();
 
-                    if (!empty($modelRequest)) {
-                        // update in the properties in the Request object
+                    if (!empty($modelResponse)) {
+                        // update in the properties in the Response object
                         foreach ($bodyRaw as $name => $value) {
                             $pos_begin = strpos($name, '[') + 1;
+                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'response') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                            if ($name != 'id') $modelRequest->$name = $value;
+                            if ($name != 'id') $modelResponse->$name = $value;
 
-                            $modelRequest->updated_at = time();
+                            $modelResponse->updated_at = time();
                         }
                     } else {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
                 } else {
-                    $modelRequest = new Request();
+                    $modelResponse = new Response();
 
-                    // fill in the properties in the Request object
+                    // fill in the properties in the Response object
                     foreach ($bodyRaw as $name => $value) {
                         $pos_begin = strpos($name, '[') + 1;
+                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'response') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                         $pos_end = strpos($name, ']');
                         $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                        //if (isset($modelRequest->$name)) {
-                        //    $modelRequest->$name = $value;
+                        //if (isset($modelResponse->$name)) {
+                        //    $modelResponse->$name = $value;
                         //}
-                        //if (property_exists($modelRequest, $name)) {
-                        if ($modelRequest->hasAttribute($name)) {
-                            if ($name != 'id') $modelRequest->$name = $value;
+                        //if (property_exists($modelResponse, $name)) {
+                        if ($modelResponse->hasAttribute($name)) {
+                            if ($name != 'id') $modelResponse->$name = $value;
 
-                            $modelRequest->created_at = time();
-                            $modelRequest->updated_at = time();
+                            $modelResponse->created_at = time();
+                            $modelResponse->updated_at = time();
                         }
                     }
                 }
@@ -499,23 +265,24 @@ class ResponseController extends Controller
 
             }
 
-            if ($modelRequest->validate()) {
+            if ($modelResponse->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flag = $modelRequest->save(false); // insert
+                    $flag = $modelResponse->save(false); // insert
 
                     if ($flag == true) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть сохранен (обновлен)'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть сохранен (обновлен)'));
                 }
 
-                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+                //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен (обновлен)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelResponse))));
+                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен (обновлен)'));
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
@@ -524,7 +291,7 @@ class ResponseController extends Controller
 
 
     /**
-     * DELETE Method. Request table.
+     * DELETE Method. Response table.
      * Delete records by parameters
      *
      * @return json
@@ -542,57 +309,52 @@ class ResponseController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
+        //$array_put = $this->parsingResponseFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
+        //$modelResponse->setAttributes($bodyRaw);
 
-        // load attributes in Request object
+        // load attributes in Response object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('Request[id]', $bodyRaw)) {
+            if (array_key_exists('Response[id]', $bodyRaw)) {
                 // check input parametrs
-                if (!preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw['Response[id]'])) {
                     return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $query = Request::find()
-                    ->where(['id' => $bodyRaw['Request[id]']]);
-                //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
+                $query = Response::find()
+                    ->where(['id' => $bodyRaw['Response[id]']]);
+                //->where(['AND', ['id' => $modelResponse->id], ['user_desc_id'=> $var2]]);
 
-                $modelRequest = $query->orderBy('created_at')
-                    //->offset($pagination->offset)
-                    //->limit($pagination->limit)
-                    //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
-                    //->with('adPhotos')
-                    ->one();
+                $modelResponse = $query->orderBy('created_at')->one();
             }
         }
 
-        if (!empty($modelRequest)) {
+        if (!empty($modelResponse)) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelRequest->delete($bodyRaw['Request[id]']); // delete
+                $flag = $modelResponse->delete($bodyRaw['Response[id]']); // delete
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть удален'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть удален'));
             }
 
-            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно удалена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно удален', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelResponse))));
+            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно удален'));
         } else {
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть удален'));
         }
-
         //}
     }
 
@@ -602,7 +364,7 @@ class ResponseController extends Controller
      *
      * @return array
      */
-    public function parsingRequestFormData($put_string)
+    public function parsingResponseFormData($put_string)
     {
         //            //$put_string = json_decode($put_string_json, TRUE);
         //            //$put_string=Yii::$app->request->getBodyParams();
