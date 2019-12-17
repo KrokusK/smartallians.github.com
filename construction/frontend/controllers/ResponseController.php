@@ -97,6 +97,17 @@ class ResponseController extends Controller
 
             return Json::encode($ResponseResponse);
 
+        } else {
+            // Search all records in the database
+            $query = Response::find();
+
+            $modelResponse = $query->orderBy('created_at')->all();
+
+            // get properties from Response object
+            $ResponseResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($ResponseResponse, ArrayHelper::toArray($modelResponse));
+
+            return Json::encode($ResponseResponse);
         }
         //}
     }
