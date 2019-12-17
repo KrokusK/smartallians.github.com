@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * Site controller
+ * API StatusRequest controller
  */
 class StatusRequestController extends Controller
 {

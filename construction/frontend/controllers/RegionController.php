@@ -1,7 +1,7 @@
 <?php
 namespace frontend\controllers;
 
-use frontend\models\Request;
+use frontend\models\Region;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -13,9 +13,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * API Request controller
+ * API Region controller
  */
-class RequestController extends Controller
+class RegionController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -64,17 +64,9 @@ class RequestController extends Controller
         ];
     }
 
-    public function actionTest()
-    {
-        $modelRequest = new Request();
-        return $this->render('request', [
-            'modelRequest' => $modelRequest,
-        ]);
-    }
-
 
     /**
-     * GET Method. Request table.
+     * GET Method. Region table.
      * Get records by parameters
      *
      * @return json
@@ -88,31 +80,22 @@ class RequestController extends Controller
 
         //if (Yii::$app->request->isAjax) {
         //GET data from GET request
-        $model = new Request();
+        $model = new Region();
         if ($model->load(Yii::$app->request->get())) {
 
             // Search record by parametrs in the database
-            //$sqlParametrs = array(['AND']);
-            //foreach (ArrayHelper::toArray($model) as $key => $value) {
-            //    array_push($sqlParametrs, [$key => $value]);
-            //}
-            $query = Request::find();
+            $query = Region::find();
             foreach (ArrayHelper::toArray($model) as $key => $value) {
                 $query->andWhere([$key => $value]);
             }
 
-            $modelRequest = $query->orderBy('created_at')
-                //->offset($pagination->offset)
-                //->limit($pagination->limit)
-                //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
-                //->with('adPhotos')
-                ->all();
+            $modelRegion = $query->orderBy('created_at')->all();
 
-            // get properties from Request object
-            $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
+            // get properties from Region object
+            $RegionResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($RegionResponse, ArrayHelper::toArray($modelRegion));
 
-            return Json::encode($RequestResponse);
+            return Json::encode($RegionResponse);
 
         }
         //}
@@ -120,7 +103,7 @@ class RequestController extends Controller
 
 
     /**
-     * POST Method. Request table.
+     * POST Method. Region table.
      * Insert records by parameters
      *
      * @return json
@@ -138,36 +121,36 @@ class RequestController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
+        //$array_put = $this->parsingRegionFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
+        //$modelRegion->setAttributes($bodyRaw);
 
-        // load attributes in Request object
+        // load attributes in Region object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('Request[id]', $bodyRaw)) {
+            if (array_key_exists('Region[id]', $bodyRaw)) {
                 return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Недопустимый параметр: id'));
             } else {
-                $modelRequest = new Request();
+                $modelRegion = new Region();
 
-                // fill in the properties in the Request object
+                // fill in the properties in the Region object
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[') + 1;
-                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'request') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'region') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                     $pos_end = strpos($name, ']');
                     $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                    //if (isset($modelRequest->$name)) {
-                    //    $modelRequest->$name = $value;
+                    //if (isset($modelRegion->$name)) {
+                    //    $modelRegion->$name = $value;
                     //}
-                    //if (property_exists($modelRequest, $name)) {
-                    if ($modelRequest->hasAttribute($name)) {
-                        if ($name != 'id') $modelRequest->$name = $value;
+                    //if (property_exists($modelRegion, $name)) {
+                    if ($modelRegion->hasAttribute($name)) {
+                        if ($name != 'id') $modelRegion->$name = $value;
 
-                        $modelRequest->created_at = time();
-                        $modelRequest->updated_at = time();
+                        $modelRegion->created_at = time();
+                        $modelRegion->updated_at = time();
                     }
                 }
             }
@@ -175,24 +158,24 @@ class RequestController extends Controller
 
         }
 
-        if ($modelRequest->validate()) {
+        if ($modelRegion->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelRequest->save(false); // insert
+                $flag = $modelRegion->save(false); // insert
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть сохранен'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть сохранен'));
             }
 
-            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
+            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRegion))));
+            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен'));
         } else {
             return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
         }
@@ -201,7 +184,7 @@ class RequestController extends Controller
 
 
     /**
-     * PUT, PATCH Method. Request table.
+     * PUT, PATCH Method. Region table.
      * Update records by parameters
      *
      * @return json
@@ -219,67 +202,62 @@ class RequestController extends Controller
             $fh = fopen("php://input", 'r');
             $put_string = stream_get_contents($fh);
             $put_string = urldecode($put_string);
-            //$array_put = $this->parsingRequestFormData($put_string);
+            //$array_put = $this->parsingRegionFormData($put_string);
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
             //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-            //$modelRequest->setAttributes($bodyRaw);
+            //$modelRegion->setAttributes($bodyRaw);
 
-            // load attributes in Request object
+            // load attributes in Region object
             // example: yiisoft/yii2/base/Model.php
             if (is_array($bodyRaw)) {
-                if (array_key_exists('Request[id]', $bodyRaw)) {
+                if (array_key_exists('Region[id]', $bodyRaw)) {
                     // check input parametrs
-                    if (!preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
+                    if (!preg_match("/^[0-9]*$/",$bodyRaw['Region[id]'])) {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
 
                     // Search record by id in the database
-                    $query = Request::find()
-                        ->where(['id' => $bodyRaw['Request[id]']]);
-                    //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
+                    $query = Region::find()
+                        ->where(['id' => $bodyRaw['Region[id]']]);
+                    //->where(['AND', ['id' => $modelRegion->id], ['user_desc_id'=> $var2]]);
 
-                    $modelRequest = $query->orderBy('created_at')
-                        //->offset($pagination->offset)
-                        //->limit($pagination->limit)
-                        //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
-                        //->with('adPhotos')
-                        ->one();
+                    $modelRegion = $query->orderBy('created_at')->one();
 
-                    if (!empty($modelRequest)) {
-                        // update in the properties in the Request object
+                    if (!empty($modelRegion)) {
+                        // update in the properties in the Region object
                         foreach ($bodyRaw as $name => $value) {
                             $pos_begin = strpos($name, '[') + 1;
-                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'request') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'region') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                            if ($name != 'id') $modelRequest->$name = $value;
+                            if ($name != 'id') $modelRegion->$name = $value;
 
-                            $modelRequest->updated_at = time();
+                            $modelRegion->updated_at = time();
                         }
                     } else {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
                 } else {
-                    $modelRequest = new Request();
+                    $modelRegion = new Region();
 
-                    // fill in the properties in the Request object
+                    // fill in the properties in the Region object
                     foreach ($bodyRaw as $name => $value) {
                         $pos_begin = strpos($name, '[') + 1;
-                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'request') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'region') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                         $pos_end = strpos($name, ']');
                         $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                        //if (isset($modelRequest->$name)) {
-                        //    $modelRequest->$name = $value;
+                        //if (isset($modelRegion->$name)) {
+                        //    $modelRegion->$name = $value;
                         //}
-                        //if (property_exists($modelRequest, $name)) {
-                        if ($modelRequest->hasAttribute($name)) {
-                            if ($name != 'id') $modelRequest->$name = $value;
+                        //if (property_exists($modelRegion, $name)) {
+                        if ($modelRegion->hasAttribute($name)) {
+                            if ($name != 'id') $modelRegion->$name = $value;
 
-                            $modelRequest->created_at = time();
-                            $modelRequest->updated_at = time();
+                            $modelRegion->created_at = time();
+                            $modelRegion->updated_at = time();
                         }
                     }
                 }
@@ -287,24 +265,24 @@ class RequestController extends Controller
 
             }
 
-            if ($modelRequest->validate()) {
+            if ($modelRegion->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flag = $modelRequest->save(false); // insert
+                    $flag = $modelRegion->save(false); // insert
 
                     if ($flag == true) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть сохранен (обновлен)'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть сохранен (обновлен)'));
                 }
 
-                //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
-                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)'));
+                //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен (обновлен)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRegion))));
+                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно сохранен (обновлен)'));
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
@@ -313,7 +291,7 @@ class RequestController extends Controller
 
 
     /**
-     * DELETE Method. Request table.
+     * DELETE Method. Region table.
      * Delete records by parameters
      *
      * @return json
@@ -331,56 +309,51 @@ class RequestController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
+        //$array_put = $this->parsingRegionFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
+        //$modelRegion->setAttributes($bodyRaw);
 
-        // load attributes in Request object
+        // load attributes in Region object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('Request[id]', $bodyRaw)) {
+            if (array_key_exists('Region[id]', $bodyRaw)) {
                 // check input parametrs
-                if (!preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw['Region[id]'])) {
                     return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $query = Request::find()
-                    ->where(['id' => $bodyRaw['Request[id]']]);
-                //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
+                $query = Region::find()
+                    ->where(['id' => $bodyRaw['Region[id]']]);
+                //->where(['AND', ['id' => $modelRegion->id], ['user_desc_id'=> $var2]]);
 
-                $modelRequest = $query->orderBy('created_at')
-                    //->offset($pagination->offset)
-                    //->limit($pagination->limit)
-                    //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
-                    //->with('adPhotos')
-                    ->one();
+                $modelRegion = $query->orderBy('created_at')->one();
             }
         }
 
-        if (!empty($modelRequest)) {
+        if (!empty($modelRegion)) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelRequest->delete($bodyRaw['Request[id]']); // delete
+                $flag = $modelRegion->delete($bodyRaw['Region[id]']); // delete
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть удален'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть удален'));
             }
 
-            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно удалена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
-            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно удалена'));
+            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно удален', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRegion))));
+            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Отклик успешно удален'));
         } else {
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Отклик не может быть удален'));
         }
         //}
     }
@@ -391,7 +364,7 @@ class RequestController extends Controller
      *
      * @return array
      */
-    public function parsingRequestFormData($put_string)
+    public function parsingRegionFormData($put_string)
     {
         //            //$put_string = json_decode($put_string_json, TRUE);
         //            //$put_string=Yii::$app->request->getBodyParams();
