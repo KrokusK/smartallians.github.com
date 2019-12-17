@@ -242,8 +242,6 @@ class KindJobController extends Controller
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
                             if ($name != 'id') $modelKindJob->$name = $value;
-
-                            $modelKindJob->updated_at = time();
                         }
                     } else {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
