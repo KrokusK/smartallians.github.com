@@ -26,9 +26,9 @@ class Profile extends \yii\db\ActiveRecord
     {
 
         return [
-            [['name', 'user_id', 'kind_user_id', 'type_job_id', 'inn', 'site', 'avatar', 'updated_at', 'created_at'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['user_id', 'kind_user_id', 'type_job_id', 'fio', 'firm_name', 'inn', 'site', 'avatar', 'updated_at', 'created_at'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
-            /*[['user_id'], 'in', 'range' =>
+            [['user_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
                     $statusesUserId = User::find()->select(['id'])->asArray()->all();
                     $statusesUserIdStr = [];
@@ -37,7 +37,7 @@ class Profile extends \yii\db\ActiveRecord
                     }
                     return $statusesUserIdStr;
                 },
-                'message' => 'Пользователь не выбран из списка'],*/
+                'message' => 'Пользователь не выбран из списка'],
             [['kind_user_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
                     $statusesKindUserId = KindUser::find()->select(['id'])->asArray()->all();
