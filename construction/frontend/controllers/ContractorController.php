@@ -89,7 +89,7 @@ class ContractorController extends Controller
                 $query->andWhere([$key => $value]);
             }
 
-            $modelContractor = $query->orderBy('name')->all();
+            $modelContractor = $query->orderBy('id')->all();
 
             // get properties from Contractor object
             $ContractorResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
@@ -101,7 +101,7 @@ class ContractorController extends Controller
             // Search all records in the database
             $query = Contractor::find();
 
-            $modelContractor = $query->orderBy('name')->all();
+            $modelContractor = $query->orderBy('id')->all();
 
             // get properties from Contractor object
             $ContractorResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
@@ -231,7 +231,7 @@ class ContractorController extends Controller
                         ->where(['id' => $bodyRaw['Contractor[id]']]);
                     //->where(['AND', ['id' => $modelContractor->id], ['user_desc_id'=> $var2]]);
 
-                    $modelContractor = $query->orderBy('name')->one();
+                    $modelContractor = $query->orderBy('id')->one();
 
                     if (!empty($modelContractor)) {
                         // update in the properties in the Contractor object
@@ -333,7 +333,7 @@ class ContractorController extends Controller
                     ->where(['id' => $bodyRaw['Contractor[id]']]);
                 //->where(['AND', ['id' => $modelContractor->id], ['user_desc_id'=> $var2]]);
 
-                $modelContractor = $query->orderBy('name')->one();
+                $modelContractor = $query->orderBy('id')->one();
             }
         }
 
