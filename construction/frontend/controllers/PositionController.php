@@ -89,7 +89,7 @@ class PositionController extends Controller
                 $query->andWhere([$key => $value]);
             }
 
-            $modelPosition = $query->orderBy('name')->all();
+            $modelPosition = $query->orderBy('id')->all();
 
             // get properties from Position object
             $PositionResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
@@ -101,7 +101,7 @@ class PositionController extends Controller
             // Search all records in the database
             $query = Position::find();
 
-            $modelPosition = $query->orderBy('name')->all();
+            $modelPosition = $query->orderBy('id')->all();
 
             // get properties from Position object
             $PositionResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
@@ -231,7 +231,7 @@ class PositionController extends Controller
                         ->where(['id' => $bodyRaw['Position[id]']]);
                     //->where(['AND', ['id' => $modelPosition->id], ['user_desc_id'=> $var2]]);
 
-                    $modelPosition = $query->orderBy('name')->one();
+                    $modelPosition = $query->orderBy('id')->one();
 
                     if (!empty($modelPosition)) {
                         // update in the properties in the Position object
@@ -333,7 +333,7 @@ class PositionController extends Controller
                     ->where(['id' => $bodyRaw['Position[id]']]);
                 //->where(['AND', ['id' => $modelPosition->id], ['user_desc_id'=> $var2]]);
 
-                $modelPosition = $query->orderBy('name')->one();
+                $modelPosition = $query->orderBy('id')->one();
             }
         }
 
