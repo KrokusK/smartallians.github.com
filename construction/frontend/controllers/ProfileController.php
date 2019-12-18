@@ -158,7 +158,7 @@ class ProfileController extends Controller
                     //}
                     //if (property_exists($modelProfile, $name)) {
                     if ($modelProfile->hasAttribute($name)) {
-                        if ($name != 'id') $modelProfile->$name = $value;
+                        if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelProfile->$name = $value;
 
                         $modelProfile->created_at = time();
                         $modelProfile->updated_at = time();
@@ -244,7 +244,7 @@ class ProfileController extends Controller
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                            if ($name != 'id') $modelProfile->$name = $value;
+                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelProfile->$name = $value;
 
                             $modelProfile->updated_at = time();
                         }
@@ -265,7 +265,7 @@ class ProfileController extends Controller
                         //}
                         //if (property_exists($modelProfile, $name)) {
                         if ($modelProfile->hasAttribute($name)) {
-                            if ($name != 'id') $modelProfile->$name = $value;
+                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelProfile->$name = $value;
 
                             $modelProfile->created_at = time();
                             $modelProfile->updated_at = time();
