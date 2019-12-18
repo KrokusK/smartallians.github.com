@@ -158,7 +158,7 @@ class ResponseController extends Controller
                     //}
                     //if (property_exists($modelResponse, $name)) {
                     if ($modelResponse->hasAttribute($name)) {
-                        if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelProfile->$name = $value;
+                        if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelResponse->$name = $value;
 
                         $modelResponse->created_at = time();
                         $modelResponse->updated_at = time();
@@ -244,7 +244,7 @@ class ResponseController extends Controller
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelProfile->$name = $value;
+                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelResponse->$name = $value;
 
                             $modelResponse->updated_at = time();
                         }
@@ -265,7 +265,7 @@ class ResponseController extends Controller
                         //}
                         //if (property_exists($modelResponse, $name)) {
                         if ($modelResponse->hasAttribute($name)) {
-                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelProfile->$name = $value;
+                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelResponse->$name = $value;
 
                             $modelResponse->created_at = time();
                             $modelResponse->updated_at = time();

@@ -175,7 +175,7 @@ class RequestController extends Controller
                     //}
                     //if (property_exists($modelRequest, $name)) {
                     if ($modelRequest->hasAttribute($name)) {
-                        if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelProfile->$name = $value;
+                        if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelRequest->$name = $value;
 
                         $modelRequest->created_at = time();
                         $modelRequest->updated_at = time();
@@ -266,7 +266,7 @@ class RequestController extends Controller
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelProfile->$name = $value;
+                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelRequest->$name = $value;
 
                             $modelRequest->updated_at = time();
                         }
@@ -287,7 +287,7 @@ class RequestController extends Controller
                         //}
                         //if (property_exists($modelRequest, $name)) {
                         if ($modelRequest->hasAttribute($name)) {
-                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelProfile->$name = $value;
+                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelRequest->$name = $value;
 
                             $modelRequest->created_at = time();
                             $modelRequest->updated_at = time();
