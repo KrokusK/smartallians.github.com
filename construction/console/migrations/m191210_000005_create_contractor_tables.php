@@ -3,17 +3,17 @@
 use yii\db\Migration;
 
 /**
- * Class m191210_000005_create_constractor_tables
+ * Class m191210_000005_create_contractor_tables
  */
-class m191210_000005_create_constractor_tables extends Migration
+class m191210_000005_create_contractor_tables extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        // create constractor table
-        $this->createTable('{{%constractor}}', [
+        // create contractor table
+        $this->createTable('{{%contractor}}', [
             'id' => $this->primaryKey(),
             'profile_id' => $this->integer()->notNull(),
             'experience' => $this->string()->notNull(),
@@ -22,8 +22,8 @@ class m191210_000005_create_constractor_tables extends Migration
 
         // creates index for column profile_id
         $this->createIndex(
-            'idx-constractor-profile-id',
-            '{{%constractor}}',
+            'idx-contractor-profile-id',
+            '{{%contractor}}',
             'profile_id'
         );
 
@@ -33,23 +33,23 @@ class m191210_000005_create_constractor_tables extends Migration
             'name' => $this->string()->notNull()
         ]);
 
-        // create constractor_attestation table
-        $this->createTable('{{%constractor_attestation}}', [
-            'constractor_id' => $this->integer()->notNull(),
+        // create contractor_attestation table
+        $this->createTable('{{%contractor_attestation}}', [
+            'contractor_id' => $this->integer()->notNull(),
             'attestation_id' => $this->integer()->notNull()
         ]);
 
-        // creates index for column constractor_id
+        // creates index for column contractor_id
         $this->createIndex(
-            'idx-constractor-attestation-constractor-id',
-            '{{%constractor_attestation}}',
-            'constractor_id'
+            'idx-contractor-attestation-contractor-id',
+            '{{%contractor_attestation}}',
+            'contractor_id'
         );
 
         // creates index for column attestation_id
         $this->createIndex(
-            'idx-constractor-attestation-attestation-id',
-            '{{%constractor_attestation}}',
+            'idx-contractor-attestation-attestation-id',
+            '{{%contractor_attestation}}',
             'attestation_id'
         );
 
@@ -59,38 +59,38 @@ class m191210_000005_create_constractor_tables extends Migration
             'name' => $this->string()->notNull()
         ]);
 
-        // create constractor_kind_job table
-        $this->createTable('{{%constractor_kind_job}}', [
-            'constractor_id' => $this->integer()->notNull(),
+        // create contractor_kind_job table
+        $this->createTable('{{%contractor_kind_job}}', [
+            'contractor_id' => $this->integer()->notNull(),
             'kind_job_id' => $this->integer()->notNull()
         ]);
 
-        // creates index for column constractor_id
+        // creates index for column contractor_id
         $this->createIndex(
-            'idx-constractor-kind-job-constractor-id',
-            '{{%constractor_kind_job}}',
-            'constractor_id'
+            'idx-contractor-kind-job-contractor-id',
+            '{{%contractor_kind_job}}',
+            'contractor_id'
         );
 
         // creates index for column kind_job_id
         $this->createIndex(
-            'idx-constractor-kind-job-kind-job-id',
-            '{{%constractor_kind_job}}',
+            'idx-contractor-kind-job-kind-job-id',
+            '{{%contractor_kind_job}}',
             'kind_job_id'
         );
 
         // create portfolio table
         $this->createTable('{{%portfolio}}', [
             'id' => $this->primaryKey(),
-            'constractor_id' => $this->integer()->notNull(),
+            'contractor_id' => $this->integer()->notNull(),
             'name' => $this->string()->notNull()
         ]);
 
-        // creates index for column constractor_id
+        // creates index for column contractor_id
         $this->createIndex(
-            'idx-portfolio-constractor-id',
+            'idx-portfolio-contractor-id',
             '{{%portfolio}}',
-            'constractor_id'
+            'contractor_id'
         );
 
         // create position table
@@ -107,42 +107,42 @@ class m191210_000005_create_constractor_tables extends Migration
             'portfolio_id'
         );
 
-        // add foreign key for table constractor
+        // add foreign key for table contractor
         $this->addForeignKey(
-            'fk-constractor_profile-id',
-            '{{%constractor}}',
+            'fk-contractor_profile-id',
+            '{{%contractor}}',
             'profile_id',
             '{{%profile}}',
             'id'
         );
 
-        // add foreign keys for table constractor_attestation
+        // add foreign keys for table contractor_attestation
         $this->addForeignKey(
-            'fk-constractor_attestation-constractor-id',
-            '{{%constractor_attestation}}',
-            'constractor_id',
-            '{{%constractor}}',
+            'fk-contractor_attestation-contractor-id',
+            '{{%contractor_attestation}}',
+            'contractor_id',
+            '{{%contractor}}',
             'id'
         );
         $this->addForeignKey(
-            'fk-constractor_attestation-attestation-id',
-            '{{%constractor_attestation}}',
+            'fk-contractor_attestation-attestation-id',
+            '{{%contractor_attestation}}',
             'attestation_id',
             '{{%attestation}}',
             'id'
         );
 
-        // add foreign keys for table constractor_kind_job
+        // add foreign keys for table contractor_kind_job
         $this->addForeignKey(
-            'fk-constractor-kind-job-constractor-id',
-            '{{%constractor_kind_job}}',
-            'constractor_id',
-            '{{%constractor}}',
+            'fk-contractor-kind-job-contractor-id',
+            '{{%contractor_kind_job}}',
+            'contractor_id',
+            '{{%contractor}}',
             'id'
         );
         $this->addForeignKey(
-            'fk-constractor-kind-job-kind-job-id',
-            '{{%constractor_kind_job}}',
+            'fk-contractor-kind-job-kind-job-id',
+            '{{%contractor_kind_job}}',
             'kind_job_id',
             '{{%kind_job}}',
             'id'
@@ -150,10 +150,10 @@ class m191210_000005_create_constractor_tables extends Migration
 
         // add foreign key for table portfolio
         $this->addForeignKey(
-            'fk-portfolio-constractor-id',
+            'fk-portfolio-contractor-id',
             '{{%portfolio}}',
-            'constractor_id',
-            '{{%constractor}}',
+            'contractor_id',
+            '{{%contractor}}',
             'id'
         );
 
@@ -180,34 +180,34 @@ class m191210_000005_create_constractor_tables extends Migration
 
         // drops foreign key for table portfolio
         $this->dropForeignKey(
-            'fk-portfolio-constractor-id',
+            'fk-portfolio-contractor-id',
             '{{%portfolio}}'
         );
 
-        // drops foreign keys for table constractor-kind-job
+        // drops foreign keys for table contractor-kind-job
         $this->dropForeignKey(
-            'fk-constractor-kind-job-constractor-id',
-            '{{%constractor_kind_job}}'
+            'fk-contractor-kind-job-contractor-id',
+            '{{%contractor_kind_job}}'
         );
         $this->dropForeignKey(
-            'fk-constractor-kind-job-kind-job-id',
-            '{{%constractor_kind_job}}'
-        );
-
-        // drops foreign keys for table constractor_attestation
-        $this->dropForeignKey(
-            'fk-constractor_attestation-constractor-id',
-            '{{%constractor_attestation}}'
-        );
-        $this->dropForeignKey(
-            'fk-constractor_attestation-attestation-id',
-            '{{%constractor_attestation}}'
+            'fk-contractor-kind-job-kind-job-id',
+            '{{%contractor_kind_job}}'
         );
 
-        // drops foreign key for table constractor
+        // drops foreign keys for table contractor_attestation
         $this->dropForeignKey(
-            'fk-constractor_profile-id',
-            '{{%constractor}}'
+            'fk-contractor_attestation-contractor-id',
+            '{{%contractor_attestation}}'
+        );
+        $this->dropForeignKey(
+            'fk-contractor_attestation-attestation-id',
+            '{{%contractor_attestation}}'
+        );
+
+        // drops foreign key for table contractor
+        $this->dropForeignKey(
+            'fk-contractor_profile-id',
+            '{{%contractor}}'
         );
 
         // drop index for column position
@@ -218,38 +218,38 @@ class m191210_000005_create_constractor_tables extends Migration
 
         // drop index for column portfolio
         $this->dropIndex(
-            'idx-portfolio-constractor-id',
+            'idx-portfolio-contractor-id',
             '{{%portfolio}}'
         );
 
         // drop index for column kind_job_id
         $this->dropIndex(
-            'idx-constractor-kind-job-kind-job-id',
-            '{{%constractor_kind_job}}'
+            'idx-contractor-kind-job-kind-job-id',
+            '{{%contractor_kind_job}}'
         );
 
-        // drop index for column constractor_id
+        // drop index for column contractor_id
         $this->dropIndex(
-            'idx-constractor-kind-job-constractor-id',
-            '{{%constractor_kind_job}}'
+            'idx-contractor-kind-job-contractor-id',
+            '{{%contractor_kind_job}}'
         );
 
         // drop index for column attestation-id
         $this->dropIndex(
-            'idx-constractor-attestation-attestation-id',
-            '{{%constractor_attestation}}'
+            'idx-contractor-attestation-attestation-id',
+            '{{%contractor_attestation}}'
         );
 
-        // drop index for column constractor-id
+        // drop index for column contractor-id
         $this->dropIndex(
-            'idx-constractor-attestation-constractor-id',
-            '{{%constractor_attestation}}'
+            'idx-contractor-attestation-contractor-id',
+            '{{%contractor_attestation}}'
         );
 
         // drop index for column profile-id
         $this->dropIndex(
-            'idx-constractor-profile-id',
-            '{{%constractor}}'
+            'idx-contractor-profile-id',
+            '{{%contractor}}'
         );
 
         // drop position table
@@ -258,19 +258,19 @@ class m191210_000005_create_constractor_tables extends Migration
         // drop portfolio table
         $this->dropTable('{{%portfolio}}');
 
-        // drop constractor_kind_job table
-        $this->dropTable('{{%constractor_kind_job}}');
+        // drop contractor_kind_job table
+        $this->dropTable('{{%contractor_kind_job}}');
 
         // drop kind_job table
         $this->dropTable('{{%kind_job}}');
 
-        // drop constractor_attestation table
-        $this->dropTable('{{%constractor_attestation}}');
+        // drop contractor_attestation table
+        $this->dropTable('{{%contractor_attestation}}');
 
         // drop attestation table
         $this->dropTable('{{%attestation}}');
 
-        // drop constractor table
-        $this->dropTable('{{%constractor}}');
+        // drop contractor table
+        $this->dropTable('{{%contractor}}');
     }
 }
