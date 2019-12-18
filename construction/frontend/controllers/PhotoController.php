@@ -89,7 +89,7 @@ class PhotoController extends Controller
                 $query->andWhere([$key => $value]);
             }
 
-            $modelPhoto = $query->orderBy('name')->all();
+            $modelPhoto = $query->orderBy('id')->all();
 
             // get properties from Photo object
             $PhotoResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
@@ -101,7 +101,7 @@ class PhotoController extends Controller
             // Search all records in the database
             $query = Photo::find();
 
-            $modelPhoto = $query->orderBy('name')->all();
+            $modelPhoto = $query->orderBy('id')->all();
 
             // get properties from Photo object
             $PhotoResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
@@ -231,7 +231,7 @@ class PhotoController extends Controller
                         ->where(['id' => $bodyRaw['Photo[id]']]);
                     //->where(['AND', ['id' => $modelPhoto->id], ['user_desc_id'=> $var2]]);
 
-                    $modelPhoto = $query->orderBy('name')->one();
+                    $modelPhoto = $query->orderBy('id')->one();
 
                     if (!empty($modelPhoto)) {
                         // update in the properties in the Photo object
@@ -333,7 +333,7 @@ class PhotoController extends Controller
                     ->where(['id' => $bodyRaw['Photo[id]']]);
                 //->where(['AND', ['id' => $modelPhoto->id], ['user_desc_id'=> $var2]]);
 
-                $modelPhoto = $query->orderBy('name')->one();
+                $modelPhoto = $query->orderBy('id')->one();
             }
         }
 
