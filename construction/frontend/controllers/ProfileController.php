@@ -169,7 +169,7 @@ class ProfileController extends Controller
 
         }
 
-        return Json::encode(ArrayHelper::toArray($modelProfile));
+        //return Json::encode(ArrayHelper::toArray($modelProfile));
         if ($modelProfile->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
