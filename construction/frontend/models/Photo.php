@@ -66,7 +66,7 @@ class Photo extends \yii\db\ActiveRecord
                 'message' => 'Позиция не выбрана из списка', 'skipOnEmpty' => true],
             [['description'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['caption'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['path'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
+            [['path'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
         ];
 
     }
