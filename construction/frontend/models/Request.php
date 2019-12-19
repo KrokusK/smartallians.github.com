@@ -96,6 +96,15 @@ class Request extends \yii\db\ActiveRecord
 
     /**
      *
+     * Link to table photo
+     */
+    public function getPhotos()
+    {
+        return $this->hasMany(Photo::className(), ['request_id' => 'id']);
+    }
+
+    /**
+     *
      * Link to table profile
      */
     public function getProfiles()
