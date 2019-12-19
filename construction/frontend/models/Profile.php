@@ -71,19 +71,48 @@ class Profile extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table User_description
+     * Link to table user
      */
-    //public function getUserDescs()
-    //{
-    //    return $this->hasOne(UserDesc::className(), ['id' => 'user_desc_id']);
-    //}
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
 
     /**
      *
-     * Link to table Photo_ad
+     * Link to table kind_user
      */
-    //public function getAdPhotos()
-    //{
-    //    return $this->hasMany(PhotoAd::className(), ['ad_id' => 'id']);
-    //}
+    public function getKindUser()
+    {
+        return $this->hasOne(KindUser::className(), ['id' => 'kind_user_id']);
+    }
+
+    /**
+     *
+     * Link to table type_job
+     */
+    public function getTypeJob()
+    {
+        return $this->hasOne(TypeJob::className(), ['id' => 'type_job_id']);
+    }
+
+    /**
+     *
+     * Link to table city
+     */
+    public function getCities()
+    {
+        return $this->hasMany(City::className(), ['id' => 'city_id'])
+            ->viaTable('profile_city', ['profile_id' => 'id']);
+    }
+
+    /**
+     *
+     * Link to table specialization
+     */
+    public function getSpecializations()
+    {
+        return $this->hasMany(Specialization::className(), ['id' => 'specialization_id'])
+            ->viaTable('profile_specialization', ['profile_id' => 'id']);
+    }
 }

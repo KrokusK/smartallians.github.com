@@ -34,19 +34,10 @@ class KindUser extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table User_description
+     * Link to table profile
      */
-    //public function getUserDescs()
-    //{
-    //    return $this->hasOne(UserDesc::className(), ['id' => 'user_desc_id']);
-    //}
-
-    /**
-     *
-     * Link to table Photo_ad
-     */
-    //public function getAdPhotos()
-    //{
-    //    return $this->hasMany(PhotoAd::className(), ['ad_id' => 'id']);
-    //}
+    public function getProfiles()
+    {
+        return $this->hasOne(Profile::className(), ['kind_user_id' => 'id']);
+    }
 }
