@@ -79,4 +79,13 @@ class Photo extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Position::className(), ['id' => 'position_id']);
     }
+
+    /**
+     *
+     * Link to table response
+     */
+    public function getResponses()
+    {
+        return $this->hasOne(Response::className(), ['id' => 'response_id']);
+    }
 }

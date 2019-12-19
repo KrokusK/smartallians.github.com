@@ -34,19 +34,10 @@ class StatusRequest extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table User_description
+     * Link to table Request
      */
-    //public function getUserDescs()
-    //{
-    //    return $this->hasOne(UserDesc::className(), ['id' => 'user_desc_id']);
-    //}
-
-    /**
-     *
-     * Link to table Photo_ad
-     */
-    //public function getAdPhotos()
-    //{
-    //    return $this->hasMany(PhotoAd::className(), ['ad_id' => 'id']);
-    //}
+    public function getRequests()
+    {
+        return $this->hasOne(Request::className(), ['status_request_id' => 'id']);
+    }
 }

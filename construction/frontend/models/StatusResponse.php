@@ -34,19 +34,10 @@ class StatusResponse extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table User_description
+     * Link to table Response
      */
-    //public function getUserDescs()
-    //{
-    //    return $this->hasOne(UserDesc::className(), ['id' => 'user_desc_id']);
-    //}
-
-    /**
-     *
-     * Link to table Photo_ad
-     */
-    //public function getAdPhotos()
-    //{
-    //    return $this->hasMany(PhotoAd::className(), ['ad_id' => 'id']);
-    //}
+    public function getResponses()
+    {
+        return $this->hasOne(Response::className(), ['status_response_id' => 'id']);
+    }
 }

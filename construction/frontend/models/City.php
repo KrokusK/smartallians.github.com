@@ -60,4 +60,13 @@ class City extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Region::className(), ['id' => 'region_id']);
     }
+
+    /**
+     *
+     * Link to table request
+     */
+    public function getRequests()
+    {
+        return $this->hasOne(Request::className(), ['city_id' => 'id']);
+    }
 }

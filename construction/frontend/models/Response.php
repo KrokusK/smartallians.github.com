@@ -65,19 +65,38 @@ class Response extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table User_description
+     * Link to table status_response
      */
-    //public function getUserDescs()
-    //{
-    //    return $this->hasOne(UserDesc::className(), ['id' => 'user_desc_id']);
-    //}
+    public function getStatusResponse()
+    {
+        return $this->hasOne(StatusResponse::className(), ['id' => 'status_response_id']);
+    }
 
     /**
      *
-     * Link to table Photo_ad
+     * Link to table request
      */
-    //public function getAdPhotos()
-    //{
-    //    return $this->hasMany(PhotoAd::className(), ['ad_id' => 'id']);
-    //}
+    public function getRequests()
+    {
+        return $this->hasOne(Request::className(), ['id' => 'request_id']);
+    }
+
+    /**
+     *
+     * Link to table photo
+     */
+    public function getPhotos()
+    {
+        return $this->hasMany(Photo::className(), ['response_id' => 'id']);
+    }
+
+    /**
+     *
+     * Link to table profile
+     */
+    public function getProfiles()
+    {
+        return $this->hasMany(Profile::className(), ['id' => 'profile_id'])
+            ->viaTable('profile_rrod', ['response_id' => 'id']);
+    }
 }

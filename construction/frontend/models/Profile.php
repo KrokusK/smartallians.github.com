@@ -115,4 +115,24 @@ class Profile extends \yii\db\ActiveRecord
         return $this->hasMany(Specialization::className(), ['id' => 'specialization_id'])
             ->viaTable('profile_specialization', ['profile_id' => 'id']);
     }
+
+    /**
+     *
+     * Link to table response
+     */
+    public function getResponses()
+    {
+        return $this->hasMany(Response::className(), ['id' => 'response_id'])
+            ->viaTable('profile_rrod', ['profile_id' => 'id']);
+    }
+
+    /**
+     *
+     * Link to table request
+     */
+    public function getRequests()
+    {
+        return $this->hasMany(Request::className(), ['id' => 'request_id'])
+            ->viaTable('profile_rrod', ['profile_id' => 'id']);
+    }
 }

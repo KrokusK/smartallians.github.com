@@ -69,19 +69,48 @@ class Request extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table User_description
+     * Link to table status_request
      */
-    //public function getUserDescs()
-    //{
-    //    return $this->hasOne(UserDesc::className(), ['id' => 'user_desc_id']);
-    //}
+    public function getStatusRequest()
+    {
+        return $this->hasOne(StatusRequest::className(), ['id' => 'status_request_id']);
+    }
 
     /**
      *
-     * Link to table Photo_ad
+     * Link to table city
      */
-    //public function getAdPhotos()
-    //{
-    //    return $this->hasMany(PhotoAd::className(), ['ad_id' => 'id']);
-    //}
+    public function getCites()
+    {
+        return $this->hasOne(City::className(), ['id' => 'city_id']);
+    }
+
+    /**
+     *
+     * Link to table Response
+     */
+    public function getResponses()
+    {
+        return $this->hasMany(Response::className(), ['request_id' => 'id']);
+    }
+
+    /**
+     *
+     * Link to table profile
+     */
+    public function getProfiles()
+    {
+        return $this->hasMany(Profile::className(), ['id' => 'profile_id'])
+            ->viaTable('profile_rrod', ['request_id' => 'id']);
+    }
+
+    /**
+     *
+     * Link to table kind_job
+     */
+    public function getKindJob()
+    {
+        return $this->hasMany(KindJob::className(), ['id' => 'kind_job_id'])
+            ->viaTable('request_kind_job', ['request_id' => 'id']);
+    }
 }

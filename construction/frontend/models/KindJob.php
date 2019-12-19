@@ -41,4 +41,14 @@ class KindJob extends \yii\db\ActiveRecord
         return $this->hasMany(Contractor::className(), ['id' => 'contractor_id'])
             ->viaTable('contractor_kind_job', ['kind_job_id' => 'id']);
     }
+
+    /**
+     *
+     * Link to table request
+     */
+    public function getRequests()
+    {
+        return $this->hasMany(Request::className(), ['id' => 'request_id'])
+            ->viaTable('request_kind_job', ['kind_job_id' => 'id']);
+    }
 }
