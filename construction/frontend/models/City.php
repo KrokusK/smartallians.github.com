@@ -44,19 +44,20 @@ class City extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table User_description
+     * Link to table profile
      */
-    //public function getUserDescs()
-    //{
-    //    return $this->hasOne(UserDesc::className(), ['id' => 'user_desc_id']);
-    //}
+    public function getProfiles()
+    {
+        return $this->hasMany(Profile::className(), ['id' => 'profile_id'])
+            ->viaTable('profile_city', ['city_id' => 'id']);
+    }
 
     /**
      *
-     * Link to table Photo_ad
+     * Link to table region
      */
-    //public function getAdPhotos()
-    //{
-    //    return $this->hasMany(PhotoAd::className(), ['ad_id' => 'id']);
-    //}
+    public function getRegions()
+    {
+        return $this->hasOne(Region::className(), ['id' => 'region_id']);
+    }
 }
