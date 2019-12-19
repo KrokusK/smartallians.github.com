@@ -16,6 +16,7 @@ class m191210_000005_create_contractor_tables extends Migration
         $this->createTable('{{%contractor}}', [
             'id' => $this->primaryKey(),
             'profile_id' => $this->integer()->notNull(),
+            'city_id' => $this->integer()->notNull(),
             'experience' => $this->string()->notNull(),
             'cost' => $this->string()->notNull()
         ]);
@@ -25,6 +26,13 @@ class m191210_000005_create_contractor_tables extends Migration
             'idx-contractor-profile-id',
             '{{%contractor}}',
             'profile_id'
+        );
+
+        // creates index for column city_id
+        $this->createIndex(
+            'idx-contractor-city-id',
+            '{{%contractor}}',
+            'city_id'
         );
 
         // create attestation table
@@ -109,10 +117,17 @@ class m191210_000005_create_contractor_tables extends Migration
 
         // add foreign key for table contractor
         $this->addForeignKey(
-            'fk-contractor_profile-id',
+            'fk-contractor-profile-id',
             '{{%contractor}}',
             'profile_id',
             '{{%profile}}',
+            'id'
+        );
+        $this->addForeignKey(
+            'fk-contractor-city-id',
+            '{{%contractor}}',
+            'city_id',
+            '{{%city}}',
             'id'
         );
 
@@ -206,7 +221,11 @@ class m191210_000005_create_contractor_tables extends Migration
 
         // drops foreign key for table contractor
         $this->dropForeignKey(
-            'fk-contractor_profile-id',
+            'fk-contractor-city-id',
+            '{{%contractor}}'
+        );
+        $this->dropForeignKey(
+            'fk-contractor-profile-id',
             '{{%contractor}}'
         );
 
@@ -244,6 +263,12 @@ class m191210_000005_create_contractor_tables extends Migration
         $this->dropIndex(
             'idx-contractor-attestation-contractor-id',
             '{{%contractor_attestation}}'
+        );
+
+        // drop index for column city-id
+        $this->dropIndex(
+            'idx-contractor-city-id',
+            '{{%contractor}}'
         );
 
         // drop index for column profile-id
