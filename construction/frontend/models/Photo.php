@@ -73,19 +73,10 @@ class Photo extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table User_description
+     * Link to table position
      */
-    //public function getUserDescs()
-    //{
-    //    return $this->hasOne(UserDesc::className(), ['id' => 'user_desc_id']);
-    //}
-
-    /**
-     *
-     * Link to table Photo_ad
-     */
-    //public function getAdPhotos()
-    //{
-    //    return $this->hasMany(PhotoAd::className(), ['ad_id' => 'id']);
-    //}
+    public function getPositions()
+    {
+        return $this->hasOne(Position::className(), ['id' => 'position_id']);
+    }
 }

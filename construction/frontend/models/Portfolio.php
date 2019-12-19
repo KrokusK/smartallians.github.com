@@ -44,19 +44,19 @@ class Portfolio extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table User_description
+     * Link to table contractor
      */
-    //public function getUserDescs()
-    //{
-    //    return $this->hasOne(UserDesc::className(), ['id' => 'user_desc_id']);
-    //}
+    public function getContractors()
+    {
+        return $this->hasOne(Contractor::className(), ['id' => 'contractor_id']);
+    }
 
     /**
      *
-     * Link to table Photo_ad
+     * Link to table position
      */
-    //public function getAdPhotos()
-    //{
-    //    return $this->hasMany(PhotoAd::className(), ['ad_id' => 'id']);
-    //}
+    public function getPositions()
+    {
+        return $this->hasMany(Position::className(), ['portfolio_id' => 'id']);
+    }
 }

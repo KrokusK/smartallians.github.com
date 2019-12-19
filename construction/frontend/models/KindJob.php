@@ -34,19 +34,11 @@ class KindJob extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table User_description
+     * Link to table contractor
      */
-    //public function getUserDescs()
-    //{
-    //    return $this->hasOne(UserDesc::className(), ['id' => 'user_desc_id']);
-    //}
-
-    /**
-     *
-     * Link to table Photo_ad
-     */
-    //public function getAdPhotos()
-    //{
-    //    return $this->hasMany(PhotoAd::className(), ['ad_id' => 'id']);
-    //}
+    public function getContractors()
+    {
+        return $this->hasMany(Contractor::className(), ['id' => 'contractor_id'])
+            ->viaTable('contractor_kind_job', ['kind_job_id' => 'id']);
+    }
 }

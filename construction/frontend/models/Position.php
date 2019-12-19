@@ -44,19 +44,19 @@ class Position extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table User_description
+     * Link to table portfolio
      */
-    //public function getUserDescs()
-    //{
-    //    return $this->hasOne(UserDesc::className(), ['id' => 'user_desc_id']);
-    //}
+    public function getPortfolios()
+    {
+        return $this->hasOne(Portfolio::className(), ['id' => 'portfolio_id']);
+    }
 
     /**
      *
-     * Link to table Photo_ad
+     * Link to table photo
      */
-    //public function getAdPhotos()
-    //{
-    //    return $this->hasMany(PhotoAd::className(), ['ad_id' => 'id']);
-    //}
+    public function getPhotos()
+    {
+        return $this->hasMany(Photo::className(), ['position_id' => 'id']);
+    }
 }
