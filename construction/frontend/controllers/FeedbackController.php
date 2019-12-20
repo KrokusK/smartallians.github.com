@@ -158,7 +158,10 @@ class FeedbackController extends Controller
                     //}
                     //if (property_exists($modelFeedback, $name)) {
                     if ($modelFeedback->hasAttribute($name)) {
-                        if ($name != 'id') $modelFeedback->$name = $value;
+                        if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelFeedback->$name = $value;
+
+                        $modelFeedback->created_at = time();
+                        $modelFeedback->updated_at = time();
                     }
                 }
             }
@@ -241,7 +244,9 @@ class FeedbackController extends Controller
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                            if ($name != 'id') $modelFeedback->$name = $value;
+                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelFeedback->$name = $value;
+
+                            $modelFeedback->updated_at = time();
                         }
                     } else {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
@@ -260,7 +265,10 @@ class FeedbackController extends Controller
                         //}
                         //if (property_exists($modelFeedback, $name)) {
                         if ($modelFeedback->hasAttribute($name)) {
-                            if ($name != 'id') $modelFeedback->$name = $value;
+                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelFeedback->$name = $value;
+
+                            $modelFeedback->created_at = time();
+                            $modelFeedback->updated_at = time();
                         }
                     }
                 }
