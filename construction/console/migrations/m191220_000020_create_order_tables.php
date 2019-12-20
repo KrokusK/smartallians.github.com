@@ -120,6 +120,15 @@ class m191220_000020_create_order_tables extends Migration
             '{{%feedback}}',
             'id'
         );
+
+        // add foreign keys for table profile_rrod
+        $this->addForeignKey(
+            'fk-profile-rrod-order-id',
+            '{{%profile_rrod}}',
+            'order_id',
+            '{{%order}}',
+            'id'
+        );
     }
 
     /**
@@ -151,6 +160,12 @@ class m191220_000020_create_order_tables extends Migration
         $this->dropForeignKey(
             'fk-order-request-id',
             '{{%order}}'
+        );
+
+        // drops foreign key for table profile_rrod
+        $this->dropForeignKey(
+            'fk-profile-rrod-order-id',
+            '{{%profile_rrod}}'
         );
 
         // drop index for column feedback_id

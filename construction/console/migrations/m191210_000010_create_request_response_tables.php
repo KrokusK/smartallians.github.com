@@ -167,13 +167,6 @@ class m191210_000010_create_request_response_tables extends Migration
             '{{%response}}',
             'id'
         );
-        $this->addForeignKey(
-            'fk-profile-rrod-order-id',
-            '{{%profile_rrod}}',
-            'order_id',
-            '{{%order}}',
-            'id'
-        );
         /*
         $this->addForeignKey(
             'fk-profile-rrod-delivery-id',
@@ -279,10 +272,6 @@ class m191210_000010_create_request_response_tables extends Migration
         );
         $this->dropForeignKey(
             'fk-profile-rrod-response-id',
-            '{{%profile_rrod}}'
-        );
-        $this->dropForeignKey(
-            'fk-profile-rrod-order-id',
             '{{%profile_rrod}}'
         );
         /*
