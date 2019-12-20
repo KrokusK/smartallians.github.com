@@ -167,7 +167,6 @@ class m191210_000010_create_request_response_tables extends Migration
             '{{%response}}',
             'id'
         );
-        /*
         $this->addForeignKey(
             'fk-profile-rrod-order-id',
             '{{%profile_rrod}}',
@@ -175,6 +174,7 @@ class m191210_000010_create_request_response_tables extends Migration
             '{{%order}}',
             'id'
         );
+        /*
         $this->addForeignKey(
             'fk-profile-rrod-delivery-id',
             '{{%profile_rrod}}',
