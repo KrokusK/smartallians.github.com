@@ -98,6 +98,15 @@ class Profile extends \yii\db\ActiveRecord
 
     /**
      *
+     * Link to table feedback
+     */
+    public function getFeedbacks()
+    {
+        return $this->hasOne(Feedback::className(), ['profile_id' => 'id']);
+    }
+
+    /**
+     *
      * Link to table city
      */
     public function getCities()

@@ -5,17 +5,17 @@ use Yii;
 use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "region".
+ * This is the model class for table "status_feedback".
  *
  */
-class Region extends \yii\db\ActiveRecord
+class StatusFeedback extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%region}}';
+        return '{{%status_feedback}}';
     }
 
     /**
@@ -34,10 +34,10 @@ class Region extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table city
+     * Link to table feedback
      */
-    public function getCities()
+    public function getStatusFeedback()
     {
-        return $this->hasMany(City::className(), ['region_id' => 'id']);
+        return $this->hasOne(Feedback::className(), ['status_feedback_id' => 'id']);
     }
 }

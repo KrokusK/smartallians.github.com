@@ -58,7 +58,7 @@ class Request extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['description'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['task'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['budjet'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
+            [['budjet'], 'double', 'message' => 'Значение должно быть числом'],
             [['period'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['date_begin'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['updated_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
