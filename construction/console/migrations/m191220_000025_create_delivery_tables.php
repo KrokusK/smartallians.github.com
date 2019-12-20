@@ -166,14 +166,6 @@ class m191220_000025_create_delivery_tables extends Migration
             'fk-delivery-delivery-place-id',
             '{{%delivery}}'
         );
-        $this->dropForeignKey(
-            'fk-order-response-id',
-            '{{%delivery}}'
-        );
-        $this->dropForeignKey(
-            'fk-order-request-id',
-            '{{%delivery}}'
-        );
 
         // drops foreign key for table departure_place
         $this->dropForeignKey(
