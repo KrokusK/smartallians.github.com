@@ -167,15 +167,6 @@ class m191210_000010_create_request_response_tables extends Migration
             '{{%response}}',
             'id'
         );
-        /*
-        $this->addForeignKey(
-            'fk-profile-rrod-delivery-id',
-            '{{%profile_rrod}}',
-            'delivery_id',
-            '{{%delivery}}',
-            'id'
-        );
-        */
 
         // add foreign keys for table request
         $this->addForeignKey(
@@ -274,12 +265,6 @@ class m191210_000010_create_request_response_tables extends Migration
             'fk-profile-rrod-response-id',
             '{{%profile_rrod}}'
         );
-        /*
-        $this->dropForeignKey(
-            'fk-profile-rrod-delivery-id',
-            '{{%profile_rrod}}'
-        );
-        */
 
         // drop index for column status_response_id
         $this->dropIndex(
