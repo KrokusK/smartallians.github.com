@@ -17,7 +17,7 @@ class m191210_000005_create_contractor_tables extends Migration
             'id' => $this->primaryKey(),
             'profile_id' => $this->integer()->notNull(),
             'experience' => $this->string()->notNull(),
-            'cost' => $this->string()->notNull()
+            'cost' => $this->float()->notNull()
         ]);
 
         // creates index for column profile_id

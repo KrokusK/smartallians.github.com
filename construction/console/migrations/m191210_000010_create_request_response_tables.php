@@ -65,7 +65,7 @@ class m191210_000010_create_request_response_tables extends Migration
             'name' => $this->string()->notNull(),
             'description' => $this->string()->notNull(),
             'task' => $this->string()->notNull(),
-            'budjet' => $this->string()->notNull(),
+            'budjet' => $this->float()->notNull(),
             'period' => $this->integer()->notNull(),
             'date_begin' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
@@ -118,7 +118,7 @@ class m191210_000010_create_request_response_tables extends Migration
             'status_response_id' => $this->integer()->notNull(),
             'request_id' => $this->integer()->notNull(),
             'description' => $this->string()->notNull(),
-            'cost' => $this->string()->notNull(),
+            'cost' => $this->float()->notNull(),
             'period' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull()
