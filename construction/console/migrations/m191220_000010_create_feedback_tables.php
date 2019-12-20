@@ -19,7 +19,7 @@ class m191220_000010_create_feedback_tables extends Migration
         ]);
 
         // create feedback table
-        $this->createTable('{{%status_feedback}}', [
+        $this->createTable('{{%feedback}}', [
             'id' => $this->primaryKey(),
             'profile_id' => $this->integer()->notNull(),
             'status_feedback_id' => $this->integer()->notNull(),
