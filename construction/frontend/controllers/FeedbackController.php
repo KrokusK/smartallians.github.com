@@ -89,7 +89,7 @@ class FeedbackController extends Controller
                 $query->andWhere([$key => $value]);
             }
 
-            $modelFeedback = $query->orderBy('name')->all();
+            $modelFeedback = $query->orderBy('id')->all();
 
             // get properties from Feedback object
             $FeedbackResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
@@ -101,7 +101,7 @@ class FeedbackController extends Controller
             // Search all records in the database
             $query = Feedback::find();
 
-            $modelFeedback = $query->orderBy('name')->all();
+            $modelFeedback = $query->orderBy('id')->all();
 
             // get properties from Feedback object
             $FeedbackResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
@@ -231,7 +231,7 @@ class FeedbackController extends Controller
                         ->where(['id' => $bodyRaw['Feedback[id]']]);
                     //->where(['AND', ['id' => $modelFeedback->id], ['user_desc_id'=> $var2]]);
 
-                    $modelFeedback = $query->orderBy('name')->one();
+                    $modelFeedback = $query->orderBy('id')->one();
 
                     if (!empty($modelFeedback)) {
                         // update in the properties in the Feedback object
@@ -333,7 +333,7 @@ class FeedbackController extends Controller
                     ->where(['id' => $bodyRaw['Feedback[id]']]);
                 //->where(['AND', ['id' => $modelFeedback->id], ['user_desc_id'=> $var2]]);
 
-                $modelFeedback = $query->orderBy('name')->one();
+                $modelFeedback = $query->orderBy('id')->one();
             }
         }
 
