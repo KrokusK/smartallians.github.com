@@ -42,7 +42,7 @@ class m191216_044753_import_data_to_the_Response_tables extends Migration
             'status_response_id' => 1,
             'request_id' => 1,
             'description' => 'Описание № 1',
-            'cost' => '1 000 000 руб.',
+            'cost' => 1000000,
             'period' => 1000000,
             'created_at' => 1573193110,
             'updated_at' => 1573193110
@@ -51,7 +51,7 @@ class m191216_044753_import_data_to_the_Response_tables extends Migration
             'status_response_id' => 1,
             'request_id' => 1,
             'description' => 'Описание № 2',
-            'cost' => '2 000 000 руб.',
+            'cost' => 2000000,
             'period' => 1000000,
             'created_at' => 1573193110,
             'updated_at' => 1573193110
@@ -60,7 +60,7 @@ class m191216_044753_import_data_to_the_Response_tables extends Migration
             'status_response_id' => 1,
             'request_id' => 3,
             'description' => 'Описание № 3',
-            'cost' => '3 000 000 руб.',
+            'cost' => 3000000,
             'period' => 1000000,
             'created_at' => 1573193110,
             'updated_at' => 1573193110
