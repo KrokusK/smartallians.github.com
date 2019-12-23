@@ -32,7 +32,9 @@ class m191220_000020_create_order_tables extends Migration
             'status_payment_id' => $this->integer()->notNull(),
             'status_complection_id' => $this->integer()->notNull(),
             'project_id' => $this->integer()->notNull(),
-            'feedback_id' => $this->integer()->notNull()
+            'feedback_id' => $this->integer()->notNull(),
+            'created_at' => $this->integer()->notNull(),
+            'updated_at' => $this->integer()->notNull()
         ]);
 
         // creates index for column request_id
