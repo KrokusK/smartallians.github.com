@@ -25,10 +25,10 @@ class Materials extends \yii\db\ActiveRecord
     {
 
         return [
-            [['request_id','response_id'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['material_type_id', 'status_material_id', 'name', 'count', 'cost'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
             [['request_id'], 'in', 'range' =>
-                function ( $attribute, $params ) {
+                function ($attribute, $params) {
                     $requestId = Request::find()->select(['id'])->asArray()->all();
                     $requestIdStr = [];
                     foreach ($requestId as $item) {
@@ -38,7 +38,7 @@ class Materials extends \yii\db\ActiveRecord
                 },
                 'message' => 'Заявка не выбрана из списка'],
             [['delivery_id'], 'in', 'range' =>
-                function ( $attribute, $params ) {
+                function ($attribute, $params) {
                     $deliveryId = Delivery::find()->select(['id'])->asArray()->all();
                     $deliveryIdStr = [];
                     foreach ($deliveryId as $item) {
@@ -48,7 +48,7 @@ class Materials extends \yii\db\ActiveRecord
                 },
                 'message' => 'Поставка не выбрана из списка'],
             [['material_type_id'], 'in', 'range' =>
-                function ( $attribute, $params ) {
+                function ($attribute, $params) {
                     $materialTypeId = MaterialType::find()->select(['id'])->asArray()->all();
                     $materialTypeIdStr = [];
                     foreach ($materialTypeId as $item) {
@@ -58,7 +58,7 @@ class Materials extends \yii\db\ActiveRecord
                 },
                 'message' => 'Тип материала не выбран из списка'],
             [['status_material_id'], 'in', 'range' =>
-                function ( $attribute, $params ) {
+                function ($attribute, $params) {
                     $statusMaterialId = StatusMaterial::find()->select(['id'])->asArray()->all();
                     $statusMaterialIdStr = [];
                     foreach ($statusMaterialId as $item) {
@@ -94,47 +94,20 @@ class Materials extends \yii\db\ActiveRecord
 
     /**
      *
-     * Link to table status_payment
+     * Link to table material_type
      */
-    public function getStatusPayment()
+    public function getMaterialType()
     {
-        return $this->hasOne(StatusPayment::className(), ['id' => 'status_payment_id']);
+        return $this->hasOne(MaterialType::className(), ['id' => 'material_type_id']);
     }
 
     /**
      *
-     * Link to table status_completion
+     * Link to table status_material
      */
-    public function getStatusCompletion()
+    public function getStatusMaterial()
     {
-        return $this->hasOne(StatusCompletion::className(), ['id' => 'status_completion_id']);
+        return $this->hasOne(StatusMaterial::className(), ['id' => 'status_material_id']);
     }
 
-    /**
-     *
-     * Link to table project
-     */
-    public function getProjects()
-    {
-        return $this->hasOne(Project::className(), ['id' => 'project_id']);
-    }
-
-    /**
-     *
-     * Link to table feedback
-     */
-    public function getFeedbacks()
-    {
-        return $this->hasOne(Feedback::className(), ['id' => 'feedback_id']);
-    }
-
-    /**
-     *
-     * Link to table profile
-     */
-    public function getProfiles()
-    {
-        return $this->hasMany(Profile::className(), ['id' => 'profile_id'])
-            ->viaTable('profile_rrod', ['materials_id' => 'id']);
-    }
 }

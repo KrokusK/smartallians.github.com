@@ -69,4 +69,22 @@ class City extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Request::className(), ['city_id' => 'id']);
     }
+
+    /**
+     *
+     * Link to table delivery_place
+     */
+    public function getDeliveryPlace()
+    {
+        return $this->hasOne(DeliveryPlace::className(), ['city_id' => 'id']);
+    }
+
+    /**
+     *
+     * Link to table departure_place
+     */
+    public function getDeparturePlace()
+    {
+        return $this->hasOne(DeparturePlace::className(), ['city_id' => 'id']);
+    }
 }

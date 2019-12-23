@@ -154,4 +154,14 @@ class Profile extends \yii\db\ActiveRecord
         return $this->hasMany(Order::className(), ['id' => 'order_id'])
             ->viaTable('profile_rrod', ['profile_id' => 'id']);
     }
+
+    /**
+     *
+     * Link to table delivery
+     */
+    public function getDeliveries()
+    {
+        return $this->hasMany(Order::className(), ['id' => 'delivery_id'])
+            ->viaTable('profile_rrod', ['profile_id' => 'id']);
+    }
 }
