@@ -153,7 +153,8 @@ class m191209_000001_create_authorization_tables extends Migration
             '{{%profile_city}}',
             'profile_id',
             '{{%profile}}',
-            'id'
+            'id',
+            'CASCADE'
         );
 
         // add foreign key for table profile_city
@@ -180,7 +181,8 @@ class m191209_000001_create_authorization_tables extends Migration
             '{{%profile_specialization}}',
             'profile_id',
             '{{%profile}}',
-            'id'
+            'id',
+            'CASCADE'
         );
 
         // add foreign key for table profile_specialization
