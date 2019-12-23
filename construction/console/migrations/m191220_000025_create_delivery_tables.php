@@ -55,8 +55,7 @@ class m191220_000025_create_delivery_tables extends Migration
             'status_delivery_id' => $this->integer()->notNull(),
             'cost' => $this->float()->notNull(),
             'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer()->notNull(),
-            'CASCADE'
+            'updated_at' => $this->integer()->notNull()
         ]);
 
         // creates index for column delivery_place_id
