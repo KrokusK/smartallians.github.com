@@ -12,8 +12,8 @@ class m191220_000020_create_order_tables extends Migration
      */
     public function safeUp()
     {
-        // create status_complection table
-        $this->createTable('{{%status_complection}}', [
+        // create status_completion table
+        $this->createTable('{{%status_completion}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull()
         ]);
@@ -30,7 +30,7 @@ class m191220_000020_create_order_tables extends Migration
             'request_id' => $this->integer()->notNull(),
             'response_id' => $this->integer()->notNull(),
             'status_payment_id' => $this->integer()->notNull(),
-            'status_complection_id' => $this->integer()->notNull(),
+            'status_completion_id' => $this->integer()->notNull(),
             'project_id' => $this->integer()->notNull(),
             'feedback_id' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
@@ -58,11 +58,11 @@ class m191220_000020_create_order_tables extends Migration
             'status_payment_id'
         );
 
-        // creates index for column status_complection_id
+        // creates index for column status_completion_id
         $this->createIndex(
-            'idx-order-status-complection-id',
+            'idx-order-status-completion-id',
             '{{%order}}',
-            'status_complection_id'
+            'status_completion_id'
         );
 
         // creates index for column project_id
@@ -104,10 +104,10 @@ class m191220_000020_create_order_tables extends Migration
             'id'
         );
         $this->addForeignKey(
-            'fk-order-status-complection-id',
+            'fk-order-status-completion-id',
             '{{%order}}',
-            'status_complection_id',
-            '{{%status_complection}}',
+            'status_completion_id',
+            '{{%status_completion}}',
             'id'
         );
         $this->addForeignKey(
@@ -151,7 +151,7 @@ class m191220_000020_create_order_tables extends Migration
             '{{%order}}'
         );
         $this->dropForeignKey(
-            'fk-order-status-complection-id',
+            'fk-order-status-completion-id',
             '{{%order}}'
         );
         $this->dropForeignKey(
@@ -185,9 +185,9 @@ class m191220_000020_create_order_tables extends Migration
             '{{%order}}'
         );
 
-        // drop index for column status_complection_id
+        // drop index for column status_completion_id
         $this->dropIndex(
-            'idx-order-status-complection-id',
+            'idx-order-status-completion-id',
             '{{%order}}'
         );
 
@@ -215,7 +215,7 @@ class m191220_000020_create_order_tables extends Migration
         // drop status_payment table
         $this->dropTable('{{%status_payment}}');
 
-        // drop status_complection table
-        $this->dropTable('{{%status_complection}}');
+        // drop status_completion table
+        $this->dropTable('{{%status_completion}}');
     }
 }
