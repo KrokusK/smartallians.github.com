@@ -69,7 +69,8 @@ class m191210_000010_create_request_response_tables extends Migration
             'period' => $this->integer()->notNull(),
             'date_begin' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer()->notNull()
+            'updated_at' => $this->integer()->notNull(),
+            'CASCADE'
         ]);
 
         // creates index for column status_request_id
@@ -121,7 +122,8 @@ class m191210_000010_create_request_response_tables extends Migration
             'cost' => $this->float()->notNull(),
             'period' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer()->notNull()
+            'updated_at' => $this->integer()->notNull(),
+            'CASCADE'
         ]);
 
         // creates index for column status_response_id
