@@ -78,4 +78,13 @@ class Feedback extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Profile::className(), ['id' => 'profile_id']);
     }
+
+    /**
+     *
+     * Link to table order
+     */
+    public function getOrders()
+    {
+        return $this->hasOne(Order::className(), ['feedback_id' => 'id']);
+    }
 }
