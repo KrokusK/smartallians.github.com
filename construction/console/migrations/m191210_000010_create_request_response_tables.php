@@ -122,8 +122,7 @@ class m191210_000010_create_request_response_tables extends Migration
             'cost' => $this->float()->notNull(),
             'period' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer()->notNull(),
-            'CASCADE'
+            'updated_at' => $this->integer()->notNull()
         ]);
 
         // creates index for column status_response_id
