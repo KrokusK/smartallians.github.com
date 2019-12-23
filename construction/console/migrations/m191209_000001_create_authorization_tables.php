@@ -24,8 +24,7 @@ class m191209_000001_create_authorization_tables extends Migration
             'site' => $this->string(),
             'avatar' => $this->string(),
             'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer()->notNull(),
-            'CASCADE'
+            'updated_at' => $this->integer()->notNull()
         ]);
 
         // creates index for column user_id
