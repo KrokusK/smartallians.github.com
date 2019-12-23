@@ -50,21 +50,24 @@ class m191211_000010_create_photo_tables extends Migration
             '{{%photo}}',
             'request_id',
             '{{%request}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-photo-response-id',
             '{{%photo}}',
             'response_id',
             '{{%response}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-photo-position-id',
             '{{%photo}}',
             'position_id',
             '{{%position}}',
-            'id'
+            'id',
+            'CASCADE'
         );
     }
 

@@ -141,7 +141,8 @@ class m191220_000025_create_delivery_tables extends Migration
             '{{%profile_rrod}}',
             'delivery_id',
             '{{%delivery}}',
-            'id'
+            'id',
+            'CASCADE'
         );
     }
 

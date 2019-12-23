@@ -70,14 +70,16 @@ class m191220_000030_create_material_tables extends Migration
             '{{%materials}}',
             'request_id',
             '{{%request}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-materials-delivery-id',
             '{{%materials}}',
             'delivery_id',
             '{{%delivery}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-materials-material-type-id',

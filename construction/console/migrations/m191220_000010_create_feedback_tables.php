@@ -48,7 +48,8 @@ class m191220_000010_create_feedback_tables extends Migration
             '{{%feedback}}',
             'profile_id',
             '{{%profile}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-feedback-status-feedback-id',

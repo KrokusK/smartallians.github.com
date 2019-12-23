@@ -122,7 +122,8 @@ class m191210_000005_create_contractor_tables extends Migration
             '{{%contractor_attestation}}',
             'contractor_id',
             '{{%contractor}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-contractor_attestation-attestation-id',
@@ -138,7 +139,8 @@ class m191210_000005_create_contractor_tables extends Migration
             '{{%contractor_kind_job}}',
             'contractor_id',
             '{{%contractor}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-contractor-kind-job-kind-job-id',

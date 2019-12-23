@@ -69,8 +69,7 @@ class m191210_000010_create_request_response_tables extends Migration
             'period' => $this->integer()->notNull(),
             'date_begin' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer()->notNull(),
-            'CASCADE'
+            'updated_at' => $this->integer()->notNull()
         ]);
 
         // creates index for column status_request_id
@@ -152,21 +151,24 @@ class m191210_000010_create_request_response_tables extends Migration
             '{{%profile_rrod}}',
             'profile_id',
             '{{%profile}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-profile-rrod-request-id',
             '{{%profile_rrod}}',
             'request_id',
             '{{%request}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-profile-rrod-response-id',
             '{{%profile_rrod}}',
             'response_id',
             '{{%response}}',
-            'id'
+            'id',
+            'CASCADE'
         );
 
         // add foreign keys for table request

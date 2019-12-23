@@ -84,14 +84,16 @@ class m191220_000020_create_order_tables extends Migration
             '{{%order}}',
             'request_id',
             '{{%request}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-order-response-id',
             '{{%order}}',
             'response_id',
             '{{%response}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-order-status-payment-id',
@@ -128,7 +130,8 @@ class m191220_000020_create_order_tables extends Migration
             '{{%profile_rrod}}',
             'order_id',
             '{{%order}}',
-            'id'
+            'id',
+            'CASCADE'
         );
     }
 
