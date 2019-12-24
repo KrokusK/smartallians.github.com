@@ -15,7 +15,7 @@ class DeliveryPlace extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%departure_place}}';
+        return '{{%delivery_place}}';
     }
 
     /**
