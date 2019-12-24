@@ -48,6 +48,7 @@ class m191215_044753_import_data_to_the_Request_tables extends Migration
             'budjet' => 1000000,
             'period' => 1000000,
             'date_begin' => 1573193110,
+            'date_end' => 1573203110,
             'created_at' => 1573193110,
             'updated_at' => 1573193110
         ]);
@@ -61,6 +62,7 @@ class m191215_044753_import_data_to_the_Request_tables extends Migration
             'budjet' => 2000000,
             'period' => 1000000,
             'date_begin' => 1573193110,
+            'date_end' => 1573203110,
             'created_at' => 1573193110,
             'updated_at' => 1573193110
         ]);
@@ -74,6 +76,7 @@ class m191215_044753_import_data_to_the_Request_tables extends Migration
             'budjet' => 3000000,
             'period' => 1000000,
             'date_begin' => 1573193110,
+            'date_end' => 1573203110,
             'created_at' => 1573193110,
             'updated_at' => 1573193110
         ]);

@@ -59,15 +59,16 @@ class m191210_000010_create_request_response_tables extends Migration
         // create request table
         $this->createTable('{{%request}}', [
             'id' => $this->primaryKey(),
-            'status_request_id' => $this->integer()->notNull(),
+            'status_request_id' => $this->integer(),
             'city_id' => $this->integer()->notNull(),
             'address' => $this->string()->notNull(),
-            'name' => $this->string()->notNull(),
+            'name' => $this->string(),
             'description' => $this->string()->notNull(),
-            'task' => $this->string()->notNull(),
-            'budjet' => $this->float()->notNull(),
-            'period' => $this->integer()->notNull(),
+            'task' => $this->string(),
+            'budjet' => $this->float(),
+            'period' => $this->integer(),
             'date_begin' => $this->integer()->notNull(),
+            'date_end' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull()
         ]);
