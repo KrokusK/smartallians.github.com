@@ -27,8 +27,8 @@ class m191220_000030_create_material_tables extends Migration
         // create materials table
         $this->createTable('{{%materials}}', [
             'id' => $this->primaryKey(),
-            'request_id' => $this->integer()->notNull(),
-            'delivery_id' => $this->integer()->notNull(),
+            'request_id' => $this->integer(),
+            'delivery_id' => $this->integer(),
             'material_type_id' => $this->integer()->notNull(),
             'status_material_id' => $this->integer()->notNull(),
             'name' => $this->string()->notNull(),
