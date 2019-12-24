@@ -169,8 +169,8 @@ class SiteController extends Controller
     {
         Yii::$app->user->logout();
 
-        //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Разлогирование прошло успешно!'));
-        return $this->goHome();
+        return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Разлогирование прошло успешно!'));
+        //return $this->goHome();
     }
 
     /**
