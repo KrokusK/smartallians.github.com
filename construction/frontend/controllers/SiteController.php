@@ -92,7 +92,8 @@ class SiteController extends Controller
 
         //if ($model->load(Yii::$app->request->post()) && $model->login()) {
         //if ($model->load(Yii::$app->getRequest()->getBodyParams()) && $model->login()) {
-        if ($model->load(json_decode(Yii::$app->getRequest()->getRawBody(), true)) && $model->login()) {
+        //if ($model->load(json_decode(Yii::$app->getRequest()->getRawBody(), true)) && $model->login()) {
+        if ($model->load(json_decode(Yii::$app->getRequest()->getBodyParams(), true)) && $model->login()) {
             return $this->goBack();
         } else {
             $model->password = '';
