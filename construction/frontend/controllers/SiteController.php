@@ -84,16 +84,78 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        // check user is a guest
+        if (!Yii::$app->user->isGuest) {
+            //return $this->goHome();
+        }
+
+        //if (Yii::$app->request->isAjax) {
+        //GET data from body request
+        //Yii::$app->request->getBodyParams()
+        $fh = fopen("php://input", 'r');
+        $put_string = stream_get_contents($fh);
+        $put_string = urldecode($put_string);
+        //$array_put = $this->parsingLoginFormFormData($put_string);
+
+        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
+
+        //$modelLoginForm->setAttributes($bodyRaw);
+
+        // load attributes in LoginForm object
+        // example: yiisoft/yii2/base/Model.php
+        if (is_array($bodyRaw)) {
+
+            $modelLoginForm = new LoginForm();
+
+            // fill in the properties in the LoginForm object
+            foreach ($bodyRaw as $name => $value) {
+                $pos_begin = strpos($name, '[') + 1;
+                if (strtolower(substr($name, 0, $pos_begin - 1)) != 'loginform') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                $pos_end = strpos($name, ']');
+                $name = substr($name, $pos_begin, $pos_end-$pos_begin);
+                //if (isset($modelLoginForm->$name)) {
+                //    $modelLoginForm->$name = $value;
+                //}
+                //if (property_exists($modelLoginForm, $name)) {
+                if ($modelLoginForm->hasAttribute($name)) {
+                    $modelLoginForm->$name = $value;
+                }
+            }
+        }
+
+        if ($modelLoginForm->validate()) {
+
+            if ($modelLoginForm->login()) {
+                //return $this->goBack();
+                //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Авторизация прошла успешно!', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelLoginForm))));
+                return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Авторизация прошла успешно!'));
+            } else {
+                $modelLoginForm->password = '';
+
+                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
+
+                /*
+                return $this->render('login', [
+                    'model' => $model,
+                ]);
+                */
+            }
+        } else {
+            return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
+        }
+        //}
+    }
+/*
+    public function actionLogin()
+    {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
         $model = new LoginForm();
 
-        //if ($model->load(Yii::$app->request->post()) && $model->login()) {
-        //if ($model->load(Yii::$app->getRequest()->getBodyParams()) && $model->login()) {
-        //if ($model->load(json_decode(Yii::$app->getRequest()->getRawBody(), true)) && $model->login()) {
-        if ($model->load(json_decode(Yii::$app->getRequest()->getBodyParams(), true)) && $model->login()) {
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         } else {
             $model->password = '';
@@ -103,7 +165,7 @@ class SiteController extends Controller
             ]);
         }
     }
-
+*/
     /**
      * Logs out the current user.
      *
