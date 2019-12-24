@@ -90,7 +90,8 @@ class SiteController extends Controller
     {
         // check user is a guest
         if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+            //return $this->goHome();
+            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Вы уже авторизованы!'));
         }
 
         //if (Yii::$app->request->isAjax) {
