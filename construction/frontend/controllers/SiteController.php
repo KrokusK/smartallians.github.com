@@ -90,7 +90,7 @@ class SiteController extends Controller
     {
         // check user is a guest
         if (!Yii::$app->user->isGuest) {
-            //return $this->goHome();
+            return $this->goHome();
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -118,13 +118,8 @@ class SiteController extends Controller
                 if (strtolower(substr($name, 0, $pos_begin - 1)) != 'loginform') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                 $pos_end = strpos($name, ']');
                 $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                //if (isset($modelLoginForm->$name)) {
-                //    $modelLoginForm->$name = $value;
-                //}
-                //if (property_exists($modelLoginForm, $name)) {
-                //if ($modelLoginForm->hasAttribute($name)) {
-                    $modelLoginForm->$name = $value;
-                //}
+
+                $modelLoginForm->$name = $value;
             }
         }
 
