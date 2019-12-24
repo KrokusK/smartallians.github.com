@@ -89,7 +89,7 @@ class DeliveryController extends Controller
                 $query->andWhere([$key => $value]);
             }
 
-            $modelDelivery = $query->DeliveryBy('id')->all();
+            $modelDelivery = $query->OrderBy('id')->all();
 
             // get properties from Delivery object
             $DeliveryResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
@@ -101,7 +101,7 @@ class DeliveryController extends Controller
             // Search all records in the database
             $query = Delivery::find();
 
-            $modelDelivery = $query->DeliveryBy('id')->all();
+            $modelDelivery = $query->OrderBy('id')->all();
 
             // get properties from Delivery object
             $DeliveryResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
@@ -234,7 +234,7 @@ class DeliveryController extends Controller
                         ->where(['id' => $bodyRaw['Delivery[id]']]);
                     //->where(['AND', ['id' => $modelDelivery->id], ['user_desc_id'=> $var2]]);
 
-                    $modelDelivery = $query->DeliveryBy('id')->one();
+                    $modelDelivery = $query->OrderBy('id')->one();
 
                     if (!empty($modelDelivery)) {
                         // update in the properties in the Delivery object
@@ -341,7 +341,7 @@ class DeliveryController extends Controller
                     ->where(['id' => $bodyRaw['Delivery[id]']]);
                 //->where(['AND', ['id' => $modelDelivery->id], ['user_desc_id'=> $var2]]);
 
-                $modelDelivery = $query->DeliveryBy('id')->one();
+                $modelDelivery = $query->OrderBy('id')->one();
             }
         }
 
