@@ -122,9 +122,9 @@ class SiteController extends Controller
                 //    $modelLoginForm->$name = $value;
                 //}
                 //if (property_exists($modelLoginForm, $name)) {
-                if ($modelLoginForm->hasAttribute($name)) {
+                //if ($modelLoginForm->hasAttribute($name)) {
                     $modelLoginForm->$name = $value;
-                }
+                //}
             }
         }
 
