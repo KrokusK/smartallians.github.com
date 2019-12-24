@@ -99,19 +99,14 @@ class SiteController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingLoginFormFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelLoginForm->setAttributes($bodyRaw);
+        $modelLoginForm = new LoginForm();
 
         // load attributes in LoginForm object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-
-            $modelLoginForm = new LoginForm();
-
             // fill in the properties in the LoginForm object
             foreach ($bodyRaw as $name => $value) {
                 $pos_begin = strpos($name, '[') + 1;
@@ -174,6 +169,7 @@ class SiteController extends Controller
     {
         Yii::$app->user->logout();
 
+        //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Разлогирование прошло успешно!'));
         return $this->goHome();
     }
 
