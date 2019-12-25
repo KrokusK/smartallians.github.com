@@ -52,7 +52,7 @@ class SiteController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'logout' => ['post'],
-                    'login' => ['post'],
+                    //'login' => ['post'],
                 ],
             ],
         ];
@@ -107,58 +107,62 @@ class SiteController extends Controller
         }
 
         //if (Yii::$app->request->isAjax) {
-        //GET data from body request
-        //Yii::$app->request->getBodyParams()
-        $fh = fopen("php://input", 'r');
-        $put_string = stream_get_contents($fh);
-        $put_string = urldecode($put_string);
+        if ($request->isPost) {
+            //GET data from body request
+            //Yii::$app->request->getBodyParams()
+            $fh = fopen("php://input", 'r');
+            $put_string = stream_get_contents($fh);
+            $put_string = urldecode($put_string);
 
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+            $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
 
-        $modelLoginForm = new LoginForm();
+            $modelLoginForm = new LoginForm();
 
-        // load attributes in LoginForm object
-        // example: yiisoft/yii2/base/Model.php
-        if (is_array($bodyRaw)) {
-            // fill in the properties in the LoginForm object
-            foreach ($bodyRaw as $name => $value) {
-                //$pos_begin = strpos($name, '[') + 1;
-                //if (strtolower(substr($name, 0, $pos_begin - 1)) != 'loginform') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
-                //$pos_end = strpos($name, ']');
-                //$name = substr($name, $pos_begin, $pos_end-$pos_begin);
+            // load attributes in LoginForm object
+            // example: yiisoft/yii2/base/Model.php
+            if (is_array($bodyRaw)) {
+                // fill in the properties in the LoginForm object
+                foreach ($bodyRaw as $name => $value) {
+                    //$pos_begin = strpos($name, '[') + 1;
+                    //if (strtolower(substr($name, 0, $pos_begin - 1)) != 'loginform') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                    //$pos_end = strpos($name, ']');
+                    //$name = substr($name, $pos_begin, $pos_end-$pos_begin);
 
-                $modelLoginForm->$name = $value;
+                    $modelLoginForm->$name = $value;
+                }
             }
-        }
 
-        if ($modelLoginForm->validate()) {
+            if ($modelLoginForm->validate()) {
 
-            if ($modelLoginForm->login()) {
-                //return $this->goBack();
+                if ($modelLoginForm->login()) {
+                    //return $this->goBack();
 
-                // Get user data from tables
-                $query = Profile::find()
-                    ->where(['user_id' => Yii::$app->user->getId()]);
-                $userData = $query->orderBy('id')
-                    ->with('users')
-                    ->asArray()
-                    ->one();
+                    // Get user data from tables
+                    $query = Profile::find()
+                        ->where(['user_id' => Yii::$app->user->getId()]);
+                    $userData = $query->orderBy('id')
+                        ->with('users')
+                        ->asArray()
+                        ->one();
 
-                //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Авторизация прошла успешно!', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelLoginForm))));
-                return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Авторизация прошла успешно!', 'id_user' => Yii::$app->user->getId(), 'id_profile' => $userData['id'], 'fio' => $userData['fio'], 'username' => $userData['users']['username'], 'email' => $userData['users']['email'], 'avatar' => $userData['avatar']));
+                    //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Авторизация прошла успешно!', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelLoginForm))));
+                    return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Авторизация прошла успешно!', 'id_user' => Yii::$app->user->getId(), 'id_profile' => $userData['id'], 'fio' => $userData['fio'], 'username' => $userData['users']['username'], 'email' => $userData['users']['email'], 'avatar' => $userData['avatar']));
+                } else {
+                    $modelLoginForm->password = '';
+
+                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
+
+
+                    //return $this->render('login');
+
+                }
             } else {
-                $modelLoginForm->password = '';
-
                 return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
 
-
-                //return $this->render('login');
-
+                //return $this->render('index');
             }
         } else {
-            return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
-
-            //return $this->render('index');
+            return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ожидается POST запрос'));
         }
         //}
     }
