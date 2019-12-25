@@ -19,6 +19,7 @@ AppAsset::register($this);
     <meta charset=utf-8>
     <meta http-equiv=X-UA-Compatible content="IE=edge">
     <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <link rel=icon href=/favicon.ico>
     <link rel=stylesheet href=fonts/_fonts.css>
 
     <?php $this->registerCsrfMetaTags() ?>
@@ -43,12 +44,7 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-<div class="wrap">
-    <div class="container">
-
-        <?= $content ?>
-    </div>
-</div>
+<?= $content ?>
 
 
 
