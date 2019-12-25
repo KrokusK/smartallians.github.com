@@ -135,7 +135,7 @@ class SiteController extends Controller
             if ($modelLoginForm->login()) {
                 //return $this->goBack();
                 //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Авторизация прошла успешно!', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelLoginForm))));
-                return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Авторизация прошла успешно!'));
+                return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Авторизация прошла успешно!', 'id_user' => Yii::$app->user->getId(), 'id_profile' => $userData['id'], 'fio' => $userData['fio'], 'username' => $userData['users']['username'], 'email' => $userData['users']['email'], 'avatar' => $userData['avatar']));
             } else {
                 $modelLoginForm->password = '';
 
