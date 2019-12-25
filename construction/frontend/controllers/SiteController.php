@@ -98,9 +98,9 @@ class SiteController extends Controller
             $query = Profile::find()
                 ->where(['user_id' => Yii::$app->user->getId()]);
             $userData = $query->orderBy('id')
-                ->with('Users')
+                ->with('users')
                 ->asArray()
-                ->one();
+                ->all();
 
             return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Вы уже авторизованы!', var_dump($userData)));
         }
