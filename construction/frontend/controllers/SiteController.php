@@ -94,8 +94,9 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest) {
             //return $this->goHome();
 
+            // Get user data from tables
             $query = Profile::find()
-                ->where(['user_id' => Yii::$app->user->getId()]]);
+                ->where(['user_id' => Yii::$app->user->getId()]);
             $userData = $query->orderBy('id')
                 ->with('Users')
                 ->asArray()
