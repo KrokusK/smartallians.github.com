@@ -206,4 +206,13 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
+
+    /**
+     *
+     * Link to table profile
+     */
+    public function getProfiles()
+    {
+        return $this->hasOne(Profile::className(), ['user_id' => 'id']);
+    }
 }

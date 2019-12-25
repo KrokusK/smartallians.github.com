@@ -1,7 +1,9 @@
 <?php
 namespace frontend\controllers;
 
+;
 
+use frontend\models\Profile;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -91,7 +93,15 @@ class SiteController extends Controller
         // check user is a guest
         if (!Yii::$app->user->isGuest) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Вы уже авторизованы!'));
+
+            $query = Profile::find()
+                ->where(['user_id' => Yii::$app->user->getId()]]);
+            $userData = $query->orderBy('id')
+                ->with('Users')
+                ->asArray()
+                ->one();
+
+            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Вы уже авторизованы!', var_dump($userData)));
         }
 
         //if (Yii::$app->request->isAjax) {

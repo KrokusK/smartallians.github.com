@@ -73,7 +73,7 @@ class Profile extends \yii\db\ActiveRecord
      *
      * Link to table user
      */
-    public function getUser()
+    public function getUsers()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
