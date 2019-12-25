@@ -39,16 +39,16 @@ AppAsset::register($this);
     <link href=/js/chunk-c6d5b5d2.fde16e82.js rel=prefetch>
     <link href=/js/app.4d4a80ed.js rel=preload as=script>
     <link href=/js/chunk-vendors.29d4b946.js rel=preload as=script>
-    <?php $this->head() ?>
+    <?php //$this->head() ?>
 </head>
 <body>
-<?php $this->beginBody() ?>
+<?php //$this->beginBody() ?>
 
 <?= $content ?>
 
 
 
-<?php $this->endBody() ?>
+<?php //$this->endBody() ?>
 </body>
 </html>
 <?php $this->endPage() ?>
