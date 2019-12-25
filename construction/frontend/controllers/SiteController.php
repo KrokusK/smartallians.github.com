@@ -128,14 +128,16 @@ class SiteController extends Controller
             } else {
                 $modelLoginForm->password = '';
 
-                //return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
+                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
 
 
-                return $this->render('login');
+                //return $this->render('login');
 
             }
         } else {
-            return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
+            //return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
+
+            return $this->render('login');
         }
         //}
     }
