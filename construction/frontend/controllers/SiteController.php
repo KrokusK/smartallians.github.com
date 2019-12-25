@@ -155,9 +155,9 @@ class SiteController extends Controller
 
             }
         } else {
-            //return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
+            return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
 
-            return $this->render('index');
+            //return $this->render('index');
         }
         //}
     }
