@@ -100,9 +100,9 @@ class SiteController extends Controller
             $userData = $query->orderBy('id')
                 ->with('users')
                 ->asArray()
-                ->all();
+                ->one();
 
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Вы уже авторизованы!', var_dump($userData)));
+            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Вы уже авторизованы!', 'id_user' => Yii::$app->user->getId(), 'id_profile' => $userData['id'], 'avatar' => $userData['avatar'], var_dump($userData)));
         }
 
         //if (Yii::$app->request->isAjax) {
