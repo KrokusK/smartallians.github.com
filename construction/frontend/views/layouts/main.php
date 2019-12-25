@@ -12,7 +12,7 @@ use common\widgets\Alert;
 
 //AppAsset::register($this);
 ?>
-<?php $this->beginPage() ?>
+<?php //$this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
@@ -51,4 +51,4 @@ use common\widgets\Alert;
 <?php //$this->endBody() ?>
 </body>
 </html>
-<?php $this->endPage() ?>
+<?php //$this->endPage() ?>
