@@ -162,7 +162,7 @@ class SiteController extends Controller
                 //return $this->render('index');
             }
         } else {
-            return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ожидается POST запрос'));
+            //return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ожидается POST запрос'));
         }
         //}
     }
