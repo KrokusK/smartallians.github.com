@@ -107,7 +107,7 @@ class SiteController extends Controller
         }
 
         //if (Yii::$app->request->isAjax) {
-        if ($request->isPost) {
+        if (Yii::$app->request->isPost) {
             //GET data from body request
             //Yii::$app->request->getBodyParams()
             $fh = fopen("php://input", 'r');
