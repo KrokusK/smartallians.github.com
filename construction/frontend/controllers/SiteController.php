@@ -102,7 +102,7 @@ class SiteController extends Controller
                 ->asArray()
                 ->one();
 
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Вы уже авторизованы!', 'id_user' => Yii::$app->user->getId(), 'id_profile' => $userData['id'], 'fio' => $userData['fio'], 'username' => $userData['users']->users['username'], 'avatar' => $userData['avatar'], var_dump($userData)));
+            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Вы уже авторизованы!', 'id_user' => Yii::$app->user->getId(), 'id_profile' => $userData['id'], 'fio' => $userData['fio'], 'username' => $userData['users']['username'], 'avatar' => $userData['avatar'], var_dump($userData)));
         }
 
         //if (Yii::$app->request->isAjax) {
