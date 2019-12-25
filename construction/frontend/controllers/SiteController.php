@@ -103,7 +103,7 @@ class SiteController extends Controller
                 ->asArray()
                 ->one();
 
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Вы уже авторизованы!', 'id_user' => Yii::$app->user->getId(), 'id_profile' => $userData['id'], 'fio' => $userData['fio'], 'username' => $userData['users']['username'], 'email' => $userData['users']['email'], 'avatar' => $userData['avatar']));
+            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Вы уже авторизованы!', 'id_user' => Yii::$app->user->getId(), 'id_profile' => $userData['id'], 'fio' => $userData['fio'], 'username' => $userData['users']['username'], 'email' => $userData['users']['email'], 'avatar' => $userData['avatar']));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -145,19 +145,19 @@ class SiteController extends Controller
                         ->asArray()
                         ->one();
 
-                    //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Авторизация прошла успешно!', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelLoginForm))));
-                    return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Авторизация прошла успешно!', 'id_user' => Yii::$app->user->getId(), 'id_profile' => $userData['id'], 'fio' => $userData['fio'], 'username' => $userData['users']['username'], 'email' => $userData['users']['email'], 'avatar' => $userData['avatar']));
+                    //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Авторизация прошла успешно!', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelLoginForm))));
+                    return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Авторизация прошла успешно!', 'id_user' => Yii::$app->user->getId(), 'id_profile' => $userData['id'], 'fio' => $userData['fio'], 'username' => $userData['users']['username'], 'email' => $userData['users']['email'], 'avatar' => $userData['avatar']));
                 } else {
                     $modelLoginForm->password = '';
 
-                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
 
 
                     //return $this->render('login');
 
                 }
             } else {
-                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
 
                 //return $this->render('index');
             }
