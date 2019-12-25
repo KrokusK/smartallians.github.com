@@ -130,11 +130,9 @@ class SiteController extends Controller
 
                 return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
 
-                /*
-                return $this->render('login', [
-                    'model' => $model,
-                ]);
-                */
+                
+                return $this->render('login');
+
             }
         } else {
             return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
