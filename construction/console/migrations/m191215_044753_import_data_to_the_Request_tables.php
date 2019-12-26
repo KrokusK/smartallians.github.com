@@ -133,6 +133,8 @@ class m191215_044753_import_data_to_the_Request_tables extends Migration
     public function safeDown()
     {
         // erase table records and sequences
+        $this->delete('{{%request_kind_job}}');
+        $this->delete('{{%kind_job}}');
         $this->delete('{{%request}}');
         $this->delete('{{%status_request}}');
 
