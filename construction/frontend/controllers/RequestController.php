@@ -104,13 +104,13 @@ class RequestController extends Controller
             $modelRequest = $query->orderBy('created_at')
                 //->offset($pagination->offset)
                 //->limit($pagination->limit)
-                //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
                 ->with('kindJob')
                 ->all();
 
             // get properties from Request object
             $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
             array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
+            array_push($RequestResponse, var_dump($modelRequest));
 
             return Json::encode($RequestResponse);
 
