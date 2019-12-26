@@ -91,7 +91,7 @@ class SiteController extends Controller
      */
     public function actionOptions()
     {
-        return Json::encode(array('method' => 'OPTIONS', 'status' => 0, 'type' => 'success');
+        return Json::encode(array('method' => 'OPTIONS', 'status' => 0, 'type' => 'success'));
     }
 
     /**
