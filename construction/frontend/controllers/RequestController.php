@@ -105,12 +105,13 @@ class RequestController extends Controller
                 //->offset($pagination->offset)
                 //->limit($pagination->limit)
                 ->with('kindJob')
+                ->asArray()
                 ->all();
 
             // get properties from Request object
             $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
             array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
-            array_push($RequestResponse, var_dump($modelRequest->kindJob));
+            //array_push($RequestResponse, var_dump($modelRequest['kindJob']));
 
             return Json::encode($RequestResponse);
 
