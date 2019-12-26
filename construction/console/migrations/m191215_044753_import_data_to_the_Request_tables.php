@@ -80,6 +80,20 @@ class m191215_044753_import_data_to_the_Request_tables extends Migration
             'created_at' => 1573193110,
             'updated_at' => 1573193110
         ]);
+
+        // import to the profile_rrod table
+        $this->insert('{{%profile_rrod}}', [
+            'profile_id' => 1,
+            'request_id' => 1
+        ]);
+        $this->insert('{{%profile_rrod}}', [
+            'profile_id' => 1,
+            'request_id' => 2
+        ]);
+        $this->insert('{{%profile_rrod}}', [
+            'profile_id' => 1,
+            'request_id' => 3
+        ]);
     }
 
     /**

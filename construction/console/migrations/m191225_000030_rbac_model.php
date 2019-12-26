@@ -13,29 +13,29 @@ class m191225_000030_rbac_model extends Migration
     public function safeUp()
     {
         // Create author columns
-        $this->addColumn('profile', 'createdby', $this->integer());
-        $this->addColumn('contractor', 'createdby', $this->integer());
-        $this->addColumn('portfolio', 'createdby', $this->integer());
-        $this->addColumn('position', 'createdby', $this->integer());
-        $this->addColumn('photo', 'createdby', $this->integer());
-        $this->addColumn('response', 'createdby', $this->integer());
-        $this->addColumn('request', 'createdby', $this->integer());
-        $this->addColumn('order', 'createdby', $this->integer());
-        $this->addColumn('delivery', 'createdby', $this->integer());
-        $this->addColumn('materials', 'createdby', $this->integer());
-        $this->addColumn('delivery_place', 'createdby', $this->integer());
-        $this->addColumn('departure_place', 'createdby', $this->integer());
-        $this->addColumn('project', 'createdby', $this->integer());
-        $this->addColumn('job_stages', 'createdby', $this->integer());
-        $this->addColumn('project_documents', 'createdby', $this->integer());
+        $this->addColumn('profile', 'created_by', $this->integer());
+        $this->addColumn('contractor', 'created_by', $this->integer());
+        $this->addColumn('portfolio', 'created_by', $this->integer());
+        $this->addColumn('position', 'created_by', $this->integer());
+        $this->addColumn('photo', 'created_by', $this->integer());
+        $this->addColumn('response', 'created_by', $this->integer());
+        $this->addColumn('request', 'created_by', $this->integer());
+        $this->addColumn('order', 'created_by', $this->integer());
+        $this->addColumn('delivery', 'created_by', $this->integer());
+        $this->addColumn('materials', 'created_by', $this->integer());
+        $this->addColumn('delivery_place', 'created_by', $this->integer());
+        $this->addColumn('departure_place', 'created_by', $this->integer());
+        $this->addColumn('project', 'created_by', $this->integer());
+        $this->addColumn('job_stages', 'created_by', $this->integer());
+        $this->addColumn('project_documents', 'created_by', $this->integer());
 
         // insert data in to the profile table
-        $this->update('profile', ['createdby' => 1], ['id' => 1]);
-        $this->update('profile', ['createdby' => 2], ['id' => 2]);
-        $this->update('profile', ['createdby' => 3], ['id' => 3]);
-        $this->update('profile', ['createdby' => 4], ['id' => 4]);
-        $this->update('profile', ['createdby' => 5], ['id' => 5]);
-        $this->alterColumn('profile', 'createdby', $this->integer()->notNull());
+        $this->update('profile', ['created_by' => 1], ['id' => 1]);
+        $this->update('profile', ['created_by' => 2], ['id' => 2]);
+        $this->update('profile', ['created_by' => 3], ['id' => 3]);
+        $this->update('profile', ['created_by' => 4], ['id' => 4]);
+        $this->update('profile', ['created_by' => 5], ['id' => 5]);
+        $this->alterColumn('profile', 'created_by', $this->integer()->notNull());
 
 
     }
@@ -46,20 +46,20 @@ class m191225_000030_rbac_model extends Migration
     public function safeDown()
     {
         // Drop author columns
-        $this->dropColumn('profile', 'createdby');
-        $this->dropColumn('contractor', 'createdby');
-        $this->dropColumn('portfolio', 'createdby');
-        $this->dropColumn('position', 'createdby');
-        $this->dropColumn('photo', 'createdby');
-        $this->dropColumn('response', 'createdby');
-        $this->dropColumn('request', 'createdby');
-        $this->dropColumn('order', 'createdby');
-        $this->dropColumn('delivery', 'createdby');
-        $this->dropColumn('materials', 'createdby');
-        $this->dropColumn('delivery_place', 'createdby');
-        $this->dropColumn('departure_place', 'createdby');
-        $this->dropColumn('project', 'createdby');
-        $this->dropColumn('job_stages', 'createdby');
-        $this->dropColumn('project_documents', 'createdby');
+        $this->dropColumn('profile', 'created_by');
+        $this->dropColumn('contractor', 'created_by');
+        $this->dropColumn('portfolio', 'created_by');
+        $this->dropColumn('position', 'created_by');
+        $this->dropColumn('photo', 'created_by');
+        $this->dropColumn('response', 'created_by');
+        $this->dropColumn('request', 'created_by');
+        $this->dropColumn('order', 'created_by');
+        $this->dropColumn('delivery', 'created_by');
+        $this->dropColumn('materials', 'created_by');
+        $this->dropColumn('delivery_place', 'created_by');
+        $this->dropColumn('departure_place', 'created_by');
+        $this->dropColumn('project', 'created_by');
+        $this->dropColumn('job_stages', 'created_by');
+        $this->dropColumn('project_documents', 'created_by');
     }
 }

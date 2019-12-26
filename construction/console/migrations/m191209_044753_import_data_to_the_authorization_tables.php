@@ -185,7 +185,7 @@ class m191209_044753_import_data_to_the_authorization_tables extends Migration
         ]);
         $this->insert('{{%profile}}', [
             'user_id' => 3,
-            'kind_user_id' => 3,
+            'kind_user_id' => 2,
             'type_job_id' => 1,
             'fio' => 'Сидоров Сидр Сидорович',
             'firm_name' => 'Фирма вариант 3',
@@ -197,7 +197,7 @@ class m191209_044753_import_data_to_the_authorization_tables extends Migration
         ]);
         $this->insert('{{%profile}}', [
             'user_id' => 4,
-            'kind_user_id' => 4,
+            'kind_user_id' => 2,
             'type_job_id' => 1,
             'fio' => 'Путин Владимир Владимирович',
             'firm_name' => 'Фирма вариант 4',
@@ -209,7 +209,7 @@ class m191209_044753_import_data_to_the_authorization_tables extends Migration
         ]);
         $this->insert('{{%profile}}', [
             'user_id' => 5,
-            'kind_user_id' => 5,
+            'kind_user_id' => 3,
             'type_job_id' => 1,
             'fio' => 'Медведев Дмитрий Анатольевич',
             'firm_name' => 'Фирма вариант 5',
