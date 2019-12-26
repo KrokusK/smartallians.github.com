@@ -35,7 +35,7 @@ class m191225_000030_rbac_model extends Migration
         $this->update('profile', ['createdby' => 3], ['id' => 3]);
         $this->update('profile', ['createdby' => 4], ['id' => 4]);
         $this->update('profile', ['createdby' => 5], ['id' => 5]);
-        $this->update('profile', 'createdby', $this->integer()->notNull());
+        $this->alterColumn('profile', 'createdby', $this->integer()->notNull());
 
 
     }
