@@ -117,7 +117,7 @@ class RequestController extends Controller
 
         } else {
             // Search all records in the database
-            $query = Request::find();
+            $query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
 
             $modelRequest = $query->orderBy('created_at')->all();
 
