@@ -113,7 +113,7 @@ class RequestController extends Controller
             //'kind_job_id' => $modelRequest['kindJob']['id'], 'kind_job_name' => $modelRequest['kindJob']['name']
             array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
             //array_push($RequestResponse, var_dump($modelRequest['kindJob']['name']));
-            array_push($RequestResponse, var_dump($modelRequest));
+            //array_push($RequestResponse, var_dump($modelRequest));
 
 
             return Json::encode($RequestResponse);
