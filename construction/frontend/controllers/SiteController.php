@@ -85,6 +85,16 @@ class SiteController extends Controller
     }
 
     /**
+     * Don't response on the OPTIONS request.
+     *
+     * @return nothing
+     */
+    public function actionOptions()
+    {
+        return Json::encode(array('method' => 'OPTIONS', 'status' => 0, 'type' => 'success');
+    }
+
+    /**
      * Logs in a user.
      *
      * @return mixed
