@@ -22,7 +22,7 @@ class m191215_044753_import_data_to_the_Request_tables extends Migration
         $this->delete('{{%kind_job}}');
         $this->delete('{{%request}}');
         $this->delete('{{%status_request}}');
-        
+
         $this->db->createCommand()->resetSequence('{{%kind_job}}', 1)->execute();
         $this->db->createCommand()->resetSequence('{{%request}}', 1)->execute();
         $this->db->createCommand()->resetSequence('{{%status_request}}', 1)->execute();
