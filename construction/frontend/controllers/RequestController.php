@@ -96,7 +96,7 @@ class RequestController extends Controller
             //foreach (ArrayHelper::toArray($model) as $key => $value) {
             //    array_push($sqlParametrs, [$key => $value]);
             //}
-            $query = Request::find();
+            $query = Request::find()->Where(['created_by' => Yii::$app->request->get()]);
             foreach (ArrayHelper::toArray($model) as $key => $value) {
                 $query->andWhere([$key => $value]);
             }
