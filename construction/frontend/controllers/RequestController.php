@@ -119,7 +119,10 @@ class RequestController extends Controller
             // Search all records in the database
             $query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
 
-            $modelRequest = $query->orderBy('created_at')->all();
+            $modelRequest = $query->orderBy('created_at')
+                ->with('kindJob')
+                ->asArray()
+                ->all();
 
             // get properties from Request object
             $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
