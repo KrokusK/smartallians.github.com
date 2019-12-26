@@ -1,8 +1,6 @@
 <?php
 namespace frontend\controllers;
 
-;
-
 use frontend\models\Profile;
 use Yii;
 use yii\base\InvalidArgumentException;
