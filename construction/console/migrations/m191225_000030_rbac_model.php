@@ -14,20 +14,20 @@ class m191225_000030_rbac_model extends Migration
     {
         // Create author columns
         $this->addColumn('profile', 'created_by', $this->integer());
-        $this->addColumn('contractor', 'created_by', $this->integer());
-        $this->addColumn('portfolio', 'created_by', $this->integer());
-        $this->addColumn('position', 'created_by', $this->integer());
-        $this->addColumn('photo', 'created_by', $this->integer());
+        $this->addColumn('contractor', 'created_by', $this->integer()->notNull());
+        $this->addColumn('portfolio', 'created_by', $this->integer()->notNull());
+        $this->addColumn('position', 'created_by', $this->integer()->notNull());
+        $this->addColumn('photo', 'created_by', $this->integer()->notNull());
         $this->addColumn('response', 'created_by', $this->integer());
         $this->addColumn('request', 'created_by', $this->integer());
-        $this->addColumn('order', 'created_by', $this->integer());
-        $this->addColumn('delivery', 'created_by', $this->integer());
-        $this->addColumn('materials', 'created_by', $this->integer());
-        $this->addColumn('delivery_place', 'created_by', $this->integer());
-        $this->addColumn('departure_place', 'created_by', $this->integer());
-        $this->addColumn('project', 'created_by', $this->integer());
-        $this->addColumn('job_stages', 'created_by', $this->integer());
-        $this->addColumn('project_documents', 'created_by', $this->integer());
+        $this->addColumn('order', 'created_by', $this->integer()->notNull());
+        $this->addColumn('delivery', 'created_by', $this->integer()->notNull());
+        $this->addColumn('materials', 'created_by', $this->integer()->notNull());
+        $this->addColumn('delivery_place', 'created_by', $this->integer()->notNull());
+        $this->addColumn('departure_place', 'created_by', $this->integer()->notNull());
+        $this->addColumn('project', 'created_by', $this->integer()->notNull());
+        $this->addColumn('job_stages', 'created_by', $this->integer()->notNull());
+        $this->addColumn('project_documents', 'created_by', $this->integer()->notNull());
 
         // insert data in to the profile table
         $this->update('profile', ['created_by' => 1], ['id' => 1]);
