@@ -68,7 +68,7 @@ class m191216_044753_import_data_to_the_Response_tables extends Migration
 
         // import to the profile_rrod table
         $this->insert('{{%profile_rrod}}', [
-            'profile_id' => 2,
+            'profile_id' => 3,
             'response_id' => 1
         ]);
         $this->insert('{{%profile_rrod}}', [

@@ -173,7 +173,7 @@ class m191209_044753_import_data_to_the_authorization_tables extends Migration
         ]);
         $this->insert('{{%profile}}', [
             'user_id' => 2,
-            'kind_user_id' => 2,
+            'kind_user_id' => 1,
             'type_job_id' => 1,
             'fio' => 'Петров Петр Петрович',
             'firm_name' => 'Фирма вариант 2',
