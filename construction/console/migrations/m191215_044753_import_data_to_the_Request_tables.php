@@ -94,7 +94,7 @@ class m191215_044753_import_data_to_the_Request_tables extends Migration
             'request_id' => 2
         ]);
         $this->insert('{{%profile_rrod}}', [
-            'profile_id' => 1,
+            'profile_id' => 2,
             'request_id' => 3
         ]);
 
