@@ -92,7 +92,7 @@ class SiteController extends Controller
     public function actionOptions()
     {
         // do nothing
-        
+
         // test
         //return Json::encode(array('method' => 'OPTIONS', 'status' => 0, 'type' => 'success'));
     }
