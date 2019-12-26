@@ -109,10 +109,10 @@ class RequestController extends Controller
                 ->all();
 
             // get properties from Request object
-            $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success', 'kind_job_id' => $modelRequest['kindJob']['id'], 'kind_job_name' => $modelRequest['kindJob']['name']);
             array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
             //array_push($RequestResponse, var_dump($modelRequest));
-            //array_push($RequestResponse, var_dump($modelRequest['kindJob']['name']));
+
 
             return Json::encode($RequestResponse);
 
