@@ -112,8 +112,8 @@ class RequestController extends Controller
             $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
             //'kind_job_id' => $modelRequest['kindJob']['id'], 'kind_job_name' => $modelRequest['kindJob']['name']
             array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
-            array_push($RequestResponse, var_dump($modelRequest['kindJob']['name']));
-            //array_push($RequestResponse, var_dump($modelRequest));
+            //array_push($RequestResponse, var_dump($modelRequest['kindJob']['name']));
+            array_push($RequestResponse, var_dump($modelRequest));
 
 
             return Json::encode($RequestResponse);
