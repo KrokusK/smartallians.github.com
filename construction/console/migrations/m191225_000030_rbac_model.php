@@ -37,7 +37,17 @@ class m191225_000030_rbac_model extends Migration
         $this->update('profile', ['created_by' => 5], ['id' => 5]);
         $this->alterColumn('profile', 'created_by', $this->integer()->notNull());
 
+        // insert data in to the request table
+        $this->update('request', ['created_by' => 1], ['id' => 1]);
+        $this->update('request', ['created_by' => 1], ['id' => 2]);
+        $this->update('request', ['created_by' => 1], ['id' => 3]);
+        $this->alterColumn('request', 'created_by', $this->integer()->notNull());
 
+        // insert data in to the response table
+        $this->update('response', ['created_by' => 2], ['id' => 1]);
+        $this->update('response', ['created_by' => 3], ['id' => 2]);
+        $this->update('response', ['created_by' => 4], ['id' => 3]);
+        $this->alterColumn('response', 'created_by', $this->integer()->notNull());
     }
 
     /**
