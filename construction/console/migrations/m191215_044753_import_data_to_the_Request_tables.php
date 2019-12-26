@@ -94,6 +94,37 @@ class m191215_044753_import_data_to_the_Request_tables extends Migration
             'profile_id' => 1,
             'request_id' => 3
         ]);
+
+        // import to the kind_job table
+        $this->insert('{{%kind_job}}', [
+            'name' => 'Укладка напольной плитки'
+        ]);
+        $this->insert('{{%kind_job}}', [
+            'name' => 'Укладка ламината'
+        ]);
+        $this->insert('{{%kind_job}}', [
+            'name' => 'Поклейка обоев'
+        ]);
+        $this->insert('{{%kind_job}}', [
+            'name' => 'Покраска'
+        ]);
+        $this->insert('{{%kind_job}}', [
+            'name' => 'Установка окон'
+        ]);
+
+        // import to the request_kind_job table
+        $this->insert('{{%request_kind_Job}}', [
+            'kind_job_id' => 1,
+            'request_id' => 1
+        ]);
+        $this->insert('{{%request_kind_Job}}', [
+            'kind_job_id' => 5,
+            'request_id' => 2
+        ]);
+        $this->insert('{{%request_kind_Job}}', [
+            'kind_job_id' => 3,
+            'request_id' => 3
+        ]);
     }
 
     /**
