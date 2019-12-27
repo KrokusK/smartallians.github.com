@@ -172,7 +172,7 @@ class RequestController extends Controller
                 // fill in the properties in the Request object
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[') + 1;
-                    $data_type = strtolower(substr($name, 0, $pos_begin - 1);
+                    $data_type = strtolower(substr($name, 0, $pos_begin - 1));
                     $pos_end = strpos($name, ']');
                     $name = substr($name, $pos_begin, $pos_end - $pos_begin);
                     if ($data_type) === 'request') {
