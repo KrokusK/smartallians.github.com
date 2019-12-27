@@ -41,9 +41,13 @@ $config = [
                 //'PUT,PATCH /<controller:\w+>' => '<controller>/update',
                 //'DELETE /<controller:\w+>' => '<controller>/delete',
 
-                // API data user
+                // API user data
                 'POST /api/user' => 'user/data',
                 'POST /user' => 'user/data',
+
+                // API site
+                'POST /api/site/<action:\w+>' => 'site/<action>',
+                'POST /site/<action:\w+>' => 'site/<action>',
 
                 // default routing
                 '/<controller:\w*>' => 'site/index',
