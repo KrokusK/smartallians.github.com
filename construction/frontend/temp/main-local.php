@@ -45,7 +45,7 @@ $config = [
                 'POST /api/user' => 'user/data',
                 'POST /user' => 'user/data',
 
-                // API site
+                // API login
                 'POST /api/site/<action:\w+>' => 'site/<action>',
                 'POST /site/<action:\w+>' => 'site/<action>',
 
