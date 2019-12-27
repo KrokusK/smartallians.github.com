@@ -46,11 +46,10 @@ $config = [
                 'POST /api/user' => 'user/data',
 
                 // default routing
-                '/<controller>' => 'site/index',
-                '/<controller>/<action>' => 'site/index',
-                '/<module>/<controller>' => 'site/index',
-                '/<module>/<controller>/<action>' => 'site/index',
-                '/' => 'site/index',
+                '/<controller:\w*>' => 'site/index',
+                '/<controller:\w+>/<action:\w*>' => 'site/index',
+                '/<module:\w+>/<controller:\w+>' => 'site/index',
+                '/<module:\w+>/<controller:\w+>/<action:\w*>' => 'site/index',
             ],
         ],
     ],
