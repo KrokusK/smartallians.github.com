@@ -167,22 +167,35 @@ class RequestController extends Controller
                 return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Недопустимый параметр: id'));
             } else {
                 $modelRequest = new Request();
+                $modelKindJob = new KindJob();
 
                 // fill in the properties in the Request object
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[') + 1;
-                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'request') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                    $data_type = strtolower(substr($name, 0, $pos_begin - 1);
                     $pos_end = strpos($name, ']');
-                    $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                    //if (isset($modelRequest->$name)) {
-                    //    $modelRequest->$name = $value;
-                    //}
-                    //if (property_exists($modelRequest, $name)) {
-                    if ($modelRequest->hasAttribute($name)) {
-                        if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelRequest->$name = $value;
+                    $name = substr($name, $pos_begin, $pos_end - $pos_begin);
+                    if ($data_type) === 'request') {
+                        //if (isset($modelRequest->$name)) {
+                        //    $modelRequest->$name = $value;
+                        //}
+                        //if (property_exists($modelRequest, $name)) {
+                        if ($modelRequest->hasAttribute($name)) {
+                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelRequest->$name = $value;
 
-                        $modelRequest->created_at = time();
-                        $modelRequest->updated_at = time();
+                            $modelRequest->created_at = time();
+                            $modelRequest->updated_at = time();
+                        }
+
+                    } elseif ($data_type) === 'kindjob') {
+                        if ($modelRequest->hasAttribute($name)) {
+                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelRequest->$name = $value;
+
+                            $modelRequest->created_at = time();
+                            $modelRequest->updated_at = time();
+                        }
+                    } else {
+                        return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                     }
                 }
             }

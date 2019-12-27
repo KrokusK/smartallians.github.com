@@ -32,7 +32,7 @@ class Request extends \yii\db\ActiveRecord
     {
 
         return [
-            [['status_request_id', 'city_id', 'address', 'name', 'description', 'task', 'budjet', 'period', 'date_begin', 'updated_at', 'created_at'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['city_id', 'address', 'description', 'task', 'budjet', 'date_begin', 'date_end', 'updated_at', 'created_at', 'kind_job_id'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer', 'skipOnEmpty' => true],
             [['status_request_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
@@ -63,6 +63,16 @@ class Request extends \yii\db\ActiveRecord
             [['date_begin'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['updated_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['created_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
+            [['kind_job_id'], 'in', 'range' =>
+                function ( $attribute, $params ) {
+                    $kindJobId = KindJob::find()->select(['id'])->asArray()->all();
+                    $kindJobIdStr = [];
+                    foreach ($kindJobId as $item) {
+                        array_push($kindJobIdStr, "{$item['id']}");
+                    }
+                    return $kindJobIdStr;
+                },
+                'message' => 'Вид работы не выбран из списка'],
         ];
 
     }
