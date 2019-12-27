@@ -175,7 +175,7 @@ class RequestController extends Controller
                     $data_type = strtolower(substr($name, 0, $pos_begin - 1));
                     $pos_end = strpos($name, ']');
                     $name = substr($name, $pos_begin, $pos_end - $pos_begin);
-                    if ($data_type) === 'request') {
+                    if ($data_type === 'request') {
                         //if (isset($modelRequest->$name)) {
                         //    $modelRequest->$name = $value;
                         //}
@@ -187,7 +187,7 @@ class RequestController extends Controller
                             $modelRequest->updated_at = time();
                         }
 
-                    } elseif ($data_type) === 'kindjob') {
+                    } elseif ($data_type === 'kindjob') {
                         if ($modelRequest->hasAttribute($name)) {
                             if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelRequest->$name = $value;
 
