@@ -18,8 +18,8 @@ $config = [
             'enableStrictParsing' => false,
             'rules' => [
                 // Route OPTIONS request
-                'OPTIONS /<controller:\w+>' => 'site/options',
-                'OPTIONS /<controller:\w+>/<action:\w+>' => 'site/options',
+                'OPTIONS /<controller:\w*>' => 'site/options',
+                'OPTIONS /<controller:\w+>/<action:\w*>' => 'site/options',
 
                 // API routing for tables
                 'GET /api/<controller:(region|city|specialization|profile|type-job|kind-user|contractor|attestation|portfolio|position|kind-job|request|response|status-request|status-response|photo|status-feedback|feedback|status-completion|status-payment|order|project|project-documents|job-stages|materials|material-type|status-material|delivery|delivery-place|departure-place|status-delivery)>' => '<controller>/view',
@@ -42,13 +42,13 @@ $config = [
                 //'DELETE /<controller:\w+>' => '<controller>/delete',
 
                 // API data user
-                'POST user' => 'user/data',
                 'POST /api/user' => 'user/data',
+                'POST /user' => 'user/data',
 
                 // default routing
                 '/<controller:\w*>' => 'site/index',
                 '/<controller:\w+>/<action:\w*>' => 'site/index',
-                '/<module:\w+>/<controller:\w+>' => 'site/index',
+                '/<module:\w+>/<controller:\w*>' => 'site/index',
                 '/<module:\w+>/<controller:\w+>/<action:\w*>' => 'site/index',
             ],
         ],
