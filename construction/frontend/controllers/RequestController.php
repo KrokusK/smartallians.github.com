@@ -175,20 +175,14 @@ class RequestController extends Controller
 
             // fill in the properties in the Request object
             foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                foreach ($bodyRaw as $nameBodyRaw => $valueBodyRaw) {
-                    if ($nameRequestAssoc === $nameBodyRaw) {
-                        //if (isset($modelRequest->$name)) {
-                        //    $modelRequest->$name = $value;
-                        //}
-                        //if (property_exists($modelRequest, $name)) {
-                        if ($modelRequest->hasAttribute($valueRequestAssoc)) {
-                            if ($valueRequestAssoc != 'id' && $valueRequestAssoc != 'created_at' && $valueRequestAssoc != 'updated_at') {
-                                $modelRequest->$valueRequestAssoc = $valueBodyRaw;
+                if (array_key_exists($nameRequestAssoc, $bodyRaw)) {
+                    if ($modelRequest->hasAttribute($valueRequestAssoc)) {
+                        if ($valueRequestAssoc != 'id' && $valueRequestAssoc != 'created_at' && $valueRequestAssoc != 'updated_at') {
+                            $modelRequest->$valueRequestAssoc = $bodyRaw[$nameRequestAssoc];
 
-                                $modelRequest->created_by = Yii::$app->user->getId();
-                                $modelRequest->created_at = time();
-                                $modelRequest->updated_at = time();
-                            }
+                            $modelRequest->created_by = Yii::$app->user->getId();
+                            $modelRequest->created_at = time();
+                            $modelRequest->updated_at = time();
                         }
                     }
                 }
@@ -196,18 +190,13 @@ class RequestController extends Controller
 
             // fill in the properties in the KindJob object
             foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
-                foreach ($bodyRaw as $nameBodyRaw => $valueBodyRaw) {
-                    if ($nameKindJobAssoc === $nameBodyRaw) {
-                        //if (isset($modelRequest->$name)) {
-                        //    $modelRequest->$name = $value;
-                        //}
-                        //if (property_exists($modelRequest, $name)) {
-                        if ($modelRequestKindJob->hasAttribute($valueKindJobAssoc)) {
-                            $modelRequestKindJob->$valueKindJobAssoc = $valueBodyRaw;
-                        }
+                if (array_key_exists($nameKindJobAssoc, $bodyRaw)) {
+                    if ($modelRequestKindJob->hasAttribute($valueKindJobAssoc)) {
+                        $modelRequestKindJob->$valueKindJobAssoc = $bodyRaw[$nameKindJobAssoc];
                     }
                 }
             }
+
         }
 
 
@@ -269,7 +258,7 @@ class RequestController extends Controller
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('Request[id]', $bodyRaw)) {
+            if (array_key_exists('id', $bodyRaw)) {
                 // check input parametrs
                 if (!preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
                     return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
@@ -303,25 +292,7 @@ class RequestController extends Controller
                     return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
             } else {
-                $modelRequest = new Request();
-
-                // fill in the properties in the Request object
-                foreach ($bodyRaw as $name => $value) {
-                    $pos_begin = strpos($name, '[') + 1;
-                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'request') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
-                    $pos_end = strpos($name, ']');
-                    $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                    //if (isset($modelRequest->$name)) {
-                    //    $modelRequest->$name = $value;
-                    //}
-                    //if (property_exists($modelRequest, $name)) {
-                    if ($modelRequest->hasAttribute($name)) {
-                        if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelRequest->$name = $value;
-
-                        $modelRequest->created_at = time();
-                        $modelRequest->updated_at = time();
-                    }
-                }
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
             }
 
 
