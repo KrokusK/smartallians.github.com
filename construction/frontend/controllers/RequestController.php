@@ -175,7 +175,7 @@ class RequestController extends Controller
             // fill in the properties in the Request object
             foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
                 foreach ($bodyRaw as $nameBodyRaw => $valueBodyRaw) {
-                    if ($valueRequestAssoc === $nameBodyRaw) {
+                    if ($nameRequestAssoc === $nameBodyRaw) {
                         //if (isset($modelRequest->$name)) {
                         //    $modelRequest->$name = $value;
                         //}
@@ -195,7 +195,7 @@ class RequestController extends Controller
             // fill in the properties in the KindJob object
             foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
                 foreach ($bodyRaw as $nameBodyRaw => $valueBodyRaw) {
-                    if ($valueKindJobAssoc === $nameBodyRaw) {
+                    if ($nameKindJobAssoc === $nameBodyRaw) {
                         //if (isset($modelRequest->$name)) {
                         //    $modelRequest->$name = $value;
                         //}
