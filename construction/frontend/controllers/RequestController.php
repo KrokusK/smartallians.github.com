@@ -184,6 +184,7 @@ class RequestController extends Controller
                             if ($valueRequestAssoc != 'id' && $valueRequestAssoc != 'created_at' && $valueRequestAssoc != 'updated_at') {
                                 $modelRequest->$valueRequestAssoc = $valueBodyRaw;
 
+                                $modelRequest->created_by = Yii::$app->user->getId();
                                 $modelRequest->created_at = time();
                                 $modelRequest->updated_at = time();
                             }
