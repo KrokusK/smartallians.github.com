@@ -165,14 +165,14 @@ class RequestController extends Controller
         if (is_array($bodyRaw)) {
 
             // Array of request parameter associations with object property names
-            arrayRequestAssoc = array ('description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'date_begin' => 'date_begin', 'date_end' => 'date_end', 'city_id' => 'city_id', 'address' => 'address');
-            arrayKindJobAssoc = array ('work_type' => 'kind_job_id');
+            $arrayRequestAssoc = array ('description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'date_begin' => 'date_begin', 'date_end' => 'date_end', 'city_id' => 'city_id', 'address' => 'address');
+            $arrayKindJobAssoc = array ('work_type' => 'kind_job_id');
 
             $modelRequest = new Request();
             $modelRequestKindJob = new RequestKindJob();
 
             // fill in the properties in the Request object
-            foreach (arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
+            foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
                 foreach ($bodyRaw as $nameBodyRaw => $valueBodyRaw) {
                     if ($valueRequestAssoc === $nameBodyRaw) {
                         //if (isset($modelRequest->$name)) {
@@ -192,7 +192,7 @@ class RequestController extends Controller
             }
 
             // fill in the properties in the KindJob object
-            foreach (arrayKindJobtAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
+            foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
                 foreach ($bodyRaw as $nameBodyRaw => $valueBodyRaw) {
                     if ($valueKindJobAssoc === $nameBodyRaw) {
                         //if (isset($modelRequest->$name)) {
