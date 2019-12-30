@@ -83,7 +83,7 @@ class RequestController extends Controller
     {
         // check user is a guest
         if (Yii::$app->user->isGuest) {
-            //return $this->goHome();
+            return $this->goHome();
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -109,7 +109,7 @@ class RequestController extends Controller
                 ->all();
 
             // get properties from Request object and from links
-            $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
             array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
             //array_push($RequestResponse, var_dump($modelRequest));
 
@@ -125,7 +125,7 @@ class RequestController extends Controller
                 ->all();
 
             // get properties from Request object
-            $RequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
             array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
 
             return Json::encode($RequestResponse);
@@ -163,66 +163,73 @@ class RequestController extends Controller
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('Request[id]', $bodyRaw)) {
-                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Недопустимый параметр: id'));
-            } else {
-                $modelRequest = new Request();
-                $modelKindJob = new KindJob();
 
-                // fill in the properties in the Request object
-                foreach ($bodyRaw as $name => $value) {
-                    $pos_begin = strpos($name, '[') + 1;
-                    $data_type = strtolower(substr($name, 0, $pos_begin - 1));
-                    $pos_end = strpos($name, ']');
-                    $name = substr($name, $pos_begin, $pos_end - $pos_begin);
-                    if ($data_type === 'request') {
+            // Array of request parameter associations with object property names
+            arrayRequestAssoc = array ('description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'date_begin' => 'date_begin', 'date_end' => 'date_end', 'city_id' => 'city_id', 'address' => 'address');
+            arrayKindJobAssoc = array ('work_type' => 'kind_job_id');
+
+            $modelRequest = new Request();
+            $modelRequestKindJob = new RequestKindJob();
+
+            // fill in the properties in the Request object
+            foreach (arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
+                foreach ($bodyRaw as $nameBodyRaw => $valueBodyRaw) {
+                    if ($valueRequestAssoc === $nameBodyRaw) {
                         //if (isset($modelRequest->$name)) {
                         //    $modelRequest->$name = $value;
                         //}
                         //if (property_exists($modelRequest, $name)) {
-                        if ($modelRequest->hasAttribute($name)) {
-                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelRequest->$name = $value;
+                        if ($modelRequest->hasAttribute($valueRequestAssoc)) {
+                            if ($valueRequestAssoc != 'id' && $valueRequestAssoc != 'created_at' && $valueRequestAssoc != 'updated_at') {
+                                $modelRequest->$valueRequestAssoc = $valueBodyRaw;
 
-                            $modelRequest->created_at = time();
-                            $modelRequest->updated_at = time();
+                                $modelRequest->created_at = time();
+                                $modelRequest->updated_at = time();
+                            }
                         }
-
-                    } elseif ($data_type === 'kindjob') {
-                        if ($modelRequest->hasAttribute($name)) {
-                            if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelRequest->$name = $value;
-
-                            $modelRequest->created_at = time();
-                            $modelRequest->updated_at = time();
-                        }
-                    } else {
-                        return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                     }
                 }
             }
 
-
+            // fill in the properties in the KindJob object
+            foreach (arrayKindJobtAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
+                foreach ($bodyRaw as $nameBodyRaw => $valueBodyRaw) {
+                    if ($valueKindJobAssoc === $nameBodyRaw) {
+                        //if (isset($modelRequest->$name)) {
+                        //    $modelRequest->$name = $value;
+                        //}
+                        //if (property_exists($modelRequest, $name)) {
+                        if ($modelKindJob->hasAttribute($valueKindJobAssoc)) {
+                            $modelRequestKindJob->$valueKindJobAssoc = $valueBodyRaw;
+                        }
+                    }
+                }
+            }
         }
 
-        if ($modelRequest->validate()) {
-            $transaction = \Yii::$app->db->beginTransaction();
+        if ($modelRequest->validate() && $modelRequestKindJob->validate('kind_job_id')) {
+            $transactionRequest = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelRequest->save(false); // insert
+                $flagRequest = $modelRequest->save(false); // insert
 
-                if ($flag == true) {
-                    $transaction->commit();
+                //$modelRequestKindJob->request_id = $modelRequest->id;
+
+                return Json::encode(array('modelRequest id' => $modelRequest->id));
+                if ($flagRequest == true) {
+                    $transactionRequest->commit();
                 } else {
-                    $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+                    $transactionRequest->rollBack();
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
                 }
             } catch (Exception $ex) {
-                $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+                $transactionRequest->rollBack();
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
             }
 
-            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
+            //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
         } else {
-            return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
+            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
         }
         //}
     }
