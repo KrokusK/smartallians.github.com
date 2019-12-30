@@ -2,6 +2,7 @@
 namespace frontend\controllers;
 
 use frontend\models\Request;
+use frontend\models\RequestKindJob;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
