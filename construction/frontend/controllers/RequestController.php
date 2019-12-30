@@ -200,7 +200,7 @@ class RequestController extends Controller
                         //    $modelRequest->$name = $value;
                         //}
                         //if (property_exists($modelRequest, $name)) {
-                        if ($modelKindJob->hasAttribute($valueKindJobAssoc)) {
+                        if ($modelRequestKindJob->hasAttribute($valueKindJobAssoc)) {
                             $modelRequestKindJob->$valueKindJobAssoc = $valueBodyRaw;
                         }
                     }
