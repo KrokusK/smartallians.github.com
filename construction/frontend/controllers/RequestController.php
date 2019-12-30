@@ -209,7 +209,7 @@ class RequestController extends Controller
         }
 
         $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-        array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
+        array_push($RequestResponse, ArrayHelper::toArray($modelRequestKindJob));
         return Json::encode($RequestResponse);
 
         if ($modelRequest->validate() && $modelRequestKindJob->validate('kind_job_id')) {
