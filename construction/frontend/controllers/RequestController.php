@@ -166,7 +166,8 @@ class RequestController extends Controller
         if (is_array($bodyRaw)) {
 
             // Array of request parameter associations with object property names
-            $arrayRequestAssoc = array ('description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'date_begin' => 'date_begin', 'date_end' => 'date_end', 'city_id' => 'city_id', 'address' => 'address');
+            //$arrayRequestAssoc = array ('description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'date_begin' => 'date_begin', 'date_end' => 'date_end', 'city_id' => 'city_id', 'address' => 'address');
+            $arrayRequestAssoc = array ('status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
             $arrayKindJobAssoc = array ('work_type' => 'kind_job_id');
 
             $modelRequest = new Request();
@@ -249,7 +250,7 @@ class RequestController extends Controller
     {
         // check user is a guest
         if (Yii::$app->user->isGuest) {
-            //return $this->goHome();
+            return $this->goHome();
         }
 
         //if (Yii::$app->request->isAjax) {
