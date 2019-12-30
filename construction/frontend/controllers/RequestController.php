@@ -209,26 +209,24 @@ class RequestController extends Controller
             }
         }
 
-        //$RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-        //array_push($RequestResponse, ArrayHelper::toArray($modelRequestKindJob));
-        //return Json::encode($RequestResponse);
 
         if ($modelRequest->validate() && $modelRequestKindJob->validate('kind_job_id')) {
-            $transactionRequest = \Yii::$app->db->beginTransaction();
+            $transaction = \Yii::$app->db->beginTransaction();
             try {
                 $flagRequest = $modelRequest->save(false); // insert
 
-                //$modelRequestKindJob->request_id = $modelRequest->id;
+                $modelRequestKindJob->request_id = $modelRequest->id;
 
-                return Json::encode(array('modelRequest id' => $modelRequest->id));
-                if ($flagRequest == true) {
-                    $transactionRequest->commit();
+                $flagRequestKindJob = $modelRequestKindJob->save(false); // insert
+
+                if ($flagRequest == true && $flagRequestKindJob == true) {
+                    $transaction->commit();
                 } else {
-                    $transactionRequest->rollBack();
+                    $transaction->rollBack();
                     return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
                 }
             } catch (Exception $ex) {
-                $transactionRequest->rollBack();
+                $transaction->rollBack();
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
             }
 
