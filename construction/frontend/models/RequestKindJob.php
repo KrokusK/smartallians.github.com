@@ -8,7 +8,7 @@ use yii\db\ActiveRecord;
  * This is the model class for table "request_kind_job".
  *
  */
-class KindJob extends \yii\db\ActiveRecord
+class RequestKindJob extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
