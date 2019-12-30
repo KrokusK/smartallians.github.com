@@ -192,6 +192,8 @@ class RequestController extends Controller
             foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
                 if (array_key_exists($nameKindJobAssoc, $bodyRaw)) {
                     if ($modelRequestKindJob->hasAttribute($valueKindJobAssoc)) {
+                        if (is_array($bodyRaw[$nameKindJobAssoc])) return Json::encode(array('IS_ARRAY' => 'IS_ARRAY'));
+                        else return Json::encode(array('bodyRaw[$nameKindJobAssoc]' => $bodyRaw[$nameKindJobAssoc]));
                         $modelRequestKindJob->$valueKindJobAssoc = $bodyRaw[$nameKindJobAssoc];
                     }
                 }
@@ -259,28 +261,32 @@ class RequestController extends Controller
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             if (array_key_exists('id', $bodyRaw)) {
-                // check input parametrs
-                if (!preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
+                // Array of request parameter associations with object property names
+                $arrayRequestAssoc = array ('status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+                $arrayKindJobAssoc = array ('work_type' => 'kind_job_id');
+                
+                // check id parametr
+                if (!preg_match("/^[0-9]*$/",$bodyRaw['id'])) {
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $query = Request::find()
-                    ->where(['id' => $bodyRaw['Request[id]']]);
-                //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
+                $queryRequest = Request::find()
+                    //->where(['id' => $bodyRaw['id']]);
+                    ->where(['AND', ['id' => $bodyRaw['id']], ['created_by'=> Yii::$app->user->getId()]]);
+                $modelRequest = $queryRequest->orderBy('created_at')->one();
 
-                $modelRequest = $query->orderBy('created_at')
-                    //->offset($pagination->offset)
-                    //->limit($pagination->limit)
-                    //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
-                    //->with('adPhotos')
-                    ->one();
+                // Search record by id in the database
+                $queryRequestKindJob = RequestKindJob::find()
+                    ->where(['request_id' =>  $modelRequest->id]);
+                $modelRequestKindJob = $queryRequestKindJob->asArray()->all();
+
 
                 if (!empty($modelRequest)) {
                     // update in the properties in the Request object
                     foreach ($bodyRaw as $name => $value) {
                         $pos_begin = strpos($name, '[') + 1;
-                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'request') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'request') return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                         $pos_end = strpos($name, ']');
                         $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
@@ -289,7 +295,7 @@ class RequestController extends Controller
                         $modelRequest->updated_at = time();
                     }
                 } else {
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
             } else {
                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
@@ -307,17 +313,17 @@ class RequestController extends Controller
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
             }
 
-            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
-            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)'));
+            //return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)'));
         } else {
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
+            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
         }
         //}
     }
@@ -355,7 +361,7 @@ class RequestController extends Controller
             if (array_key_exists('Request[id]', $bodyRaw)) {
                 // check input parametrs
                 if (!preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
@@ -381,17 +387,17 @@ class RequestController extends Controller
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
             }
 
-            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно удалена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
-            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Заявка успешно удалена'));
+            //return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+            return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена'));
         } else {
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
         }
         //}
     }
