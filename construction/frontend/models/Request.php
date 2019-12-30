@@ -63,16 +63,7 @@ class Request extends \yii\db\ActiveRecord
             [['date_begin'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['updated_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['created_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
-            [['kind_job_id'], 'in', 'range' =>
-                function ( $attribute, $params ) {
-                    $kindJobId = KindJob::find()->select(['id'])->asArray()->all();
-                    $kindJobIdStr = [];
-                    foreach ($kindJobId as $item) {
-                        array_push($kindJobIdStr, "{$item['id']}");
-                    }
-                    return $kindJobIdStr;
-                },
-                'message' => 'Вид работы не выбран из списка'],
+            
         ];
 
     }
