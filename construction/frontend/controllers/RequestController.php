@@ -164,9 +164,8 @@ class RequestController extends Controller
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array ('status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
             $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
 
             $modelRequest = new Request();
@@ -205,18 +204,20 @@ class RequestController extends Controller
                 if ($flagRequest) {
 
                     // Save records into request_kind_job table
-                    foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
-                        $modelRequestKindJob = new RequestKindJob();
+                    if (array_key_exists($bodyRaw[$arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
+                        foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
+                            $modelRequestKindJob = new RequestKindJob();
 
-                        // fill in the properties in the KindJob object
-                        if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
-                            $modelRequestKindJob->kind_job_id = $value;
-                        }
+                            // fill in the properties in the KindJob object
+                            if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
+                                $modelRequestKindJob->kind_job_id = $value;
+                            }
 
-                        if ($modelRequestKindJob->validate('kind_job_id')) {
-                            $modelRequestKindJob->request_id = $modelRequest->id;
+                            if ($modelRequestKindJob->validate('kind_job_id')) {
+                                $modelRequestKindJob->request_id = $modelRequest->id;
 
-                            if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
+                                if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
+                            }
                         }
                     }
                 }
@@ -271,12 +272,12 @@ class RequestController extends Controller
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             if (array_key_exists('id', $bodyRaw)) {
-                // Array of request parameter associations with object property names
-                $arrayRequestAssoc = array ('status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
-                $arrayKindJobAssoc = array ('work_type' => 'kind_job_id');
+                // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
+                $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+                $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
                 
                 // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw['id'])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayRequestAssoc['id']])) {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
@@ -290,6 +291,35 @@ class RequestController extends Controller
                 $queryRequestKindJob = RequestKindJob::find()
                     ->where(['request_id' =>  $modelRequest->id]);
                 $modelRequestKindJob = $queryRequestKindJob->asArray()->all();
+
+
+                // fill in the properties in the Request object
+                foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
+                    if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
+                        if ($modelRequest->hasAttribute($nameRequestAssoc)) {
+                            if ($nameRequestAssoc != 'id' && $nameRequestAssoc != 'created_at' && $nameRequestAssoc != 'updated_at') {
+                                $modelRequest->$nameRequestAssoc = $bodyRaw[$valueRequestAssoc];
+
+                                $modelRequest->created_by = Yii::$app->user->getId();
+                                $modelRequest->updated_at = time();
+                            }
+                        }
+                    }
+                }
+
+                // check parametr for the KindJob object
+                foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
+                    if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
+                        if ($nameKindJobAssoc == 'kind_job_id' && !is_array($bodyRaw[$valueKindJobAssoc])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре work_type ожидается массив'));
+                    }
+                }
+
+
+
+
+
+
+
 
 
                 if (!empty($modelRequest)) {
