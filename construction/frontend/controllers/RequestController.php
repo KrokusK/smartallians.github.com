@@ -271,11 +271,11 @@ class RequestController extends Controller
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('id', $bodyRaw)) {
-                // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-                $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
-                $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
-                
+            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
+            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
+
+            if (array_key_exists($arrayRequestAssoc['id'], $bodyRaw)) {
                 // check id parametr
                 if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayRequestAssoc['id']])) {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
@@ -283,89 +283,90 @@ class RequestController extends Controller
 
                 // Search record by id in the database
                 $queryRequest = Request::find()
-                    //->where(['id' => $bodyRaw['id']]);
-                    ->where(['AND', ['id' => $bodyRaw['id']], ['created_by'=> Yii::$app->user->getId()]]);
+                    ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
                 $modelRequest = $queryRequest->orderBy('created_at')->one();
 
                 // Search record by id in the database
-                $queryRequestKindJob = RequestKindJob::find()
-                    ->where(['request_id' =>  $modelRequest->id]);
-                $modelRequestKindJob = $queryRequestKindJob->asArray()->all();
+                //$queryRequestKindJob = RequestKindJob::find()
+                //    ->where(['request_id' =>  $modelRequest->id]);
+                //$modelRequestKindJob = $queryRequestKindJob->asArray()->all();
 
+                if (!empty($modelRequest)) {
+                    // fill in the properties in the Request object
+                    foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
+                        if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
+                            if ($modelRequest->hasAttribute($nameRequestAssoc)) {
+                                if ($nameRequestAssoc != 'id' && $nameRequestAssoc != 'created_at' && $nameRequestAssoc != 'updated_at') {
+                                    $modelRequest->$nameRequestAssoc = $bodyRaw[$valueRequestAssoc];
 
-                // fill in the properties in the Request object
-                foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                    if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
-                        if ($modelRequest->hasAttribute($nameRequestAssoc)) {
-                            if ($nameRequestAssoc != 'id' && $nameRequestAssoc != 'created_at' && $nameRequestAssoc != 'updated_at') {
-                                $modelRequest->$nameRequestAssoc = $bodyRaw[$valueRequestAssoc];
-
-                                $modelRequest->created_by = Yii::$app->user->getId();
-                                $modelRequest->updated_at = time();
+                                    $modelRequest->created_by = Yii::$app->user->getId();
+                                    $modelRequest->updated_at = time();
+                                }
                             }
                         }
                     }
-                }
 
-                // check parametr for the KindJob object
-                foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
-                    if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
-                        if ($nameKindJobAssoc == 'kind_job_id' && !is_array($bodyRaw[$valueKindJobAssoc])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре work_type ожидается массив'));
-                    }
-                }
-
-
-
-
-
-
-
-
-
-                if (!empty($modelRequest)) {
-                    // update in the properties in the Request object
-                    foreach ($bodyRaw as $name => $value) {
-                        $pos_begin = strpos($name, '[') + 1;
-                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'request') return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
-                        $pos_end = strpos($name, ']');
-                        $name = substr($name, $pos_begin, $pos_end - $pos_begin);
-
-                        if ($name != 'id' && $name != 'created_at' && $name != 'updated_at') $modelRequest->$name = $value;
-
-                        $modelRequest->updated_at = time();
+                    // check parametr for the KindJob object
+                    foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
+                        if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
+                            if ($nameKindJobAssoc == 'kind_job_id' && !is_array($bodyRaw[$valueKindJobAssoc])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре work_type ожидается массив'));
+                        }
                     }
                 } else {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
                 }
             } else {
                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
             }
 
-
         }
+
 
         if ($modelRequest->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelRequest->save(false); // insert
+                $flagRequest = $modelRequest->save(false); // insert into request table
 
-                if ($flag == true) {
+                $flagRequestKindJob = true;
+                if ($flagRequest) {
+
+                    // Save records into request_kind_job table
+                    if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
+                        foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
+                            $modelRequestKindJob = new RequestKindJob();
+
+                            // fill in the properties in the KindJob object
+                            if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
+                                $modelRequestKindJob->kind_job_id = $value;
+                            }
+
+                            if ($modelRequestKindJob->validate('kind_job_id')) {
+                                $modelRequestKindJob->request_id = $modelRequest->id;
+
+                                // delete old records from request_kind_job table
+                                Request::delete(false)
+                                    ->where(['request_id' => $modelRequest->id]);
+
+                                if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
+                            }
+                        }
+                    }
+                }
+
+                if ($flagRequest == true && $flagRequestKindJob == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
             }
 
-            //return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
-            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)'));
-        } else {
-            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)'));
         }
-        //}
+
     }
 
 
