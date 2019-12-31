@@ -300,6 +300,8 @@ class RequestController extends Controller
                                 if ($nameRequestAssoc != 'id' && $nameRequestAssoc != 'created_at' && $nameRequestAssoc != 'updated_at') {
                                     $modelRequest->$nameRequestAssoc = $bodyRaw[$valueRequestAssoc];
 
+                                    if (!$modelRequest->validate($nameRequestAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+
                                     $modelRequest->created_by = Yii::$app->user->getId();
                                     $modelRequest->updated_at = time();
                                 }
