@@ -88,18 +88,35 @@ class RequestController extends Controller
         }
 
         //if (Yii::$app->request->isAjax) {
-        //GET data from GET request
-        $model = new Request();
-        if ($model->load(Yii::$app->request->get())) {
+        //GET data from body request
+        //Yii::$app->request->getBodyParams()
+        $fh = fopen("php://input", 'r');
+        $put_string = stream_get_contents($fh);
+        $put_string = urldecode($put_string);
+        //$array_put = $this->parsingRequestFormData($put_string);
 
-            // Search record by parametrs in the database
-            //$sqlParametrs = array(['AND']);
-            //foreach (ArrayHelper::toArray($model) as $key => $value) {
-            //    array_push($sqlParametrs, [$key => $value]);
-            //}
+        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
+
+        //$modelRequest->setAttributes($bodyRaw);
+
+        // load attributes in Request object
+        // example: yiisoft/yii2/base/Model.php
+        if (is_array($bodyRaw)) {
+            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
+            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+
+            // Search record by id in the database
             $query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
-            foreach (ArrayHelper::toArray($model) as $key => $value) {
-                $query->andWhere([$key => $value]);
+            //foreach (ArrayHelper::toArray($model) as $key => $value) {
+            //    $query->andWhere([$key => $value]);
+            //}
+            foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
+                if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
+                    if ($modelRequest->hasAttribute($nameRequestAssoc)) {
+                        $query->andWhere([$nameRequestAssoc => $bodyRaw[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                    }
+                }
             }
 
             $modelRequest = $query->orderBy('created_at')
