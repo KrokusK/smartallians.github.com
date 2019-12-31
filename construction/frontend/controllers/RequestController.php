@@ -102,9 +102,7 @@ class RequestController extends Controller
             //}
             foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
                 if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
-                    if ($query->hasAttribute($nameRequestAssoc)) {
-                        $query->andWhere([$nameRequestAssoc => $bodyRaw[$arrayRequestAssoc[$nameRequestAssoc]]]);
-                    }
+                    $query->andWhere([$nameRequestAssoc => $bodyRaw[$arrayRequestAssoc[$nameRequestAssoc]]]);
                 }
             }
 
