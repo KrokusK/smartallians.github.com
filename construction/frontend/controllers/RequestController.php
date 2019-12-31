@@ -333,8 +333,9 @@ class RequestController extends Controller
                     // Save records into request_kind_job table
                     if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
                         // delete old records from request_kind_job table
-                        $modelRequestKindJob = new RequestKindJob();
-                        $modelRequestKindJob->delete(['request_id' => $modelRequest->id]);
+                        //$modelRequestKindJob = new RequestKindJob();
+                        //$modelRequestKindJob->delete(['request_id' => $modelRequest->id]);
+                        RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
 
                         foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
                             $modelRequestKindJob = new RequestKindJob();
