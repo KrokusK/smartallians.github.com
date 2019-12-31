@@ -286,11 +286,6 @@ class RequestController extends Controller
                     ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
                 $modelRequest = $queryRequest->orderBy('created_at')->one();
 
-                // Search record by id in the database
-                //$queryRequestKindJob = RequestKindJob::find()
-                //    ->where(['request_id' =>  $modelRequest->id]);
-                //$modelRequestKindJob = $queryRequestKindJob->asArray()->all();
-
                 if (!empty($modelRequest)) {
                     // fill in the properties in the Request object
                     foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
@@ -333,8 +328,6 @@ class RequestController extends Controller
                     // Save records into request_kind_job table
                     if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
                         // delete old records from request_kind_job table
-                        //$modelRequestKindJob = new RequestKindJob();
-                        //$modelRequestKindJob->delete(['request_id' => $modelRequest->id]);
                         RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
 
                         foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
@@ -400,32 +393,38 @@ class RequestController extends Controller
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('Request[id]', $bodyRaw)) {
-                // check input parametrs
-                if (!preg_match("/^[0-9]*$/",$bodyRaw['Request[id]'])) {
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
+            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
+            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+
+            if (array_key_exists($arrayRequestAssoc['id'], $bodyRaw)) {
+                // check id parametr
+                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayRequestAssoc['id']])) {
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $query = Request::find()
-                    ->where(['id' => $bodyRaw['Request[id]']]);
-                //->where(['AND', ['id' => $modelRequest->id], ['user_desc_id'=> $var2]]);
+                $queryRequest = Request::find()
+                    ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
+                $modelRequest = $queryRequest->orderBy('created_at')->one();
 
-                $modelRequest = $query->orderBy('created_at')
-                    //->offset($pagination->offset)
-                    //->limit($pagination->limit)
-                    //->leftJoin('photo_ad', '"user_ad"."id" = "photo_ad"."ad_id"')
-                    //->with('adPhotos')
-                    ->one();
+                if (empty($modelRequest)) {
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
+                }
+            } else {
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
             }
         }
 
         if (!empty($modelRequest)) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelRequest->delete($bodyRaw['Request[id]']); // delete
+                // delete old records from request_kind_job table
+                RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
 
-                if ($flag == true) {
+                // delete from request table
+                $countRequestDelete = $modelRequest->delete($modelRequest->id);
+
+                if ($countRequestDelete > 0) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
@@ -436,7 +435,6 @@ class RequestController extends Controller
                 return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
             }
 
-            //return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
             return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена'));
         } else {
             return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
