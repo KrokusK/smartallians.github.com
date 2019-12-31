@@ -32,7 +32,7 @@ class m191220_000030_create_material_tables extends Migration
             'material_type_id' => $this->integer()->notNull(),
             'status_material_id' => $this->integer()->notNull(),
             'name' => $this->string()->notNull(),
-            'cost' => $this->float()->notNull(),
+            'cost' => $this->float(),
             'count' => $this->integer()->notNull()
         ]);
 
