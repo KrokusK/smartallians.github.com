@@ -95,7 +95,7 @@ class RequestController extends Controller
         $put_string = urldecode($put_string);
         //$array_put = $this->parsingRequestFormData($put_string);
 
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        $bodyRaw = json_decode(Yii::$app->getRequest()->get(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
         //$modelRequest->setAttributes($bodyRaw);
