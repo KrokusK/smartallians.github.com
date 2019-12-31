@@ -84,45 +84,45 @@ class MaterialsController extends Controller
 
         if (is_array($bodyRaw)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
             // Search record by id in the database
-            $query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            $query = Materials::find()->Where(['created_by' => Yii::$app->user->getId()]);
             //foreach (ArrayHelper::toArray($model) as $key => $value) {
             //    $query->andWhere([$key => $value]);
             //}
-            foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
-                    $query->andWhere([$nameRequestAssoc => $bodyRaw[$arrayRequestAssoc[$nameRequestAssoc]]]);
+            foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
+                if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
+                    $query->andWhere([$nameMaterialsAssoc => $bodyRaw[$arrayMaterialsAssoc[$nameMaterialsAssoc]]]);
                 }
             }
 
-            $modelRequest = $query->orderBy('created_at')
+            $modelMaterials = $query->orderBy('created_at')
                 //->offset($pagination->offset)
                 //->limit($pagination->limit)
                 ->with('kindJob')
                 ->asArray()
                 ->all();
 
-            // get properties from Request object and from links
+            // get properties from Materials object
             $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
+            array_push($RequestResponse, ArrayHelper::toArray($modelMaterials));
             //array_push($RequestResponse, var_dump($modelRequest));
 
             return Json::encode($RequestResponse);
 
         } else {
             // Search all records in the database
-            $query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            $query = Materials::find()->Where(['created_by' => Yii::$app->user->getId()]);
 
-            $modelRequest = $query->orderBy('created_at')
+            $modelMaterials = $query->orderBy('created_at')
                 ->with('kindJob')
                 ->asArray()
                 ->all();
 
-            // get properties from Request object
+            // get properties from Materials object
             $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
+            array_push($RequestResponse, ArrayHelper::toArray($modelMaterials));
 
             return Json::encode($RequestResponse);
         }
@@ -131,7 +131,7 @@ class MaterialsController extends Controller
 
 
     /**
-     * POST Method. Request table.
+     * POST Method. Materials table.
      * Insert records by parameters
      *
      * @return json
@@ -156,27 +156,26 @@ class MaterialsController extends Controller
 
         //$modelRequest->setAttributes($bodyRaw);
 
-        // load attributes in Request object
+        // load attributes in Materials object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
-            $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
+            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
-            $modelRequest = new Request();
+            $modelMaterials = new Materials();
 
-            // fill in the properties in the Request object
-            foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
-                    if ($modelRequest->hasAttribute($nameRequestAssoc)) {
-                        if ($nameRequestAssoc != 'id' && $nameRequestAssoc != 'created_at' && $nameRequestAssoc != 'updated_at') {
-                            $modelRequest->$nameRequestAssoc = $bodyRaw[$valueRequestAssoc];
+            // fill in the properties in the Materials object
+            foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
+                if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
+                    if ($modelMaterials->hasAttribute($nameMaterialsAssoc)) {
+                        if ($nameMaterialsAssoc != 'id' && $nameMaterialsAssoc != 'created_at' && $nameMaterialsAssoc != 'updated_at') {
+                            $modelMaterials->$nameMaterialsAssoc = $bodyRaw[$valueMaterialsAssoc];
 
-                            if (!$modelRequest->validate($nameRequestAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+                            if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueMaterialsAssoc));
 
-                            $modelRequest->created_by = Yii::$app->user->getId();
-                            $modelRequest->created_at = time();
-                            $modelRequest->updated_at = time();
+                            $modelMaterials->created_by = Yii::$app->user->getId();
+                            $modelMaterials->created_at = time();
+                            $modelMaterials->updated_at = time();
                         }
                     }
                 }
@@ -192,34 +191,12 @@ class MaterialsController extends Controller
         }
 
 
-        if ($modelRequest->validate()) {
+        if ($modelMaterials->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flagRequest = $modelRequest->save(false); // insert into request table
+                $flagMaterials = $modelMaterials->save(false); // insert into materials table
 
-                $flagRequestKindJob = true;
-                if ($flagRequest) {
-
-                    // Save records into request_kind_job table
-                    if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
-                        foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
-                            $modelRequestKindJob = new RequestKindJob();
-
-                            // fill in the properties in the KindJob object
-                            if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
-                                $modelRequestKindJob->kind_job_id = $value;
-                            }
-
-                            if ($modelRequestKindJob->validate('kind_job_id')) {
-                                $modelRequestKindJob->request_id = $modelRequest->id;
-
-                                if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
-                            }
-                        }
-                    }
-                }
-
-                if ($flagRequest == true && $flagRequestKindJob == true) {
+                if ($flagMaterials) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
@@ -230,7 +207,7 @@ class MaterialsController extends Controller
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
             }
 
-            //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+            //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelMaterials))));
             return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
         } else {
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
@@ -240,7 +217,7 @@ class MaterialsController extends Controller
 
 
     /**
-     * PUT, PATCH Method. Request table.
+     * PUT, PATCH Method. Materials table.
      * Update records by parameters
      *
      * @return json
@@ -263,38 +240,37 @@ class MaterialsController extends Controller
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
+        //$modelMaterials->setAttributes($bodyRaw);
 
-        // load attributes in Request object
+        // load attributes in Materials object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
-            $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
+            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
-            if (array_key_exists($arrayRequestAssoc['id'], $bodyRaw)) {
+            if (array_key_exists($arrayMaterialsAssoc['id'], $bodyRaw)) {
                 // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayRequestAssoc['id']])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayMaterialsAssoc['id']])) {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $queryRequest = Request::find()
-                    ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
-                $modelRequest = $queryRequest->orderBy('created_at')->one();
+                $queryMaterials = Materials::find()
+                    ->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
+                $modelMaterials = $queryMaterials->orderBy('created_at')->one();
 
-                if (!empty($modelRequest)) {
-                    // fill in the properties in the Request object
-                    foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                        if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
-                            if ($modelRequest->hasAttribute($nameRequestAssoc)) {
-                                if ($nameRequestAssoc != 'id' && $nameRequestAssoc != 'created_at' && $nameRequestAssoc != 'updated_at') {
-                                    $modelRequest->$nameRequestAssoc = $bodyRaw[$valueRequestAssoc];
+                if (!empty($modelMaterials)) {
+                    // fill in the properties in the Materials object
+                    foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
+                        if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
+                            if ($modelMaterials->hasAttribute($nameMaterialsAssoc)) {
+                                if ($nameMaterialsAssoc != 'id' && $nameMaterialsAssoc != 'created_at' && $nameMaterialsAssoc != 'updated_at') {
+                                    $modelMaterials->$nameMaterialsAssoc = $bodyRaw[$valueMaterialsAssoc];
 
-                                    if (!$modelRequest->validate($nameRequestAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+                                    if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueMaterialsAssoc));
 
-                                    $modelRequest->created_by = Yii::$app->user->getId();
-                                    $modelRequest->updated_at = time();
+                                    $modelMaterials->created_by = Yii::$app->user->getId();
+                                    $modelMaterials->updated_at = time();
                                 }
                             }
                         }
@@ -316,37 +292,12 @@ class MaterialsController extends Controller
         }
 
 
-        if ($modelRequest->validate()) {
+        if ($modelMaterials->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flagRequest = $modelRequest->save(false); // insert into request table
+                $flagMaterials = $modelMaterials->save(false); // insert into materials table
 
-                $flagRequestKindJob = true;
-                if ($flagRequest) {
-
-                    // Save records into request_kind_job table
-                    if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
-                        // delete old records from request_kind_job table
-                        RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
-
-                        foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
-                            $modelRequestKindJob = new RequestKindJob();
-
-                            // fill in the properties in the KindJob object
-                            if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
-                                $modelRequestKindJob->kind_job_id = $value;
-                            }
-
-                            if ($modelRequestKindJob->validate('kind_job_id')) {
-                                $modelRequestKindJob->request_id = $modelRequest->id;
-
-                                if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
-                            }
-                        }
-                    }
-                }
-
-                if ($flagRequest == true && $flagRequestKindJob == true) {
+                if ($flagMaterials) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
@@ -364,7 +315,7 @@ class MaterialsController extends Controller
 
 
     /**
-     * DELETE Method. Request table.
+     * DELETE Method. Materials table.
      * Delete records by parameters
      *
      * @return json
@@ -387,26 +338,26 @@ class MaterialsController extends Controller
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
+        //$modelMaterials->setAttributes($bodyRaw);
 
-        // load attributes in Request object
+        // load attributes in Materials object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
-            if (array_key_exists($arrayRequestAssoc['id'], $bodyRaw)) {
+            if (array_key_exists($arrayMaterialsAssoc['id'], $bodyRaw)) {
                 // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayRequestAssoc['id']])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayMaterialsAssoc['id']])) {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $queryRequest = Request::find()
-                    ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
-                $modelRequest = $queryRequest->orderBy('created_at')->one();
+                $queryMaterials = Materials::find()
+                    ->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
+                $modelMaterials = $queryMaterials->orderBy('created_at')->one();
 
-                if (empty($modelRequest)) {
+                if (empty($modelMaterials)) {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
                 }
             } else {
@@ -414,16 +365,13 @@ class MaterialsController extends Controller
             }
         }
 
-        if (!empty($modelRequest)) {
+        if (!empty($modelMaterials)) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                // delete old records from request_kind_job table
-                RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
+                // delete from materials table
+                $countMaterialsDelete = $modelMaterials->delete($modelMaterials->id);
 
-                // delete from request table
-                $countRequestDelete = $modelRequest->delete($modelRequest->id);
-
-                if ($countRequestDelete > 0) {
+                if ($countMaterialsDelete > 0) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();

@@ -21,6 +21,7 @@ class m191225_000030_rbac_model extends Migration
         $this->addColumn('response', 'created_by', $this->integer());
         $this->addColumn('request', 'created_by', $this->integer());
         $this->addColumn('order', 'created_by', $this->integer()->notNull());
+        $this->addColumn('feedback', 'created_by', $this->integer()->notNull());
         $this->addColumn('delivery', 'created_by', $this->integer()->notNull());
         $this->addColumn('materials', 'created_by', $this->integer()->notNull());
         $this->addColumn('delivery_place', 'created_by', $this->integer()->notNull());
