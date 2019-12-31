@@ -344,7 +344,7 @@ class RequestController extends Controller
                                 $modelRequestKindJob->request_id = $modelRequest->id;
 
                                 // delete old records from request_kind_job table
-                                Request::delete(false)
+                                RequestKindJob::delete(false)
                                     ->where(['request_id' => $modelRequest->id]);
 
                                 if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
