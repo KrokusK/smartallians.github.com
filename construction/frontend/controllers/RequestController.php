@@ -165,20 +165,18 @@ class RequestController extends Controller
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
 
-            // Array of request parameter associations with object property names
-            //$arrayRequestAssoc = array ('description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'date_begin' => 'date_begin', 'date_end' => 'date_end', 'city_id' => 'city_id', 'address' => 'address');
+            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayRequestAssoc = array ('status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
-            $arrayKindJobAssoc = array ('work_type' => 'kind_job_id');
+            $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
 
             $modelRequest = new Request();
-            $modelRequestKindJob = new RequestKindJob();
 
             // fill in the properties in the Request object
             foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                if (array_key_exists($nameRequestAssoc, $bodyRaw)) {
-                    if ($modelRequest->hasAttribute($valueRequestAssoc)) {
-                        if ($valueRequestAssoc != 'id' && $valueRequestAssoc != 'created_at' && $valueRequestAssoc != 'updated_at') {
-                            $modelRequest->$valueRequestAssoc = $bodyRaw[$nameRequestAssoc];
+                if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
+                    if ($modelRequest->hasAttribute($nameRequestAssoc)) {
+                        if ($nameRequestAssoc != 'id' && $nameRequestAssoc != 'created_at' && $nameRequestAssoc != 'updated_at') {
+                            $modelRequest->$nameRequestAssoc = $bodyRaw[$valueRequestAssoc];
 
                             $modelRequest->created_by = Yii::$app->user->getId();
                             $modelRequest->created_at = time();
@@ -188,28 +186,40 @@ class RequestController extends Controller
                 }
             }
 
-            // fill in the properties in the KindJob object
+            // check parametr for the KindJob object
             foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
-                if (array_key_exists($nameKindJobAssoc, $bodyRaw)) {
-                    if ($modelRequestKindJob->hasAttribute($valueKindJobAssoc)) {
-                        if (is_array($bodyRaw[$nameKindJobAssoc])) return Json::encode(array('IS_ARRAY' => 'IS_ARRAY'));
-                        else return Json::encode(array('bodyRaw[$nameKindJobAssoc]' => $bodyRaw[$nameKindJobAssoc]));
-                        $modelRequestKindJob->$valueKindJobAssoc = $bodyRaw[$nameKindJobAssoc];
-                    }
+                if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
+                    if ($nameKindJobAssoc == 'kind_job_id' && !is_array($bodyRaw[$valueKindJobAssoc])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре work_type ожидается массив'));
                 }
             }
 
         }
 
 
-        if ($modelRequest->validate() && $modelRequestKindJob->validate('kind_job_id')) {
+        if ($modelRequest->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flagRequest = $modelRequest->save(false); // insert
+                $flagRequest = $modelRequest->save(false); // insert into request table
 
-                $modelRequestKindJob->request_id = $modelRequest->id;
+                $flagRequestKindJob = true;
+                if ($flagRequest) {
 
-                $flagRequestKindJob = $modelRequestKindJob->save(false); // insert
+                    // Save records into request_kind_job table
+                    foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
+                        $modelRequestKindJob = new RequestKindJob();
+
+                        // fill in the properties in the KindJob object
+                        if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
+                            $modelRequestKindJob->kind_job_id = $value;
+                        }
+
+                        if ($modelRequestKindJob->validate('kind_job_id')) {
+                            $modelRequestKindJob->request_id = $modelRequest->id;
+
+                            if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
+                        }
+                    }
+                }
 
                 if ($flagRequest == true && $flagRequestKindJob == true) {
                     $transaction->commit();
