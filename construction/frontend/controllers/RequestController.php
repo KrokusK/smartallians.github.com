@@ -204,7 +204,7 @@ class RequestController extends Controller
                 if ($flagRequest) {
 
                     // Save records into request_kind_job table
-                    if (array_key_exists($bodyRaw[$arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
+                    if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
                         foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
                             $modelRequestKindJob = new RequestKindJob();
 
