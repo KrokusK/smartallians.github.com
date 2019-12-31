@@ -332,6 +332,11 @@ class RequestController extends Controller
 
                     // Save records into request_kind_job table
                     if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
+                        // delete old records from request_kind_job table
+                        $modelRequestKindJob = new RequestKindJob();
+                        $modelRequestKindJob->delete(false)
+                            ->where(['request_id' => $modelRequest->id]);
+
                         foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
                             $modelRequestKindJob = new RequestKindJob();
 
@@ -342,10 +347,6 @@ class RequestController extends Controller
 
                             if ($modelRequestKindJob->validate('kind_job_id')) {
                                 $modelRequestKindJob->request_id = $modelRequest->id;
-
-                                // delete old records from request_kind_job table
-                                RequestKindJob::delete(false)
-                                    ->where(['request_id' => $modelRequest->id]);
 
                                 if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
                             }
