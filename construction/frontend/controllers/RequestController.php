@@ -428,85 +428,18 @@ class RequestController extends Controller
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена 1'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена 2'));
             }
 
             return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена'));
         } else {
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена 3'));
         }
         //}
     }
 
-
-    /**
-     * Parsing request Method.
-     *
-     * @return array
-     */
-    public function parsingRequestFormData($put_string)
-    {
-        //            //$put_string = json_decode($put_string_json, TRUE);
-        //            //$put_string=Yii::$app->request->getBodyParams();
-        //
-        //            //$temp = json_decode($put_string, TRUE);
-        //
-        //            //$put_param = explode("&", $put_string);
-        //            //$array_put=array();
-        //            //parse_str($put_string, $array_put);
-        //
-        //
-        //
-        //            //foreach($array_put as $put_val)
-        //            //{
-        //            //    $param = explode("=", $put_val);
-        //            //    $array_put[$paam[0]]=urldecode($param[1]);
-        //}
-
-        //$request = Yii::$app->request;
-
-        // returns all parameters
-        //$params = $request->getBodyParams();
-
-        //name=\"Request[name]\"\r\n\r\ntest\r\n-----------------------------4833311154639"
-
-        // returns the parameter "id"
-        //$param = $request->getBodyParam('nad');
-
-        function strpos_recursive($haystack, $needle, $offset = 0, &$results = array()) {
-            $offset = strpos($haystack, $needle, $offset);
-            if($offset === false) {
-                return $results;
-            } else {
-                $results[] = $offset;
-                return strpos_recursive($haystack, $needle, ($offset + 1), $results);
-            }
-        }
-
-        $string = $put_string;
-        $search = 'name="';
-        $found = strpos_recursive($string, $search);
-
-        if($found) {
-            foreach($found as $pos) {
-                //$temp = 'Found "'.$search.'" in string "'.$string.'" at position '.$pos;
-
-                $key = substr($string, ($pos + strlen($search)), (strpos($string, '"', ($pos + strlen($search))) - ($pos + strlen($search))));
-
-                $pos_begin = strpos($string, '"', ($pos + strlen($search))) + 4;
-                $pos_end = strpos($string, '-', $pos_begin) - 2;
-                $value = substr($string, $pos_begin + 1, $pos_end - ($pos_begin + 1));
-
-                $array_put[$key] = $value;
-            }
-        } else {
-            //$temp = '"'.$search.'" not found in "'.$string.'"';
-        }
-
-        return $array_put;
-    }
 }
