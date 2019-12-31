@@ -97,10 +97,9 @@ class MaterialsController extends Controller
                 }
             }
 
-            $modelMaterials = $query->orderBy('created_at')
+            $modelMaterials = $query->orderBy('id')
                 //->offset($pagination->offset)
                 //->limit($pagination->limit)
-                ->with('kindJob')
                 ->asArray()
                 ->all();
 
@@ -115,8 +114,7 @@ class MaterialsController extends Controller
             // Search all records in the database
             $query = Materials::find()->Where(['created_by' => Yii::$app->user->getId()]);
 
-            $modelMaterials = $query->orderBy('created_at')
-                ->with('kindJob')
+            $modelMaterials = $query->orderBy('id')
                 ->asArray()
                 ->all();
 
@@ -160,34 +158,32 @@ class MaterialsController extends Controller
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
+            $arrayMaterialsAssoc = array ('id' => 'id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
-            $modelMaterials = new Materials();
+            if (array_key_exists('materials', $bodyRaw)) {
+                if (!is_array($bodyRaw['materials'])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре materials ожидается массив'));
 
-            // fill in the properties in the Materials object
-            foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
-                if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
-                    if ($modelMaterials->hasAttribute($nameMaterialsAssoc)) {
-                        if ($nameMaterialsAssoc != 'id' && $nameMaterialsAssoc != 'created_at' && $nameMaterialsAssoc != 'updated_at') {
-                            $modelMaterials->$nameMaterialsAssoc = $bodyRaw[$valueMaterialsAssoc];
+                $subBodyRaw = $bodyRaw['materials'];
 
-                            if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueMaterialsAssoc));
+                $modelMaterials = new Materials();
 
-                            $modelMaterials->created_by = Yii::$app->user->getId();
-                            $modelMaterials->created_at = time();
-                            $modelMaterials->updated_at = time();
+                // fill in the properties in the Materials object
+                foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
+                    if (array_key_exists($valueMaterialsAssoc, $subBodyRaw)) {
+                        if ($modelMaterials->hasAttribute($nameMaterialsAssoc)) {
+                            if ($nameMaterialsAssoc != 'id') {
+                                $modelMaterials->$nameMaterialsAssoc = $subBodyRaw[$valueMaterialsAssoc];
+
+                                if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueMaterialsAssoc));
+
+                                $modelMaterials->created_by = Yii::$app->user->getId();
+                            }
                         }
                     }
                 }
+            } else {
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Отсутвтует параметр materials в запросе'));
             }
-
-            // check parametr for the KindJob object
-            foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
-                if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
-                    if ($nameKindJobAssoc == 'kind_job_id' && !is_array($bodyRaw[$valueKindJobAssoc])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре work_type ожидается массив'));
-                }
-            }
-
         }
 
 
