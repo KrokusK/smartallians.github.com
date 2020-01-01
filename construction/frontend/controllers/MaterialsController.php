@@ -107,6 +107,7 @@ class MaterialsController extends Controller
                 //->offset($pagination->offset)
                 //->limit($pagination->limit)
                 ->asArray()
+                ->with('requests','deliveries','materialType','statusMaterial')
                 ->all();
 
             // get properties from Materials object
@@ -122,6 +123,7 @@ class MaterialsController extends Controller
 
             $modelMaterials = $query->orderBy('id')
                 ->asArray()
+                ->with('requests','deliveries','materialType','statusMaterial')
                 ->all();
 
             // get properties from Materials object
