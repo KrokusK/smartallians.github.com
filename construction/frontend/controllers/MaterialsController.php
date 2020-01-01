@@ -191,10 +191,10 @@ class MaterialsController extends Controller
                                 else {
                                     // fill in the properties in the Materials object fom $bodyRaw
                                     foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
-                                        if (array_key_exists($valueMaterialsAssoc, $BodyRaw)) {
+                                        if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
                                             if ($modelMaterials->hasAttribute($nameMaterialsAssoc)) {
                                                 if ($nameMaterialsAssoc != 'id') {
-                                                    $modelMaterials->$nameMaterialsAssoc = $BodyRaw[$valueMaterialsAssoc];
+                                                    $modelMaterials->$nameMaterialsAssoc = $bodyRaw[$valueMaterialsAssoc];
 
                                                     if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueMaterialsAssoc));
 
