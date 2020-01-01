@@ -34,7 +34,7 @@ class m200101_000010_import_data_to_the_materials_tables extends Migration
         $this->insert('{{%status_material}}', [
             'name' => 'Отправлен',
         ]);
-        $this->insert('{{%sstatus_material}}', [
+        $this->insert('{{%status_material}}', [
             'name' => 'В наличие',
         ]);
 
