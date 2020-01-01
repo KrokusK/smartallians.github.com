@@ -54,8 +54,8 @@ class m200101_000010_import_data_to_the_materials_tables extends Migration
         $this->insert('{{%materials}}', [
             'request_id' => 1,
             'delivery_id' => null,
-            '%material_type_id' => 1,
-            '%status_material_id' => 1,
+            'material_type_id' => 1,
+            'status_material_id' => 1,
             'name' => 'Кирпич для бани',
             'count' => 50,
             'cost' => 250,
@@ -64,8 +64,8 @@ class m200101_000010_import_data_to_the_materials_tables extends Migration
         $this->insert('{{%materials}}', [
             'request_id' => 2,
             'delivery_id' => null,
-            '%material_type_id' => 2,
-            '%status_material_id' => 1,
+            'material_type_id' => 2,
+            'status_material_id' => 1,
             'name' => 'Брено для пристройки',
             'count' => 30,
             'cost' => 1000,
@@ -74,8 +74,8 @@ class m200101_000010_import_data_to_the_materials_tables extends Migration
         $this->insert('{{%materials}}', [
             'request_id' => 2,
             'delivery_id' => null,
-            '%material_type_id' => 3,
-            '%status_material_id' => 1,
+            'material_type_id' => 3,
+            'status_material_id' => 1,
             'name' => 'Арматура для дома',
             'count' => 20,
             'cost' => 500,
