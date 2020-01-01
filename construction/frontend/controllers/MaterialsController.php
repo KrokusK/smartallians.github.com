@@ -160,6 +160,8 @@ class MaterialsController extends Controller
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
+        return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'test', var_dump($bodyRaw) ));
+
         //$modelRequest->setAttributes($bodyRaw);
 
         // load attributes in Materials object
