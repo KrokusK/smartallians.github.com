@@ -166,25 +166,65 @@ class MaterialsController extends Controller
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayMaterialsAssoc = array ('id' => 'id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
+            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id');
+            $arraySubMaterialsAssoc = array ('delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
             if (array_key_exists('materials', $bodyRaw)) {
                 if (!is_array($bodyRaw['materials'])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре materials ожидается массив'));
 
                 $subBodyRaw = $bodyRaw['materials'];
 
-                $modelMaterials = new Materials();
-
                 // fill in the properties in the Materials object
-                foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
-                    if (array_key_exists($valueMaterialsAssoc, $subBodyRaw)) {
-                        if ($modelMaterials->hasAttribute($nameMaterialsAssoc)) {
-                            if ($nameMaterialsAssoc != 'id') {
-                                $modelMaterials->$nameMaterialsAssoc = $subBodyRaw[$valueMaterialsAssoc];
+                foreach ($subBodyRaw as $nameSubBodyRaw => $valueSubBodyRaw) {
+                    $modelMaterials = new Materials();
 
-                                if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueMaterialsAssoc));
+                    // fill in the properties in the Materials object fom $subBodyRaw
+                    foreach ($arraySubMaterialsAssoc as $nameSubMaterialsAssoc => $valueSubMaterialsAssoc) {
+                        if (array_key_exists($valueSubMaterialsAssoc, $valueSubBodyRaw)) {
 
-                                $modelMaterials->created_by = Yii::$app->user->getId();
+                            if ($modelMaterials->hasAttribute($nameSubMaterialsAssoc)) {
+                                $modelMaterials->$nameSubMaterialsAssoc = $valueSubBodyRaw[$valueSubMaterialsAssoc];
+
+                                if (!$modelMaterials->validate($nameSubMaterialsAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueSubMaterialsAssoc));
+                                else {
+                                    // fill in the properties in the Materials object fom $bodyRaw
+                                    foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
+                                        if (array_key_exists($valueMaterialsAssoc, $BodyRaw)) {
+                                            if ($modelMaterials->hasAttribute($nameMaterialsAssoc)) {
+                                                if ($nameMaterialsAssoc != 'id') {
+                                                    $modelMaterials->$nameMaterialsAssoc = $BodyRaw[$valueMaterialsAssoc];
+
+                                                    if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueMaterialsAssoc));
+
+                                                    $modelMaterials->created_by = Yii::$app->user->getId();
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Save Materials object
+                                    if ($modelMaterials->validate()) {
+                                        $transaction = \Yii::$app->db->beginTransaction();
+                                        try {
+                                            $flagMaterials = $modelMaterials->save(false); // insert into materials table
+
+                                            if ($flagMaterials) {
+                                                $transaction->commit();
+                                            } else {
+                                                $transaction->rollBack();
+                                                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть сохранен'));
+                                            }
+                                        } catch (Exception $ex) {
+                                            $transaction->rollBack();
+                                            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть сохранен'));
+                                        }
+
+                                        //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Материал успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelMaterials))));
+                                        return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Материал успешно сохранен'));
+                                    } else {
+                                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+                                    }
+                                }
                             }
                         }
                     }
@@ -192,29 +232,6 @@ class MaterialsController extends Controller
             } else {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Отсутвтует параметр materials в запросе'));
             }
-        }
-
-
-        if ($modelMaterials->validate()) {
-            $transaction = \Yii::$app->db->beginTransaction();
-            try {
-                $flagMaterials = $modelMaterials->save(false); // insert into materials table
-
-                if ($flagMaterials) {
-                    $transaction->commit();
-                } else {
-                    $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
-                }
-            } catch (Exception $ex) {
-                $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
-            }
-
-            //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelMaterials))));
-            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
-        } else {
-            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
         }
         //}
     }
@@ -305,14 +322,14 @@ class MaterialsController extends Controller
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть сохранен (обновлен)'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть сохранен (обновлен)'));
             }
 
-            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)'));
+            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Материал успешно сохранен (обновлен)'));
         }
 
     }
