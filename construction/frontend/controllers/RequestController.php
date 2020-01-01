@@ -105,7 +105,8 @@ class RequestController extends Controller
                 if (array_key_exists($valueRequestAssoc, $getParams)) {
                     $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]];
                     if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
-                    else $query->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
+
+                    $query->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
                 }
             }
 
