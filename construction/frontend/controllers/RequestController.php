@@ -103,11 +103,14 @@ class RequestController extends Controller
             $modelValidate = new Request();
             foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
                 if (array_key_exists($valueRequestAssoc, $getParams)) {
-                    $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]];
-                    if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+                    if ($modelValidate->hasAttribute($nameRequestAssoc)) {
+                        $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]];
+                        if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
 
-                    $query->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                        $query->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                    }
                 }
+
             }
 
             $modelRequest = $query->orderBy('created_at')
