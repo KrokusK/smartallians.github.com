@@ -290,7 +290,7 @@ class MaterialsController extends Controller
                                 if ($nameMaterialsAssoc != 'id' && $nameMaterialsAssoc != 'created_at' && $nameMaterialsAssoc != 'updated_at') {
                                     $modelMaterials->$nameMaterialsAssoc = $bodyRaw[$valueMaterialsAssoc];
 
-                                    if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueMaterialsAssoc));
+                                    if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueMaterialsAssoc));
 
                                     $modelMaterials->created_by = Yii::$app->user->getId();
                                     $modelMaterials->updated_at = time();
@@ -302,7 +302,7 @@ class MaterialsController extends Controller
                     // check parametr for the KindJob object
                     foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
                         if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
-                            if ($nameKindJobAssoc == 'kind_job_id' && !is_array($bodyRaw[$valueKindJobAssoc])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре work_type ожидается массив'));
+                            if ($nameKindJobAssoc == 'kind_job_id' && !is_array($bodyRaw[$valueKindJobAssoc])) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре work_type ожидается массив'));
                         }
                     }
                 } else {
@@ -321,14 +321,14 @@ class MaterialsController extends Controller
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть сохранен (обновлен)'));
+                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть сохранен (обновлен)'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть сохранен (обновлен)'));
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть сохранен (обновлен)'));
                 }
 
-                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Материал успешно сохранен (обновлен)'));
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Материал успешно сохранен (обновлен)'));
             }
         } else {
             return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
@@ -371,7 +371,7 @@ class MaterialsController extends Controller
             if (array_key_exists($arrayMaterialsAssoc['id'], $bodyRaw)) {
                 // check id parametr
                 if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayMaterialsAssoc['id']])) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
@@ -380,10 +380,10 @@ class MaterialsController extends Controller
                 $modelMaterials = $queryMaterials->orderBy('created_at')->one();
 
                 if (empty($modelMaterials)) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
                 }
             } else {
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
             }
 
             if (!empty($modelMaterials)) {
