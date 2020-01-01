@@ -205,51 +205,49 @@ class RequestController extends Controller
                 }
             }
 
-        }
+            if ($modelRequest->validate()) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    $flagRequest = $modelRequest->save(false); // insert into request table
 
+                    $flagRequestKindJob = true;
+                    if ($flagRequest) {
 
-        if ($modelRequest->validate()) {
-            $transaction = \Yii::$app->db->beginTransaction();
-            try {
-                $flagRequest = $modelRequest->save(false); // insert into request table
+                        // Save records into request_kind_job table
+                        if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
+                            foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
+                                $modelRequestKindJob = new RequestKindJob();
 
-                $flagRequestKindJob = true;
-                if ($flagRequest) {
+                                // fill in the properties in the KindJob object
+                                if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
+                                    $modelRequestKindJob->kind_job_id = $value;
+                                }
 
-                    // Save records into request_kind_job table
-                    if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
-                        foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
-                            $modelRequestKindJob = new RequestKindJob();
+                                if ($modelRequestKindJob->validate('kind_job_id')) {
+                                    $modelRequestKindJob->request_id = $modelRequest->id;
 
-                            // fill in the properties in the KindJob object
-                            if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
-                                $modelRequestKindJob->kind_job_id = $value;
-                            }
-
-                            if ($modelRequestKindJob->validate('kind_job_id')) {
-                                $modelRequestKindJob->request_id = $modelRequest->id;
-
-                                if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
+                                    if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
+                                }
                             }
                         }
                     }
-                }
 
-                if ($flagRequest == true && $flagRequestKindJob == true) {
-                    $transaction->commit();
-                } else {
+                    if ($flagRequest == true && $flagRequestKindJob == true) {
+                        $transaction->commit();
+                    } else {
+                        $transaction->rollBack();
+                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+                    }
+                } catch (Exception $ex) {
                     $transaction->rollBack();
                     return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
                 }
-            } catch (Exception $ex) {
-                $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
-            }
 
-            //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
-            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
-        } else {
-            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
+            } else {
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+            }
         }
         //}
     }
@@ -329,53 +327,50 @@ class RequestController extends Controller
                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
             }
 
-        }
+            if ($modelRequest->validate()) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    $flagRequest = $modelRequest->save(false); // insert into request table
 
+                    $flagRequestKindJob = true;
+                    if ($flagRequest) {
 
-        if ($modelRequest->validate()) {
-            $transaction = \Yii::$app->db->beginTransaction();
-            try {
-                $flagRequest = $modelRequest->save(false); // insert into request table
+                        // Save records into request_kind_job table
+                        if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
+                            // delete old records from request_kind_job table
+                            RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
 
-                $flagRequestKindJob = true;
-                if ($flagRequest) {
+                            foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
+                                $modelRequestKindJob = new RequestKindJob();
 
-                    // Save records into request_kind_job table
-                    if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
-                        // delete old records from request_kind_job table
-                        RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
+                                // fill in the properties in the KindJob object
+                                if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
+                                    $modelRequestKindJob->kind_job_id = $value;
+                                }
 
-                        foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
-                            $modelRequestKindJob = new RequestKindJob();
+                                if ($modelRequestKindJob->validate('kind_job_id')) {
+                                    $modelRequestKindJob->request_id = $modelRequest->id;
 
-                            // fill in the properties in the KindJob object
-                            if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
-                                $modelRequestKindJob->kind_job_id = $value;
-                            }
-
-                            if ($modelRequestKindJob->validate('kind_job_id')) {
-                                $modelRequestKindJob->request_id = $modelRequest->id;
-
-                                if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
+                                    if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
+                                }
                             }
                         }
                     }
-                }
 
-                if ($flagRequest == true && $flagRequestKindJob == true) {
-                    $transaction->commit();
-                } else {
+                    if ($flagRequest == true && $flagRequestKindJob == true) {
+                        $transaction->commit();
+                    } else {
+                        $transaction->rollBack();
+                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                    }
+                } catch (Exception $ex) {
                     $transaction->rollBack();
                     return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
                 }
-            } catch (Exception $ex) {
-                $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+
+                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)'));
             }
-
-            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)'));
         }
-
     }
 
 
@@ -428,31 +423,31 @@ class RequestController extends Controller
             } else {
                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
             }
-        }
 
-        if (!empty($modelRequest)) {
-            $transaction = \Yii::$app->db->beginTransaction();
-            try {
-                // delete old records from request_kind_job table
-                RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
+            if (!empty($modelRequest)) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    // delete old records from request_kind_job table
+                    RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
 
-                // delete from request table
-                $countRequestDelete = $modelRequest->delete($modelRequest->id);
+                    // delete from request table
+                    $countRequestDelete = $modelRequest->delete($modelRequest->id);
 
-                if ($countRequestDelete > 0) {
-                    $transaction->commit();
-                } else {
+                    if ($countRequestDelete > 0) {
+                        $transaction->commit();
+                    } else {
+                        $transaction->rollBack();
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                    }
+                } catch (Exception $ex) {
                     $transaction->rollBack();
                     return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
                 }
-            } catch (Exception $ex) {
-                $transaction->rollBack();
+
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена'));
+            } else {
                 return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
             }
-
-            return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена'));
-        } else {
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
         }
         //}
     }
