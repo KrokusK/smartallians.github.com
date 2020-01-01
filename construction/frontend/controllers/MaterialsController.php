@@ -80,9 +80,9 @@ class MaterialsController extends Controller
 
         //if (Yii::$app->request->isAjax) {
 
-        $bodyRaw = Yii::$app->getRequest()->get();
+        $getParams = Yii::$app->getRequest()->get();
 
-        if (is_array($bodyRaw)) {
+        if (is_array($getParams)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
@@ -91,9 +91,12 @@ class MaterialsController extends Controller
             //foreach (ArrayHelper::toArray($model) as $key => $value) {
             //    $query->andWhere([$key => $value]);
             //}
+            $modelValidate = new Materials();
             foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
-                if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
-                    $query->andWhere([$nameMaterialsAssoc => $bodyRaw[$arrayMaterialsAssoc[$nameMaterialsAssoc]]]);
+                if (array_key_exists($valueMaterialsAssoc, $getParams)) {
+                    $modelValidate->$nameMaterialsAssoc = $getParams[$arrayMaterialsAssoc[$nameMaterialsAssoc]];
+                    if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+                    else $query->andWhere([$nameMaterialsAssoc => $getParams[$arrayMaterialsAssoc[$nameMaterialsAssoc]]]);
                 }
             }
 
