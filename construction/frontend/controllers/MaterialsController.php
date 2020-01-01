@@ -209,7 +209,7 @@ class MaterialsController extends Controller
                             }
                         }
                     }
-                    return Json::encode(ArrayHelper::toArray($modelMaterials));
+                    //return Json::encode(ArrayHelper::toArray($modelMaterials));
 
                     // Save Materials object
                     if ($modelMaterials->validate()) {
