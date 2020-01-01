@@ -232,6 +232,8 @@ class MaterialsController extends Controller
             } else {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Отсутвтует параметр materials в запросе'));
             }
+        } else {
+            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
         //}
     }
@@ -310,28 +312,27 @@ class MaterialsController extends Controller
                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
             }
 
-        }
+            if ($modelMaterials->validate()) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    $flagMaterials = $modelMaterials->save(false); // insert into materials table
 
-
-        if ($modelMaterials->validate()) {
-            $transaction = \Yii::$app->db->beginTransaction();
-            try {
-                $flagMaterials = $modelMaterials->save(false); // insert into materials table
-
-                if ($flagMaterials) {
-                    $transaction->commit();
-                } else {
+                    if ($flagMaterials) {
+                        $transaction->commit();
+                    } else {
+                        $transaction->rollBack();
+                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть сохранен (обновлен)'));
+                    }
+                } catch (Exception $ex) {
                     $transaction->rollBack();
                     return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть сохранен (обновлен)'));
                 }
-            } catch (Exception $ex) {
-                $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть сохранен (обновлен)'));
+
+                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Материал успешно сохранен (обновлен)'));
             }
-
-            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Материал успешно сохранен (обновлен)'));
+        } else {
+            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
-
     }
 
 
@@ -384,28 +385,30 @@ class MaterialsController extends Controller
             } else {
                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
             }
-        }
 
-        if (!empty($modelMaterials)) {
-            $transaction = \Yii::$app->db->beginTransaction();
-            try {
-                // delete from materials table
-                $countMaterialsDelete = $modelMaterials->delete($modelMaterials->id);
+            if (!empty($modelMaterials)) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    // delete from materials table
+                    $countMaterialsDelete = $modelMaterials->delete($modelMaterials->id);
 
-                if ($countMaterialsDelete > 0) {
-                    $transaction->commit();
-                } else {
+                    if ($countMaterialsDelete > 0) {
+                        $transaction->commit();
+                    } else {
+                        $transaction->rollBack();
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                    }
+                } catch (Exception $ex) {
                     $transaction->rollBack();
                     return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
                 }
-            } catch (Exception $ex) {
-                $transaction->rollBack();
+
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена'));
+            } else {
                 return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
             }
-
-            return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена'));
         } else {
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
         //}
     }
