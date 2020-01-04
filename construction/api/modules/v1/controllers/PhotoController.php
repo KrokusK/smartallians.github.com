@@ -1,7 +1,7 @@
 <?php
-namespace frontend\controllers;
+namespace frontend\modules\v1\controllers;
 
-use frontend\models\Photo;
+use frontend\modules\v1\models\Photo;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;

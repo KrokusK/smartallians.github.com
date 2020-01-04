@@ -1,7 +1,7 @@
 <?php
-namespace frontend\controllers;
+namespace api\modules\v1\controllers;
 
-use frontend\models\Region;
+use api\modules\v1\models\Region;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;

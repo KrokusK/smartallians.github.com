@@ -1,7 +1,7 @@
 <?php
-namespace frontend\controllers;
+namespace frontend\modules\v1\controllers;
 
-use frontend\models\Delivery;
+use frontend\modules\v1\models\Delivery;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;

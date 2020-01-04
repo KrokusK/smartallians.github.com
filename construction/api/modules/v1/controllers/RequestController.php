@@ -1,8 +1,8 @@
 <?php
-namespace frontend\controllers;
+namespace frontend\modules\v1\controllers;
 
-use frontend\models\Request;
-use frontend\models\RequestKindJob;
+use frontend\modules\v1\models\Request;
+use frontend\modules\v1\models\RequestKindJob;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
