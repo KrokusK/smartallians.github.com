@@ -1,7 +1,7 @@
 <?php
 namespace frontend\modules\v1\controllers;
 
-use frontend\modules\v1\models\City;
+use frontend\modules\v1\models\StatusRequest;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -13,9 +13,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * API City controller
+ * API StatusRequest controller
  */
-class CityController extends Controller
+class StatusRequestController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -66,7 +66,7 @@ class CityController extends Controller
 
 
     /**
-     * GET Method. City table.
+     * GET Method. status_request table.
      * Get records by parameters
      *
      * @return json
@@ -80,41 +80,45 @@ class CityController extends Controller
 
         //if (Yii::$app->request->isAjax) {
         //GET data from GET request
-        $model = new City();
+        $model = new StatusRequest();
         if ($model->load(Yii::$app->request->get())) {
 
             // Search record by parametrs in the database
-            $query = City::find();
+            //$sqlParametrs = array(['AND']);
+            //foreach (ArrayHelper::toArray($model) as $key => $value) {
+            //    array_push($sqlParametrs, [$key => $value]);
+            //}
+            $query = StatusRequest::find();
             foreach (ArrayHelper::toArray($model) as $key => $value) {
                 $query->andWhere([$key => $value]);
             }
 
-            $modelCity = $query->orderBy('name')->all();
+            $modelStatusRequest = $query->orderBy('name')->all();
 
-            // get properties from City object
-            $CityResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            array_push($CityResponse, ArrayHelper::toArray($modelCity));
+            // get properties from StatusRequest object
+            $StatusRequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($StatusRequestResponse, ArrayHelper::toArray($modelStatusRequest));
 
-            return Json::encode($CityResponse);
+            return Json::encode($StatusRequestResponse);
 
         } else {
             // Search all records in the database
-            $query = City::find();
+            $query = StatusRequest::find();
 
-            $modelCity = $query->orderBy('name')->all();
+            $modelStatusRequest = $query->orderBy('name')->all();
 
-            // get properties from City object
-            $CityResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            array_push($CityResponse, ArrayHelper::toArray($modelCity));
+            // get properties from StatusRequest object
+            $StatusRequestResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($StatusRequestResponse, ArrayHelper::toArray($modelStatusRequest));
 
-            return Json::encode($CityResponse);
+            return Json::encode($StatusRequestResponse);
         }
         //}
     }
 
 
     /**
-     * POST Method. City table.
+     * POST Method. status_request table.
      * Insert records by parameters
      *
      * @return json
@@ -132,33 +136,30 @@ class CityController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingCityFormData($put_string);
+        //$array_put = $this->parsingRequestFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelCity->setAttributes($bodyRaw);
+        //$modelRequest->setAttributes($bodyRaw);
 
-        // load attributes in City object
+        // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('City[id]', $bodyRaw)) {
+            if (array_key_exists('StatusRequest[id]', $bodyRaw)) {
                 return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Недопустимый параметр: id'));
             } else {
-                $modelCity = new City();
+                $modelStatusRequest = new StatusRequest();
 
-                // fill in the properties in the City object
+                // fill in the properties in the StatusRequest object
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[') + 1;
-                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'statusrequest') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                     $pos_end = strpos($name, ']');
                     $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                    //if (isset($modelCity->$name)) {
-                    //    $modelCity->$name = $value;
-                    //}
-                    //if (property_exists($modelCity, $name)) {
-                    if ($modelCity->hasAttribute($name)) {
-                        if ($name != 'id') $modelCity->$name = $value;
+
+                    if ($modelStatusRequest->hasAttribute($name)) {
+                        if ($name != 'id') $modelStatusRequest->$name = $value;
                     }
                 }
             }
@@ -166,24 +167,23 @@ class CityController extends Controller
 
         }
 
-        if ($modelCity->validate()) {
+        if ($modelStatusRequest->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelCity->save(false); // insert
+                $flag = $modelStatusRequest->save(false); // insert
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен'));
+                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть сохранен'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен'));
+                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть сохранен'));
             }
 
-            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен'));
+            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Статус заявки успешно сохранен'));
         } else {
             return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
         }
@@ -192,7 +192,7 @@ class CityController extends Controller
 
 
     /**
-     * PUT, PATCH Method. City table.
+     * PUT, PATCH Method. status_request table.
      * Update records by parameters
      *
      * @return json
@@ -210,57 +210,53 @@ class CityController extends Controller
             $fh = fopen("php://input", 'r');
             $put_string = stream_get_contents($fh);
             $put_string = urldecode($put_string);
-            //$array_put = $this->parsingCityFormData($put_string);
+            //$array_put = $this->parsingRequestFormData($put_string);
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
             //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-            //$modelCity->setAttributes($bodyRaw);
+            //$modelRequest->setAttributes($bodyRaw);
 
-            // load attributes in City object
+            // load attributes in Request object
             // example: yiisoft/yii2/base/Model.php
             if (is_array($bodyRaw)) {
-                if (array_key_exists('City[id]', $bodyRaw)) {
+                if (array_key_exists('StatusRequest[id]', $bodyRaw)) {
                     // check input parametrs
-                    if (!preg_match("/^[0-9]*$/",$bodyRaw['City[id]'])) {
+                    if (!preg_match("/^[0-9]*$/",$bodyRaw['StatusRequest[id]'])) {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
 
                     // Search record by id in the database
-                    $query = City::find()
-                        ->where(['id' => $bodyRaw['City[id]']]);
-                    //->where(['AND', ['id' => $modelCity->id], ['user_desc_id'=> $var2]]);
+                    $query = StatusRequest::find()
+                        ->where(['id' => $bodyRaw['StatusRequest[id]']]);
 
-                    $modelCity = $query->orderBy('name')->one();
+                    $modelStatusRequest = $query->orderBy('name')->one();
 
-                    if (!empty($modelCity)) {
-                        // update in the properties in the City object
+                    if (!empty($modelStatusRequest)) {
+                        // update in the properties in the StatusRequest object
                         foreach ($bodyRaw as $name => $value) {
                             $pos_begin = strpos($name, '[') + 1;
-                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'statusrequest') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                            if ($name != 'id') $modelCity->$name = $value;
+                            if ($name != 'id') $modelStatusRequest->$name = $value;
                         }
                     } else {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
                 } else {
-                    $modelCity = new City();
+                    $modelStatusRequest = new StatusRequest();
 
-                    // fill in the properties in the City object
+                    // fill in the properties in the StatusRequest object
                     foreach ($bodyRaw as $name => $value) {
                         $pos_begin = strpos($name, '[') + 1;
-                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'statusrequest') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                         $pos_end = strpos($name, ']');
                         $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                        //if (isset($modelCity->$name)) {
-                        //    $modelCity->$name = $value;
-                        //}
-                        //if (property_exists($modelCity, $name)) {
-                        if ($modelCity->hasAttribute($name)) {
-                            if ($name != 'id') $modelCity->$name = $value;
+
+                        if ($modelStatusRequest->hasAttribute($name)) {
+                            if ($name != 'id') $modelStatusRequest->$name = $value;
                         }
                     }
                 }
@@ -268,24 +264,23 @@ class CityController extends Controller
 
             }
 
-            if ($modelCity->validate()) {
+            if ($modelStatusRequest->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flag = $modelCity->save(false); // insert
+                    $flag = $modelStatusRequest->save(false); // insert
 
                     if ($flag == true) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен (обновлен)'));
+                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть сохранен (обновлена)'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен (обновлен)'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть сохранен (обновлен)'));
                 }
 
-                //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен (обновлен)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен (обновлен)'));
+                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Статус заявки успешно сохранен (обновлен)'));
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
@@ -294,7 +289,7 @@ class CityController extends Controller
 
 
     /**
-     * DELETE Method. City table.
+     * DELETE Method. Request table.
      * Delete records by parameters
      *
      * @return json
@@ -312,52 +307,53 @@ class CityController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingCityFormData($put_string);
+        //$array_put = $this->parsingRequestFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelCity->setAttributes($bodyRaw);
+        //$modelRequest->setAttributes($bodyRaw);
 
-        // load attributes in City object
+        // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('City[id]', $bodyRaw)) {
+            if (array_key_exists('StatusRequest[id]', $bodyRaw)) {
                 // check input parametrs
-                if (!preg_match("/^[0-9]*$/",$bodyRaw['City[id]'])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw['StatusRequest[id]'])) {
                     return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $query = City::find()
-                    ->where(['id' => $bodyRaw['City[id]']]);
-                //->where(['AND', ['id' => $modelCity->id], ['user_desc_id'=> $var2]]);
+                $query = StatusRequest::find()
+                    ->where(['id' => $bodyRaw['StatusRequest[id]']]);
 
-                $modelCity = $query->orderBy('name')->one();
+                $modelStatusRequest = $query->orderBy('name')->one();
             }
         }
 
-        if (!empty($modelCity)) {
+        if (!empty($modelStatusRequest)) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelCity->delete($bodyRaw['City[id]']); // delete
+                $flag = $modelStatusRequest->delete($bodyRaw['StatusRequest[id]']); // delete
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть удален'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть удален'));
             }
 
-            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно удален', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно удален'));
+            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Статус заявки успешно удален'));
         } else {
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус заявки не может быть удален'));
         }
+
+
+
         //}
     }
 
@@ -367,7 +363,7 @@ class CityController extends Controller
      *
      * @return array
      */
-    public function parsingCityFormData($put_string)
+    public function parsingRequestFormData($put_string)
     {
         //            //$put_string = json_decode($put_string_json, TRUE);
         //            //$put_string=Yii::$app->request->getBodyParams();

@@ -1,7 +1,7 @@
 <?php
 namespace frontend\modules\v1\controllers;
 
-use frontend\modules\v1\models\City;
+use frontend\modules\v1\models\Portfolio;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -13,9 +13,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * API City controller
+ * API Portfolio controller
  */
-class CityController extends Controller
+class PortfolioController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -66,7 +66,7 @@ class CityController extends Controller
 
 
     /**
-     * GET Method. City table.
+     * GET Method. Portfolio table.
      * Get records by parameters
      *
      * @return json
@@ -80,41 +80,41 @@ class CityController extends Controller
 
         //if (Yii::$app->request->isAjax) {
         //GET data from GET request
-        $model = new City();
+        $model = new Portfolio();
         if ($model->load(Yii::$app->request->get())) {
 
             // Search record by parametrs in the database
-            $query = City::find();
+            $query = Portfolio::find();
             foreach (ArrayHelper::toArray($model) as $key => $value) {
                 $query->andWhere([$key => $value]);
             }
 
-            $modelCity = $query->orderBy('name')->all();
+            $modelPortfolio = $query->orderBy('name')->all();
 
-            // get properties from City object
-            $CityResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            array_push($CityResponse, ArrayHelper::toArray($modelCity));
+            // get properties from Portfolio object
+            $PortfolioResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($PortfolioResponse, ArrayHelper::toArray($modelPortfolio));
 
-            return Json::encode($CityResponse);
+            return Json::encode($PortfolioResponse);
 
         } else {
             // Search all records in the database
-            $query = City::find();
+            $query = Portfolio::find();
 
-            $modelCity = $query->orderBy('name')->all();
+            $modelPortfolio = $query->orderBy('name')->all();
 
-            // get properties from City object
-            $CityResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            array_push($CityResponse, ArrayHelper::toArray($modelCity));
+            // get properties from Portfolio object
+            $PortfolioResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($PortfolioResponse, ArrayHelper::toArray($modelPortfolio));
 
-            return Json::encode($CityResponse);
+            return Json::encode($PortfolioResponse);
         }
         //}
     }
 
 
     /**
-     * POST Method. City table.
+     * POST Method. Portfolio table.
      * Insert records by parameters
      *
      * @return json
@@ -132,33 +132,33 @@ class CityController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingCityFormData($put_string);
+        //$array_put = $this->parsingPortfolioFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelCity->setAttributes($bodyRaw);
+        //$modelPortfolio->setAttributes($bodyRaw);
 
-        // load attributes in City object
+        // load attributes in Portfolio object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('City[id]', $bodyRaw)) {
+            if (array_key_exists('Portfolio[id]', $bodyRaw)) {
                 return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Недопустимый параметр: id'));
             } else {
-                $modelCity = new City();
+                $modelPortfolio = new Portfolio();
 
-                // fill in the properties in the City object
+                // fill in the properties in the Portfolio object
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[') + 1;
-                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'portfolio') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                     $pos_end = strpos($name, ']');
                     $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                    //if (isset($modelCity->$name)) {
-                    //    $modelCity->$name = $value;
+                    //if (isset($modelPortfolio->$name)) {
+                    //    $modelPortfolio->$name = $value;
                     //}
-                    //if (property_exists($modelCity, $name)) {
-                    if ($modelCity->hasAttribute($name)) {
-                        if ($name != 'id') $modelCity->$name = $value;
+                    //if (property_exists($modelPortfolio, $name)) {
+                    if ($modelPortfolio->hasAttribute($name)) {
+                        if ($name != 'id') $modelPortfolio->$name = $value;
                     }
                 }
             }
@@ -166,24 +166,24 @@ class CityController extends Controller
 
         }
 
-        if ($modelCity->validate()) {
+        if ($modelPortfolio->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelCity->save(false); // insert
+                $flag = $modelPortfolio->save(false); // insert
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен'));
+                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть сохранено'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен'));
+                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть сохранено'));
             }
 
-            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен'));
+            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Портфолио успешно сохранено', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelPortfolio))));
+            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Портфолио успешно сохранено'));
         } else {
             return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
         }
@@ -192,7 +192,7 @@ class CityController extends Controller
 
 
     /**
-     * PUT, PATCH Method. City table.
+     * PUT, PATCH Method. Portfolio table.
      * Update records by parameters
      *
      * @return json
@@ -210,57 +210,57 @@ class CityController extends Controller
             $fh = fopen("php://input", 'r');
             $put_string = stream_get_contents($fh);
             $put_string = urldecode($put_string);
-            //$array_put = $this->parsingCityFormData($put_string);
+            //$array_put = $this->parsingPortfolioFormData($put_string);
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
             //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-            //$modelCity->setAttributes($bodyRaw);
+            //$modelPortfolio->setAttributes($bodyRaw);
 
-            // load attributes in City object
+            // load attributes in Portfolio object
             // example: yiisoft/yii2/base/Model.php
             if (is_array($bodyRaw)) {
-                if (array_key_exists('City[id]', $bodyRaw)) {
+                if (array_key_exists('Portfolio[id]', $bodyRaw)) {
                     // check input parametrs
-                    if (!preg_match("/^[0-9]*$/",$bodyRaw['City[id]'])) {
+                    if (!preg_match("/^[0-9]*$/",$bodyRaw['Portfolio[id]'])) {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
 
                     // Search record by id in the database
-                    $query = City::find()
-                        ->where(['id' => $bodyRaw['City[id]']]);
-                    //->where(['AND', ['id' => $modelCity->id], ['user_desc_id'=> $var2]]);
+                    $query = Portfolio::find()
+                        ->where(['id' => $bodyRaw['Portfolio[id]']]);
+                    //->where(['AND', ['id' => $modelPortfolio->id], ['user_desc_id'=> $var2]]);
 
-                    $modelCity = $query->orderBy('name')->one();
+                    $modelPortfolio = $query->orderBy('name')->one();
 
-                    if (!empty($modelCity)) {
-                        // update in the properties in the City object
+                    if (!empty($modelPortfolio)) {
+                        // update in the properties in the Portfolio object
                         foreach ($bodyRaw as $name => $value) {
                             $pos_begin = strpos($name, '[') + 1;
-                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'portfolio') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                            if ($name != 'id') $modelCity->$name = $value;
+                            if ($name != 'id') $modelPortfolio->$name = $value;
                         }
                     } else {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
                 } else {
-                    $modelCity = new City();
+                    $modelPortfolio = new Portfolio();
 
-                    // fill in the properties in the City object
+                    // fill in the properties in the Portfolio object
                     foreach ($bodyRaw as $name => $value) {
                         $pos_begin = strpos($name, '[') + 1;
-                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'portfolio') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                         $pos_end = strpos($name, ']');
                         $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                        //if (isset($modelCity->$name)) {
-                        //    $modelCity->$name = $value;
+                        //if (isset($modelPortfolio->$name)) {
+                        //    $modelPortfolio->$name = $value;
                         //}
-                        //if (property_exists($modelCity, $name)) {
-                        if ($modelCity->hasAttribute($name)) {
-                            if ($name != 'id') $modelCity->$name = $value;
+                        //if (property_exists($modelPortfolio, $name)) {
+                        if ($modelPortfolio->hasAttribute($name)) {
+                            if ($name != 'id') $modelPortfolio->$name = $value;
                         }
                     }
                 }
@@ -268,24 +268,24 @@ class CityController extends Controller
 
             }
 
-            if ($modelCity->validate()) {
+            if ($modelPortfolio->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flag = $modelCity->save(false); // insert
+                    $flag = $modelPortfolio->save(false); // insert
 
                     if ($flag == true) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен (обновлен)'));
+                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть сохранено (обновлено)'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен (обновлен)'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть сохранено (обновлено)'));
                 }
 
-                //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен (обновлен)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен (обновлен)'));
+                //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Портфолио успешно сохранено (обновлено)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelPortfolio))));
+                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Портфолио успешно сохранено (обновлено)'));
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
@@ -294,7 +294,7 @@ class CityController extends Controller
 
 
     /**
-     * DELETE Method. City table.
+     * DELETE Method. Portfolio table.
      * Delete records by parameters
      *
      * @return json
@@ -312,51 +312,51 @@ class CityController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingCityFormData($put_string);
+        //$array_put = $this->parsingPortfolioFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelCity->setAttributes($bodyRaw);
+        //$modelPortfolio->setAttributes($bodyRaw);
 
-        // load attributes in City object
+        // load attributes in Portfolio object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('City[id]', $bodyRaw)) {
+            if (array_key_exists('Portfolio[id]', $bodyRaw)) {
                 // check input parametrs
-                if (!preg_match("/^[0-9]*$/",$bodyRaw['City[id]'])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw['Portfolio[id]'])) {
                     return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $query = City::find()
-                    ->where(['id' => $bodyRaw['City[id]']]);
-                //->where(['AND', ['id' => $modelCity->id], ['user_desc_id'=> $var2]]);
+                $query = Portfolio::find()
+                    ->where(['id' => $bodyRaw['Portfolio[id]']]);
+                //->where(['AND', ['id' => $modelPortfolio->id], ['user_desc_id'=> $var2]]);
 
-                $modelCity = $query->orderBy('name')->one();
+                $modelPortfolio = $query->orderBy('name')->one();
             }
         }
 
-        if (!empty($modelCity)) {
+        if (!empty($modelPortfolio)) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelCity->delete($bodyRaw['City[id]']); // delete
+                $flag = $modelPortfolio->delete($bodyRaw['Portfolio[id]']); // delete
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть удален'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть удален'));
             }
 
-            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно удален', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно удален'));
+            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Портфолио успешно удален', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelPortfolio))));
+            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Портфолио успешно удален'));
         } else {
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть удален'));
         }
         //}
     }
@@ -367,7 +367,7 @@ class CityController extends Controller
      *
      * @return array
      */
-    public function parsingCityFormData($put_string)
+    public function parsingPortfolioFormData($put_string)
     {
         //            //$put_string = json_decode($put_string_json, TRUE);
         //            //$put_string=Yii::$app->request->getBodyParams();

@@ -1,7 +1,7 @@
 <?php
 namespace frontend\modules\v1\controllers;
 
-use frontend\modules\v1\models\City;
+use frontend\modules\v1\models\StatusFeedback;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -13,9 +13,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * API City controller
+ * API StatusFeedback controller
  */
-class CityController extends Controller
+class StatusFeedbackController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -66,7 +66,7 @@ class CityController extends Controller
 
 
     /**
-     * GET Method. City table.
+     * GET Method. StatusFeedback table.
      * Get records by parameters
      *
      * @return json
@@ -80,41 +80,41 @@ class CityController extends Controller
 
         //if (Yii::$app->request->isAjax) {
         //GET data from GET request
-        $model = new City();
+        $model = new StatusFeedback();
         if ($model->load(Yii::$app->request->get())) {
 
             // Search record by parametrs in the database
-            $query = City::find();
+            $query = StatusFeedback::find();
             foreach (ArrayHelper::toArray($model) as $key => $value) {
                 $query->andWhere([$key => $value]);
             }
 
-            $modelCity = $query->orderBy('name')->all();
+            $modelStatusFeedback = $query->orderBy('name')->all();
 
-            // get properties from City object
-            $CityResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            array_push($CityResponse, ArrayHelper::toArray($modelCity));
+            // get properties from StatusFeedback object
+            $StatusFeedbackResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($StatusFeedbackResponse, ArrayHelper::toArray($modelStatusFeedback));
 
-            return Json::encode($CityResponse);
+            return Json::encode($StatusFeedbackResponse);
 
         } else {
             // Search all records in the database
-            $query = City::find();
+            $query = StatusFeedback::find();
 
-            $modelCity = $query->orderBy('name')->all();
+            $modelStatusFeedback = $query->orderBy('name')->all();
 
-            // get properties from City object
-            $CityResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            array_push($CityResponse, ArrayHelper::toArray($modelCity));
+            // get properties from StatusFeedback object
+            $StatusFeedbackResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($StatusFeedbackResponse, ArrayHelper::toArray($modelStatusFeedback));
 
-            return Json::encode($CityResponse);
+            return Json::encode($StatusFeedbackResponse);
         }
         //}
     }
 
 
     /**
-     * POST Method. City table.
+     * POST Method. StatusFeedback table.
      * Insert records by parameters
      *
      * @return json
@@ -132,33 +132,33 @@ class CityController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingCityFormData($put_string);
+        //$array_put = $this->parsingStatusFeedbackFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelCity->setAttributes($bodyRaw);
+        //$modelStatusFeedback->setAttributes($bodyRaw);
 
-        // load attributes in City object
+        // load attributes in StatusFeedback object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('City[id]', $bodyRaw)) {
+            if (array_key_exists('StatusFeedback[id]', $bodyRaw)) {
                 return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Недопустимый параметр: id'));
             } else {
-                $modelCity = new City();
+                $modelStatusFeedback = new StatusFeedback();
 
-                // fill in the properties in the City object
+                // fill in the properties in the StatusFeedback object
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[') + 1;
-                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'statusfeedback') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                     $pos_end = strpos($name, ']');
                     $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                    //if (isset($modelCity->$name)) {
-                    //    $modelCity->$name = $value;
+                    //if (isset($modelStatusFeedback->$name)) {
+                    //    $modelStatusFeedback->$name = $value;
                     //}
-                    //if (property_exists($modelCity, $name)) {
-                    if ($modelCity->hasAttribute($name)) {
-                        if ($name != 'id') $modelCity->$name = $value;
+                    //if (property_exists($modelStatusFeedback, $name)) {
+                    if ($modelStatusFeedback->hasAttribute($name)) {
+                        if ($name != 'id') $modelStatusFeedback->$name = $value;
                     }
                 }
             }
@@ -166,24 +166,24 @@ class CityController extends Controller
 
         }
 
-        if ($modelCity->validate()) {
+        if ($modelStatusFeedback->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelCity->save(false); // insert
+                $flag = $modelStatusFeedback->save(false); // insert
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен'));
+                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отзыва не может быть сохранен'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен'));
+                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отзыва не может быть сохранен'));
             }
 
-            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен'));
+            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Статус отзыва успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelStatusFeedback))));
+            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Статус отзыва успешно сохранен'));
         } else {
             return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
         }
@@ -192,7 +192,7 @@ class CityController extends Controller
 
 
     /**
-     * PUT, PATCH Method. City table.
+     * PUT, PATCH Method. StatusFeedback table.
      * Update records by parameters
      *
      * @return json
@@ -210,57 +210,57 @@ class CityController extends Controller
             $fh = fopen("php://input", 'r');
             $put_string = stream_get_contents($fh);
             $put_string = urldecode($put_string);
-            //$array_put = $this->parsingCityFormData($put_string);
+            //$array_put = $this->parsingStatusFeedbackFormData($put_string);
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
             //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-            //$modelCity->setAttributes($bodyRaw);
+            //$modelStatusFeedback->setAttributes($bodyRaw);
 
-            // load attributes in City object
+            // load attributes in StatusFeedback object
             // example: yiisoft/yii2/base/Model.php
             if (is_array($bodyRaw)) {
-                if (array_key_exists('City[id]', $bodyRaw)) {
+                if (array_key_exists('StatusFeedback[id]', $bodyRaw)) {
                     // check input parametrs
-                    if (!preg_match("/^[0-9]*$/",$bodyRaw['City[id]'])) {
+                    if (!preg_match("/^[0-9]*$/",$bodyRaw['StatusFeedback[id]'])) {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
 
                     // Search record by id in the database
-                    $query = City::find()
-                        ->where(['id' => $bodyRaw['City[id]']]);
-                    //->where(['AND', ['id' => $modelCity->id], ['user_desc_id'=> $var2]]);
+                    $query = StatusFeedback::find()
+                        ->where(['id' => $bodyRaw['StatusFeedback[id]']]);
+                    //->where(['AND', ['id' => $modelStatusFeedback->id], ['user_desc_id'=> $var2]]);
 
-                    $modelCity = $query->orderBy('name')->one();
+                    $modelStatusFeedback = $query->orderBy('name')->one();
 
-                    if (!empty($modelCity)) {
-                        // update in the properties in the City object
+                    if (!empty($modelStatusFeedback)) {
+                        // update in the properties in the StatusFeedback object
                         foreach ($bodyRaw as $name => $value) {
                             $pos_begin = strpos($name, '[') + 1;
-                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'statusfeedback') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                            if ($name != 'id') $modelCity->$name = $value;
+                            if ($name != 'id') $modelStatusFeedback->$name = $value;
                         }
                     } else {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
                 } else {
-                    $modelCity = new City();
+                    $modelStatusFeedback = new StatusFeedback();
 
-                    // fill in the properties in the City object
+                    // fill in the properties in the StatusFeedback object
                     foreach ($bodyRaw as $name => $value) {
                         $pos_begin = strpos($name, '[') + 1;
-                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'statusfeedback') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                         $pos_end = strpos($name, ']');
                         $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                        //if (isset($modelCity->$name)) {
-                        //    $modelCity->$name = $value;
+                        //if (isset($modelStatusFeedback->$name)) {
+                        //    $modelStatusFeedback->$name = $value;
                         //}
-                        //if (property_exists($modelCity, $name)) {
-                        if ($modelCity->hasAttribute($name)) {
-                            if ($name != 'id') $modelCity->$name = $value;
+                        //if (property_exists($modelStatusFeedback, $name)) {
+                        if ($modelStatusFeedback->hasAttribute($name)) {
+                            if ($name != 'id') $modelStatusFeedback->$name = $value;
                         }
                     }
                 }
@@ -268,24 +268,24 @@ class CityController extends Controller
 
             }
 
-            if ($modelCity->validate()) {
+            if ($modelStatusFeedback->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flag = $modelCity->save(false); // insert
+                    $flag = $modelStatusFeedback->save(false); // insert
 
                     if ($flag == true) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен (обновлен)'));
+                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отзыва не может быть сохранен (обновлен)'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен (обновлен)'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отзыва не может быть сохранен (обновлен)'));
                 }
 
-                //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен (обновлен)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен (обновлен)'));
+                //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Статус отзыва успешно сохранен (обновлен)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelStatusFeedback))));
+                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Статус отзыва успешно сохранен (обновлен)'));
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
@@ -294,7 +294,7 @@ class CityController extends Controller
 
 
     /**
-     * DELETE Method. City table.
+     * DELETE Method. StatusFeedback table.
      * Delete records by parameters
      *
      * @return json
@@ -312,51 +312,51 @@ class CityController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingCityFormData($put_string);
+        //$array_put = $this->parsingStatusFeedbackFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelCity->setAttributes($bodyRaw);
+        //$modelStatusFeedback->setAttributes($bodyRaw);
 
-        // load attributes in City object
+        // load attributes in StatusFeedback object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('City[id]', $bodyRaw)) {
+            if (array_key_exists('StatusFeedback[id]', $bodyRaw)) {
                 // check input parametrs
-                if (!preg_match("/^[0-9]*$/",$bodyRaw['City[id]'])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw['StatusFeedback[id]'])) {
                     return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $query = City::find()
-                    ->where(['id' => $bodyRaw['City[id]']]);
-                //->where(['AND', ['id' => $modelCity->id], ['user_desc_id'=> $var2]]);
+                $query = StatusFeedback::find()
+                    ->where(['id' => $bodyRaw['StatusFeedback[id]']]);
+                //->where(['AND', ['id' => $modelStatusFeedback->id], ['user_desc_id'=> $var2]]);
 
-                $modelCity = $query->orderBy('name')->one();
+                $modelStatusFeedback = $query->orderBy('name')->one();
             }
         }
 
-        if (!empty($modelCity)) {
+        if (!empty($modelStatusFeedback)) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelCity->delete($bodyRaw['City[id]']); // delete
+                $flag = $modelStatusFeedback->delete($bodyRaw['StatusFeedback[id]']); // delete
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отзыва не может быть удален'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отзыва не может быть удален'));
             }
 
-            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно удален', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно удален'));
+            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Статус отзыва успешно удален', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelStatusFeedback))));
+            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Статус отзыва успешно удален'));
         } else {
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Статус отзыва не может быть удален'));
         }
         //}
     }
@@ -367,7 +367,7 @@ class CityController extends Controller
      *
      * @return array
      */
-    public function parsingCityFormData($put_string)
+    public function parsingStatusFeedbackFormData($put_string)
     {
         //            //$put_string = json_decode($put_string_json, TRUE);
         //            //$put_string=Yii::$app->request->getBodyParams();

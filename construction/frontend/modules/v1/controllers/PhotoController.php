@@ -1,7 +1,7 @@
 <?php
 namespace frontend\modules\v1\controllers;
 
-use frontend\modules\v1\models\City;
+use frontend\modules\v1\models\Photo;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -13,9 +13,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * API City controller
+ * API Photo controller
  */
-class CityController extends Controller
+class PhotoController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -66,7 +66,7 @@ class CityController extends Controller
 
 
     /**
-     * GET Method. City table.
+     * GET Method. Photo table.
      * Get records by parameters
      *
      * @return json
@@ -80,41 +80,41 @@ class CityController extends Controller
 
         //if (Yii::$app->request->isAjax) {
         //GET data from GET request
-        $model = new City();
+        $model = new Photo();
         if ($model->load(Yii::$app->request->get())) {
 
             // Search record by parametrs in the database
-            $query = City::find();
+            $query = Photo::find();
             foreach (ArrayHelper::toArray($model) as $key => $value) {
                 $query->andWhere([$key => $value]);
             }
 
-            $modelCity = $query->orderBy('name')->all();
+            $modelPhoto = $query->orderBy('id')->all();
 
-            // get properties from City object
-            $CityResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            array_push($CityResponse, ArrayHelper::toArray($modelCity));
+            // get properties from Photo object
+            $PhotoResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
 
-            return Json::encode($CityResponse);
+            return Json::encode($PhotoResponse);
 
         } else {
             // Search all records in the database
-            $query = City::find();
+            $query = Photo::find();
 
-            $modelCity = $query->orderBy('name')->all();
+            $modelPhoto = $query->orderBy('id')->all();
 
-            // get properties from City object
-            $CityResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
-            array_push($CityResponse, ArrayHelper::toArray($modelCity));
+            // get properties from Photo object
+            $PhotoResponse = array('method' => 'GET', 'status' => '0', 'type' => 'success');
+            array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
 
-            return Json::encode($CityResponse);
+            return Json::encode($PhotoResponse);
         }
         //}
     }
 
 
     /**
-     * POST Method. City table.
+     * POST Method. Photo table.
      * Insert records by parameters
      *
      * @return json
@@ -132,33 +132,33 @@ class CityController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingCityFormData($put_string);
+        //$array_put = $this->parsingPhotoFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelCity->setAttributes($bodyRaw);
+        //$modelPhoto->setAttributes($bodyRaw);
 
-        // load attributes in City object
+        // load attributes in Photo object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('City[id]', $bodyRaw)) {
+            if (array_key_exists('Photo[id]', $bodyRaw)) {
                 return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Недопустимый параметр: id'));
             } else {
-                $modelCity = new City();
+                $modelPhoto = new Photo();
 
-                // fill in the properties in the City object
+                // fill in the properties in the Photo object
                 foreach ($bodyRaw as $name => $value) {
                     $pos_begin = strpos($name, '[') + 1;
-                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                    if (strtolower(substr($name, 0, $pos_begin - 1)) != 'photo') return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                     $pos_end = strpos($name, ']');
                     $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                    //if (isset($modelCity->$name)) {
-                    //    $modelCity->$name = $value;
+                    //if (isset($modelPhoto->$name)) {
+                    //    $modelPhoto->$name = $value;
                     //}
-                    //if (property_exists($modelCity, $name)) {
-                    if ($modelCity->hasAttribute($name)) {
-                        if ($name != 'id') $modelCity->$name = $value;
+                    //if (property_exists($modelPhoto, $name)) {
+                    if ($modelPhoto->hasAttribute($name)) {
+                        if ($name != 'id') $modelPhoto->$name = $value;
                     }
                 }
             }
@@ -166,24 +166,24 @@ class CityController extends Controller
 
         }
 
-        if ($modelCity->validate()) {
+        if ($modelPhoto->validate()) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelCity->save(false); // insert
+                $flag = $modelPhoto->save(false); // insert
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен'));
+                    return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Фото не может быть сохраненоо'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен'));
+                return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Фото не может быть сохраненоо'));
             }
 
-            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен'));
+            //return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Фото успешно сохраненоо', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelPhoto))));
+            return Json::encode(array('method' => 'POST', 'status' => '0', 'type' => 'success', 'message' => 'Фото успешно сохраненоо'));
         } else {
             return Json::encode(array('method' => 'POST', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
         }
@@ -192,7 +192,7 @@ class CityController extends Controller
 
 
     /**
-     * PUT, PATCH Method. City table.
+     * PUT, PATCH Method. Photo table.
      * Update records by parameters
      *
      * @return json
@@ -210,57 +210,57 @@ class CityController extends Controller
             $fh = fopen("php://input", 'r');
             $put_string = stream_get_contents($fh);
             $put_string = urldecode($put_string);
-            //$array_put = $this->parsingCityFormData($put_string);
+            //$array_put = $this->parsingPhotoFormData($put_string);
 
             $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
             //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-            //$modelCity->setAttributes($bodyRaw);
+            //$modelPhoto->setAttributes($bodyRaw);
 
-            // load attributes in City object
+            // load attributes in Photo object
             // example: yiisoft/yii2/base/Model.php
             if (is_array($bodyRaw)) {
-                if (array_key_exists('City[id]', $bodyRaw)) {
+                if (array_key_exists('Photo[id]', $bodyRaw)) {
                     // check input parametrs
-                    if (!preg_match("/^[0-9]*$/",$bodyRaw['City[id]'])) {
+                    if (!preg_match("/^[0-9]*$/",$bodyRaw['Photo[id]'])) {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
 
                     // Search record by id in the database
-                    $query = City::find()
-                        ->where(['id' => $bodyRaw['City[id]']]);
-                    //->where(['AND', ['id' => $modelCity->id], ['user_desc_id'=> $var2]]);
+                    $query = Photo::find()
+                        ->where(['id' => $bodyRaw['Photo[id]']]);
+                    //->where(['AND', ['id' => $modelPhoto->id], ['user_desc_id'=> $var2]]);
 
-                    $modelCity = $query->orderBy('name')->one();
+                    $modelPhoto = $query->orderBy('id')->one();
 
-                    if (!empty($modelCity)) {
-                        // update in the properties in the City object
+                    if (!empty($modelPhoto)) {
+                        // update in the properties in the Photo object
                         foreach ($bodyRaw as $name => $value) {
                             $pos_begin = strpos($name, '[') + 1;
-                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                            if (strtolower(substr($name, 0, $pos_begin - 1)) != 'photo') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                             $pos_end = strpos($name, ']');
                             $name = substr($name, $pos_begin, $pos_end - $pos_begin);
 
-                            if ($name != 'id') $modelCity->$name = $value;
+                            if ($name != 'id') $modelPhoto->$name = $value;
                         }
                     } else {
                         return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                     }
                 } else {
-                    $modelCity = new City();
+                    $modelPhoto = new Photo();
 
-                    // fill in the properties in the City object
+                    // fill in the properties in the Photo object
                     foreach ($bodyRaw as $name => $value) {
                         $pos_begin = strpos($name, '[') + 1;
-                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'city') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
+                        if (strtolower(substr($name, 0, $pos_begin - 1)) != 'photo') return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: '.$name));
                         $pos_end = strpos($name, ']');
                         $name = substr($name, $pos_begin, $pos_end-$pos_begin);
-                        //if (isset($modelCity->$name)) {
-                        //    $modelCity->$name = $value;
+                        //if (isset($modelPhoto->$name)) {
+                        //    $modelPhoto->$name = $value;
                         //}
-                        //if (property_exists($modelCity, $name)) {
-                        if ($modelCity->hasAttribute($name)) {
-                            if ($name != 'id') $modelCity->$name = $value;
+                        //if (property_exists($modelPhoto, $name)) {
+                        if ($modelPhoto->hasAttribute($name)) {
+                            if ($name != 'id') $modelPhoto->$name = $value;
                         }
                     }
                 }
@@ -268,24 +268,24 @@ class CityController extends Controller
 
             }
 
-            if ($modelCity->validate()) {
+            if ($modelPhoto->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flag = $modelCity->save(false); // insert
+                    $flag = $modelPhoto->save(false); // insert
 
                     if ($flag == true) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен (обновлен)'));
+                        return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Фото не может быть сохранено (обновлено)'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен (обновлен)'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Фото не может быть сохранено (обновлено)'));
                 }
 
-                //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен (обновлен)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно сохранен (обновлен)'));
+                //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Фото успешно сохранено (обновлено)', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelPhoto))));
+                return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Фото успешно сохранено (обновлено)'));
             } else {
                 return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
@@ -294,7 +294,7 @@ class CityController extends Controller
 
 
     /**
-     * DELETE Method. City table.
+     * DELETE Method. Photo table.
      * Delete records by parameters
      *
      * @return json
@@ -312,51 +312,51 @@ class CityController extends Controller
         $fh = fopen("php://input", 'r');
         $put_string = stream_get_contents($fh);
         $put_string = urldecode($put_string);
-        //$array_put = $this->parsingCityFormData($put_string);
+        //$array_put = $this->parsingPhotoFormData($put_string);
 
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelCity->setAttributes($bodyRaw);
+        //$modelPhoto->setAttributes($bodyRaw);
 
-        // load attributes in City object
+        // load attributes in Photo object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('City[id]', $bodyRaw)) {
+            if (array_key_exists('Photo[id]', $bodyRaw)) {
                 // check input parametrs
-                if (!preg_match("/^[0-9]*$/",$bodyRaw['City[id]'])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw['Photo[id]'])) {
                     return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $query = City::find()
-                    ->where(['id' => $bodyRaw['City[id]']]);
-                //->where(['AND', ['id' => $modelCity->id], ['user_desc_id'=> $var2]]);
+                $query = Photo::find()
+                    ->where(['id' => $bodyRaw['Photo[id]']]);
+                //->where(['AND', ['id' => $modelPhoto->id], ['user_desc_id'=> $var2]]);
 
-                $modelCity = $query->orderBy('name')->one();
+                $modelPhoto = $query->orderBy('id')->one();
             }
         }
 
-        if (!empty($modelCity)) {
+        if (!empty($modelPhoto)) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-                $flag = $modelCity->delete($bodyRaw['City[id]']); // delete
+                $flag = $modelPhoto->delete($bodyRaw['Photo[id]']); // delete
 
                 if ($flag == true) {
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                    return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Фото не может быть удален'));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Фото не может быть удален'));
             }
 
-            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно удален', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Город успешно удален'));
+            //return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Фото успешно удален', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelPhoto))));
+            return Json::encode(array('method' => 'PUT', 'status' => '0', 'type' => 'success', 'message' => 'Фото успешно удален'));
         } else {
-            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+            return Json::encode(array('method' => 'PUT', 'status' => '1', 'type' => 'error', 'message' => 'Ошибка: Фото не может быть удален'));
         }
         //}
     }
@@ -367,7 +367,7 @@ class CityController extends Controller
      *
      * @return array
      */
-    public function parsingCityFormData($put_string)
+    public function parsingPhotoFormData($put_string)
     {
         //            //$put_string = json_decode($put_string_json, TRUE);
         //            //$put_string=Yii::$app->request->getBodyParams();
