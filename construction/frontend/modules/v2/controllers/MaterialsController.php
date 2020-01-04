@@ -94,9 +94,9 @@ class MaterialsController extends Controller
             $modelValidate = new Materials();
             foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
                 if (array_key_exists($valueMaterialsAssoc, $getParams)) {
-                    if ($modelValidate->hasAttribute($nameRequestAssoc)) {
+                    if ($modelValidate->hasAttribute($nameMaterialsAssoc)) {
                         $modelValidate->$nameMaterialsAssoc = $getParams[$arrayMaterialsAssoc[$nameMaterialsAssoc]];
-                        if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+                        if (!$modelValidate->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
 
                         $query->andWhere([$nameMaterialsAssoc => $getParams[$arrayMaterialsAssoc[$nameMaterialsAssoc]]]);
                     }
