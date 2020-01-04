@@ -1,7 +1,7 @@
 <?php
-namespace frontend\controllers;
+namespace api\controllers;
 
-use frontend\models\Attestation;
+use api\models\Attestation;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;

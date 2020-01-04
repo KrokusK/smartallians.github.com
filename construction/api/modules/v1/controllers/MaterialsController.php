@@ -1,7 +1,7 @@
 <?php
-namespace frontend\modules\v1\controllers;
+namespace api\modules\v1\controllers;
 
-use frontend\modules\v1\models\Materials;
+use api\modules\v1\models\Materials;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;

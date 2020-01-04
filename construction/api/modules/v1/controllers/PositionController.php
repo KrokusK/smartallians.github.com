@@ -1,7 +1,7 @@
 <?php
-namespace frontend\modules\v1\controllers;
+namespace api\modules\v1\controllers;
 
-use frontend\modules\v1\models\Position;
+use api\modules\v1\models\Position;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
