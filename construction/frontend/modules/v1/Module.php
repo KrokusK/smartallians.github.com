@@ -1,5 +1,5 @@
 <?php
-namespace fontend\modules\v1;
+namespace frontend\modules\v1;
 
 class Module extends \yii\base\Module
 {
