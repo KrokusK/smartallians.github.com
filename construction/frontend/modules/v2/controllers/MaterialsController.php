@@ -49,7 +49,7 @@ class MaterialsController extends Controller
                     'delete' => ['delete'],
                 ],
                 'actions' => [
-                    'delete' => ['delete-by-param'],
+                    'delete-by-param' => ['delete'],
                 ],
             ],
         ];
