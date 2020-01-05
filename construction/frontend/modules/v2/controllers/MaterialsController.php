@@ -382,8 +382,7 @@ class MaterialsController extends Controller
                 }
             } else {
                 //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id материала'));
-
-                $this->actionDeleteByParam();
+                return $this->actionDeleteByParam();
             }
 
             if (!empty($modelMaterials)) {
