@@ -439,7 +439,9 @@ class RequestController extends Controller
                     // delete old records from request_kind_job table
                     //RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
 
-                    // delete from request table
+
+                    // delete from request table.
+                    // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
                     $countRequestDelete = $modelRequest->delete($modelRequest->id);
 
                     if ($countRequestDelete > 0) {
