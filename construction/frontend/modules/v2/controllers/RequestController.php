@@ -519,14 +519,14 @@ class RequestController extends Controller
             $modelsRequest = $queryRequest->all();
 
             if (!empty($modelsRequest) && !empty($modelValidate)) {
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    // delete old records from request_kind_job table
-                    //RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
+                foreach ($modelsRequest as $modelRequest) {
+                    $transaction = \Yii::$app->db->beginTransaction();
+                    try {
+                        // delete old records from request_kind_job table
+                        //RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
 
-                    // delete from request table.
-                    // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
-                    foreach ($modelsRequest as $modelRequest) {
+                        // delete from request table.
+                        // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
                         $countRequestDelete = $modelRequest->delete();
 
                         if ($countRequestDelete > 0) {
@@ -535,10 +535,10 @@ class RequestController extends Controller
                             $transaction->rollBack();
                             return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявки не могут быть удалены'));
                         }
+                    } catch (Exception $ex) {
+                        $transaction->rollBack();
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявки не могут быть удалены'));
                     }
-                } catch (Exception $ex) {
-                    $transaction->rollBack();
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявки не могут быть удалены'));
                 }
             }
         }
