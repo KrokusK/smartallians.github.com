@@ -25,15 +25,10 @@ class DeliveryController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
+                'only' => ['view', 'create', 'update', 'delete'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'actions' => ['logout'],
+                        'actions' => ['view', 'create', 'update', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -42,7 +37,16 @@ class DeliveryController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'logout' => ['post'],
+                    'view' => ['get'],
+                ],
+                'actions' => [
+                    'create' => ['post'],
+                ],
+                'actions' => [
+                    'update' => ['put', 'patch'],
+                ],
+                'actions' => [
+                    'delete' => ['delete'],
                 ],
             ],
         ];
@@ -56,10 +60,6 @@ class DeliveryController extends Controller
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
     }
