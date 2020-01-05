@@ -431,7 +431,7 @@ class RequestController extends Controller
                 }
             } else {
                 //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
-                actionDeleteByParam();
+                $this->actionDeleteByParam();
             }
 
             if (!empty($modelRequest)) {
