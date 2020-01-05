@@ -76,7 +76,7 @@ class MaterialsController extends Controller
         // check user is a guest
         if (Yii::$app->user->isGuest) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутетификация не выполнена'));
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -148,7 +148,7 @@ class MaterialsController extends Controller
         // check user is a guest
         if (Yii::$app->user->isGuest) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутетификация не выполнена'));
+            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -257,7 +257,7 @@ class MaterialsController extends Controller
         // check user is a guest
         if (Yii::$app->user->isGuest) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутетификация не выполнена'));
+            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -368,7 +368,7 @@ class MaterialsController extends Controller
         // check user is a guest
         if (Yii::$app->user->isGuest) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутетификация не выполнена'));
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
