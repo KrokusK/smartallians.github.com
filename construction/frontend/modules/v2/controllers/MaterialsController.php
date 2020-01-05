@@ -75,7 +75,8 @@ class MaterialsController extends Controller
     {
         // check user is a guest
         if (Yii::$app->user->isGuest) {
-            return $this->goHome();
+            //return $this->goHome();
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутетификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -146,7 +147,8 @@ class MaterialsController extends Controller
     {
         // check user is a guest
         if (Yii::$app->user->isGuest) {
-            return $this->goHome();
+            //return $this->goHome();
+            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутетификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -254,7 +256,8 @@ class MaterialsController extends Controller
     {
         // check user is a guest
         if (Yii::$app->user->isGuest) {
-            return $this->goHome();
+            //return $this->goHome();
+            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутетификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -281,7 +284,7 @@ class MaterialsController extends Controller
                 $arraySubMaterialsAssoc = array('delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
                 if (array_key_exists('materials', $bodyRaw)) {
-                    if (!is_array($bodyRaw['materials'])) return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре materials ожидается массив'));
+                    if (!is_array($bodyRaw['materials'])) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре materials ожидается массив'));
 
                     $subBodyRaw = $bodyRaw['materials'];
 
@@ -296,7 +299,7 @@ class MaterialsController extends Controller
                                 if ($modelMaterials->hasAttribute($nameSubMaterialsAssoc)) {
                                     $modelMaterials->$nameSubMaterialsAssoc = $valueSubBodyRaw[$valueSubMaterialsAssoc];
 
-                                    if (!$modelMaterials->validate($nameSubMaterialsAssoc)) return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueSubMaterialsAssoc));
+                                    if (!$modelMaterials->validate($nameSubMaterialsAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueSubMaterialsAssoc));
                                     else {
 
                                     }
@@ -311,7 +314,7 @@ class MaterialsController extends Controller
                                     if ($nameMaterialsAssoc != 'id') {
                                         $modelMaterials->$nameMaterialsAssoc = $bodyRaw[$valueMaterialsAssoc];
 
-                                        if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueMaterialsAssoc));
+                                        if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueMaterialsAssoc));
 
                                         $modelMaterials->created_by = Yii::$app->user->getId();
                                     }
@@ -330,26 +333,26 @@ class MaterialsController extends Controller
                                     $transaction->commit();
                                 } else {
                                     $transaction->rollBack();
-                                    return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материалы не могут быть сохранены (обновлены)'));
+                                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материалы не могут быть сохранены (обновлены)'));
                                 }
                             } catch (Exception $ex) {
                                 $transaction->rollBack();
-                                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материалы не могут быть сохранены (обновлены)'));
+                                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материалы не могут быть сохранены (обновлены)'));
                             }
                         } else {
-                            return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
                         }
                     }
 
-                    //return Json::encode(array('method' => 'PUT', 'status' => 0, 'type' => 'success', 'message' => 'Материалы успешно сохранены', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelMaterials))));
-                    return Json::encode(array('method' => 'PUT', 'status' => 0, 'type' => 'success', 'message' => 'Материалы успешно сохранены'));
+                    //return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Материалы успешно сохранены', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelMaterials))));
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Материалы успешно сохранены'));
 
                 } else {
-                    return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Отсутвтует параметр materials в запросе'));
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Отсутвтует параметр materials в запросе'));
                 }
             }
         } else {
-            return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
+            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
     }
 
@@ -365,6 +368,7 @@ class MaterialsController extends Controller
         // check user is a guest
         if (Yii::$app->user->isGuest) {
             //return $this->goHome();
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутетификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
