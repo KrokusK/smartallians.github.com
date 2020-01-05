@@ -2,7 +2,6 @@
 namespace frontend\modules\v2\controllers;
 
 use frontend\modules\v2\models\Materials;
-use frontend\modules\v2\models\Request;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -26,10 +25,10 @@ class MaterialsController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['view', 'create', 'update', 'delete'],
+                'only' => ['view', 'create', 'update', 'delete', 'delete-by-param'],
                 'rules' => [
                     [
-                        'actions' => ['view', 'create', 'update', 'delete'],
+                        'actions' => ['view', 'create', 'update', 'delete', 'delete-by-param'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -48,6 +47,9 @@ class MaterialsController extends Controller
                 ],
                 'actions' => [
                     'delete' => ['delete'],
+                ],
+                'actions' => [
+                    'delete' => ['delete-by-param'],
                 ],
             ],
         ];
@@ -331,7 +333,8 @@ class MaterialsController extends Controller
 
     /**
      * DELETE Method. Materials table.
-     * Delete records by parameters
+     * Delete records by id parameter
+     * or by another parameters
      *
      * @return json
      */
@@ -370,14 +373,17 @@ class MaterialsController extends Controller
 
                 // Search record by id in the database
                 $queryMaterials = Materials::find()
-                    ->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
-                $modelMaterials = $queryMaterials->orderBy('created_at')->one();
+                    //->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
+                    ->where(['id' => $bodyRaw[$arrayMaterialsAssoc['id']]]);
+                $modelMaterials = $queryMaterials->one();
 
                 if (empty($modelMaterials)) {
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Материал по id'));
                 }
             } else {
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
+                //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id материала'));
+
+                $this->actionDeleteByParam();
             }
 
             if (!empty($modelMaterials)) {
@@ -390,21 +396,99 @@ class MaterialsController extends Controller
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть удален'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть удален'));
                 }
 
-                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Материал успешно удален'));
             } else {
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть удален'));
             }
         } else {
             return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
         //}
+    }
+
+    /**
+     * DELETE Method. Materials table.
+     * Delete records by another parameters
+     *
+     * @return json
+     */
+    public function actionDeleteByParam()
+    {
+        // check user is a guest
+        if (Yii::$app->user->isGuest) {
+            //return $this->goHome();
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+        }
+
+        //if (Yii::$app->request->isAjax) {
+        //GET data from body request
+        //Yii::$app->request->getBodyParams()
+        $fh = fopen("php://input", 'r');
+        $put_string = stream_get_contents($fh);
+        $put_string = urldecode($put_string);
+        //$array_put = $this->parsingRequestFormData($put_string);
+
+        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
+
+        //$modelMaterials->setAttributes($bodyRaw);
+
+        // load attributes in Materials object
+        // example: yiisoft/yii2/base/Model.php
+
+        if (is_array($bodyRaw)) {
+            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
+            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
+
+            // Search record by id in the database
+            //$queryMaterials = Materials::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            $queryMaterials = Materials::find();
+            //foreach (ArrayHelper::toArray($model) as $key => $value) {
+            //    $query->andWhere([$key => $value]);
+            //}
+            $modelValidate = new Materials();
+            foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
+                if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
+                    if ($modelValidate->hasAttribute($nameMaterialsAssoc)) {
+                        $modelValidate->$nameMaterialsAssoc = $bodyRaw[$arrayMaterialsAssoc[$nameMaterialsAssoc]];
+                        if (!$modelValidate->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueMaterialsAssoc));
+
+                        $queryMaterials->andWhere([$nameMaterialsAssoc => $bodyRaw[$arrayMaterialsAssoc[$nameMaterialsAssoc]]]);
+                    }
+                }
+
+            }
+            $modelsMaterials = $queryMaterials->all();
+
+            if (!empty($modelsMaterials) && !empty($modelValidate)) {
+                foreach ($modelsMaterials as $modelMaterials) {
+                    $transaction = \Yii::$app->db->beginTransaction();
+                    try {
+                        // delete from Materials table.
+                         $countMaterialsDelete = $modelMaterials->delete();
+
+                        if ($countMaterialsDelete > 0) {
+                            $transaction->commit();
+                        } else {
+                            $transaction->rollBack();
+                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявки не могут быть удалены'));
+                        }
+                    } catch (Exception $ex) {
+                        $transaction->rollBack();
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявки не могут быть удалены'));
+                    }
+                }
+
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявки успешно удалены'));
+            }
+        }
     }
 
 }
