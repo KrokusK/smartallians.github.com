@@ -27,10 +27,10 @@ class RequestController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['view', 'create', 'update', 'delete'],
+                'only' => ['view', 'create', 'update', 'delete', 'delete-by-param'],
                 'rules' => [
                     [
-                        'actions' => ['view', 'create', 'update', 'delete'],
+                        'actions' => ['view', 'create', 'update', 'delete', 'delete-by-param'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -49,6 +49,9 @@ class RequestController extends Controller
                 ],
                 'actions' => [
                     'delete' => ['delete'],
+                ],
+                'actions' => [
+                    'delete-by-param' => ['delete'],
                 ],
             ],
         ];
