@@ -437,7 +437,7 @@ class RequestController extends Controller
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     // delete old records from request_kind_job table
-                    RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
+                    //RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
 
                     // delete from request table
                     $countRequestDelete = $modelRequest->delete($modelRequest->id);
