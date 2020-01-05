@@ -430,7 +430,8 @@ class RequestController extends Controller
                     return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
                 }
             } else {
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
+                //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
+                actionDeleteByParam();
             }
 
             if (!empty($modelRequest)) {
@@ -438,7 +439,6 @@ class RequestController extends Controller
                 try {
                     // delete old records from request_kind_job table
                     //RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
-
 
                     // delete from request table.
                     // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
@@ -465,7 +465,12 @@ class RequestController extends Controller
         //}
     }
 
-
+    /**
+     * DELETE Method. Request table.
+     * Delete records by parameters
+     *
+     * @return json
+     */
     public function actionDeleteByParam()
     {
         // check user is a guest
@@ -495,7 +500,7 @@ class RequestController extends Controller
             $arrayRequestAssoc = array('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
             // Search record by id in the database
-            $query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            $queryRequest = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
             //foreach (ArrayHelper::toArray($model) as $key => $value) {
             //    $query->andWhere([$key => $value]);
             //}
@@ -506,31 +511,34 @@ class RequestController extends Controller
                         $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]];
                         if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueRequestAssoc));
 
-                        $query->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                        $queryRequest->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
                     }
                 }
 
             }
-            $query->all()->delete();
+            $modelsRequest = $queryRequest->all();
 
-            if (!empty($modelValidate)) {
+            if (!empty($modelsRequest) && !empty($modelValidate)) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     // delete old records from request_kind_job table
-                    RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
+                    //RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
 
-                    // delete from request table
-                    $countRequestDelete = $modelRequest->delete($modelRequest->id);
+                    // delete from request table.
+                    // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
+                    foreach ($modelsRequest as $modelRequest) {
+                        $countRequestDelete = $modelRequest->delete();
 
-                    if ($countRequestDelete > 0) {
-                        $transaction->commit();
-                    } else {
-                        $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                        if ($countRequestDelete > 0) {
+                            $transaction->commit();
+                        } else {
+                            $transaction->rollBack();
+                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявки не могут быть удалены'));
+                        }
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявки не могут быть удалены'));
                 }
             }
         }
