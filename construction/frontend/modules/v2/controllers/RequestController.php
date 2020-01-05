@@ -150,7 +150,7 @@ class RequestController extends Controller
 
     /**
      * POST Method. Request table.
-     * Insert records by parameters
+     * Insert record
      *
      * @return json
      */
@@ -260,7 +260,7 @@ class RequestController extends Controller
 
     /**
      * PUT, PATCH Method. Request table.
-     * Update records by parameters
+     * Update records by id parameter
      *
      * @return json
      */
@@ -384,7 +384,8 @@ class RequestController extends Controller
 
     /**
      * DELETE Method. Request table.
-     * Delete records by parameters
+     * Delete records by id parameter
+     * or by another parameters
      *
      * @return json
      */
@@ -467,7 +468,7 @@ class RequestController extends Controller
 
     /**
      * DELETE Method. Request table.
-     * Delete records by parameters
+     * Delete records by another parameters
      *
      * @return json
      */

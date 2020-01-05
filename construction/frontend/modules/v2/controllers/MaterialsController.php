@@ -2,6 +2,7 @@
 namespace frontend\modules\v2\controllers;
 
 use frontend\modules\v2\models\Materials;
+use frontend\modules\v2\models\Request;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -141,7 +142,7 @@ class MaterialsController extends Controller
 
     /**
      * POST Method. Materials table.
-     * Insert records by parameters
+     * Insert records
      *
      * @return json
      */
@@ -250,7 +251,7 @@ class MaterialsController extends Controller
 
     /**
      * PUT, PATCH Method. Materials table.
-     * Update records by parameters
+     * Update record by id parameter
      *
      * @return json
      */
@@ -278,80 +279,47 @@ class MaterialsController extends Controller
         // load attributes in Materials object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
-            if (array_key_exists('id', $bodyRaw)) { // update record by id
-
-            } else { // delete old records by request_id and insert new records
+            if (array_key_exists('id', $bodyRaw)) {
                 // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-                $arrayMaterialsAssoc = array('id' => 'id', 'request_id' => 'request_id');
-                $arraySubMaterialsAssoc = array('delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
+                $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
-                if (array_key_exists('materials', $bodyRaw)) {
-                    if (!is_array($bodyRaw['materials'])) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре materials ожидается массив'));
+                // Search record by id in the database
+                $queryMaterials = Materials::find()
+                    //->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
+                    ->where(['id' => $bodyRaw[$arrayMaterialsAssoc['id']]]);
+                $modelMaterials = $queryMaterials->one();
+                foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
+                    if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
+                        if ($modelMaterials->hasAttribute($nameMaterialsAssoc)) {
+                            $modelMaterials->$nameMaterialsAssoc = $bodyRaw[$arrayMaterialsAssoc[$nameMaterialsAssoc]];
+                            if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
 
-                    $subBodyRaw = $bodyRaw['materials'];
-
-                    // fill in the properties in the Materials object
-                    foreach ($subBodyRaw as $nameSubBodyRaw => $valueSubBodyRaw) {
-                        $modelMaterials = new Materials();
-
-                        // fill in the properties in the Materials object from $subBodyRaw
-                        foreach ($arraySubMaterialsAssoc as $nameSubMaterialsAssoc => $valueSubMaterialsAssoc) {
-                            if (array_key_exists($valueSubMaterialsAssoc, $valueSubBodyRaw)) {
-
-                                if ($modelMaterials->hasAttribute($nameSubMaterialsAssoc)) {
-                                    $modelMaterials->$nameSubMaterialsAssoc = $valueSubBodyRaw[$valueSubMaterialsAssoc];
-
-                                    if (!$modelMaterials->validate($nameSubMaterialsAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueSubMaterialsAssoc));
-                                    else {
-
-                                    }
-                                }
-                            }
-                        }
-
-                        // fill in the properties in the Materials object from $bodyRaw
-                        foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
-                            if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
-                                if ($modelMaterials->hasAttribute($nameMaterialsAssoc)) {
-                                    if ($nameMaterialsAssoc != 'id') {
-                                        $modelMaterials->$nameMaterialsAssoc = $bodyRaw[$valueMaterialsAssoc];
-
-                                        if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueMaterialsAssoc));
-
-                                        $modelMaterials->created_by = Yii::$app->user->getId();
-                                    }
-                                }
-                            }
-                        }
-                        //return Json::encode(ArrayHelper::toArray($modelMaterials));
-
-                        // Save Materials object
-                        if ($modelMaterials->validate()) {
-                            $transaction = \Yii::$app->db->beginTransaction();
-                            try {
-                                $flagMaterials = $modelMaterials->save(false); // insert into materials table
-
-                                if ($flagMaterials) {
-                                    $transaction->commit();
-                                } else {
-                                    $transaction->rollBack();
-                                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материалы не могут быть сохранены (обновлены)'));
-                                }
-                            } catch (Exception $ex) {
-                                $transaction->rollBack();
-                                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материалы не могут быть сохранены (обновлены)'));
-                            }
-                        } else {
-                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+                            $modelMaterials->created_by = Yii::$app->user->getId();
                         }
                     }
-
-                    //return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Материалы успешно сохранены', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelMaterials))));
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Материалы успешно сохранены'));
-
-                } else {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Отсутвтует параметр materials в запросе'));
                 }
+
+                // Save Materials object
+                if ($modelMaterials->validate()) {
+                    $transaction = \Yii::$app->db->beginTransaction();
+                    try {
+                        $flagMaterials = $modelMaterials->save(false); // update materials table
+
+                        if ($flagMaterials) {
+                            $transaction->commit();
+                        } else {
+                            $transaction->rollBack();
+                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть обновлен'));
+                        }
+                    } catch (Exception $ex) {
+                        $transaction->rollBack();
+                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Материал не может быть обновлен'));
+                    }
+                } else {
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+                }
+            } else {
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id параметр в запросе'));
             }
         } else {
             return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
