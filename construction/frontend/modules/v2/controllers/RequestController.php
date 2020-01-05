@@ -506,12 +506,12 @@ class RequestController extends Controller
             //}
             $modelValidate = new Request();
             foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                if (array_key_exists($valueRequestAssoc, $getParams)) {
+                if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
                     if ($modelValidate->hasAttribute($nameRequestAssoc)) {
-                        $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]];
+                        $modelValidate->$nameRequestAssoc = $bodyRaw[$arrayRequestAssoc[$nameRequestAssoc]];
                         if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueRequestAssoc));
 
-                        $queryRequest->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                        $queryRequest->andWhere([$nameRequestAssoc => $bodyRaw[$arrayRequestAssoc[$nameRequestAssoc]]]);
                     }
                 }
 
