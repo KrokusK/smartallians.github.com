@@ -194,7 +194,8 @@ class m191210_000010_create_request_response_tables extends Migration
             '{{%request_kind_job}}',
             'request_id',
             '{{%request}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-request-kind-job-kind-job-id',
@@ -210,7 +211,8 @@ class m191210_000010_create_request_response_tables extends Migration
             '{{%response}}',
             'request_id',
             '{{%request}}',
-            'id'
+            'id',
+            'CASCADE'
         );
         $this->addForeignKey(
             'fk-response-status-response-id',

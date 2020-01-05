@@ -113,7 +113,8 @@ class m191210_000005_create_contractor_tables extends Migration
             '{{%contractor}}',
             'profile_id',
             '{{%profile}}',
-            'id'
+            'id',
+            'CASCADE'
         );
 
         // add foreign keys for table contractor_attestation

@@ -88,7 +88,8 @@ class MaterialsController extends Controller
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
             // Search record by id in the database
-            $query = Materials::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            //$query = Materials::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            $query = Materials::find();
             //foreach (ArrayHelper::toArray($model) as $key => $value) {
             //    $query->andWhere([$key => $value]);
             //}
@@ -120,7 +121,8 @@ class MaterialsController extends Controller
 
         } else {
             // Search all records in the database
-            $query = Materials::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            //$query = Materials::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            $query = Materials::find();
 
             $modelMaterials = $query->orderBy('id')
                 ->asArray()
@@ -182,7 +184,7 @@ class MaterialsController extends Controller
                 foreach ($subBodyRaw as $nameSubBodyRaw => $valueSubBodyRaw) {
                     $modelMaterials = new Materials();
 
-                    // fill in the properties in the Materials object fom $subBodyRaw
+                    // fill in the properties in the Materials object from $subBodyRaw
                     foreach ($arraySubMaterialsAssoc as $nameSubMaterialsAssoc => $valueSubMaterialsAssoc) {
                         if (array_key_exists($valueSubMaterialsAssoc, $valueSubBodyRaw)) {
 
@@ -197,7 +199,7 @@ class MaterialsController extends Controller
                         }
                     }
 
-                    // fill in the properties in the Materials object fom $bodyRaw
+                    // fill in the properties in the Materials object from $bodyRaw
                     foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
                         if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
                             if ($modelMaterials->hasAttribute($nameMaterialsAssoc)) {
@@ -278,7 +280,7 @@ class MaterialsController extends Controller
         if (is_array($bodyRaw)) {
             if (array_key_exists('id', $bodyRaw)) { // update record by id
 
-            } else { // delete old records and insert new records
+            } else { // delete old records by request_id and insert new records
                 // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
                 $arrayMaterialsAssoc = array('id' => 'id', 'request_id' => 'request_id');
                 $arraySubMaterialsAssoc = array('delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
@@ -292,7 +294,7 @@ class MaterialsController extends Controller
                     foreach ($subBodyRaw as $nameSubBodyRaw => $valueSubBodyRaw) {
                         $modelMaterials = new Materials();
 
-                        // fill in the properties in the Materials object fom $subBodyRaw
+                        // fill in the properties in the Materials object from $subBodyRaw
                         foreach ($arraySubMaterialsAssoc as $nameSubMaterialsAssoc => $valueSubMaterialsAssoc) {
                             if (array_key_exists($valueSubMaterialsAssoc, $valueSubBodyRaw)) {
 
@@ -307,7 +309,7 @@ class MaterialsController extends Controller
                             }
                         }
 
-                        // fill in the properties in the Materials object fom $bodyRaw
+                        // fill in the properties in the Materials object from $bodyRaw
                         foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
                             if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
                                 if ($modelMaterials->hasAttribute($nameMaterialsAssoc)) {
