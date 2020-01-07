@@ -66,8 +66,6 @@ class MaterialsController extends Controller
      */
     public function actionView()
     {
-
-
         //if (Yii::$app->request->isAjax) {
 
         $getParams = Yii::$app->getRequest()->get();
@@ -77,8 +75,6 @@ class MaterialsController extends Controller
         if (empty($userByToken)) {
             //return $this->goHome();
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        } else {
-            return Json::encode(array('method' => 'GET', 'status' => 0, 'type' => 'success', 'message' => 'Успешно', 'id_user' => $userByToken->id));
         }
 
         if (is_array($getParams)) {
