@@ -73,7 +73,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         //throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
 
-        return static::findOne(['verification_token'] => $token);
+        return static::findOne(['verification_token' => $token]);
     }
 
     /**
