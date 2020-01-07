@@ -1,6 +1,7 @@
 <?php
 namespace api\modules\v2\controllers;
 
+use api\common\models\User;
 use api\modules\v2\models\Materials;
 use Yii;
 use yii\base\InvalidArgumentException;
@@ -76,15 +77,18 @@ class MaterialsController extends Controller
      */
     public function actionView()
     {
-        // check user is a guest
-        if (Yii::$app->user->isGuest) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
+
 
         //if (Yii::$app->request->isAjax) {
 
         $getParams = Yii::$app->getRequest()->get();
+
+        // check user is a guest
+        $userByToken = User::findIdentityByAccessToken($getParams['token']);
+        if (empty($userByToken)) {
+            //return $this->goHome();
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+        }
 
         if (is_array($getParams)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
