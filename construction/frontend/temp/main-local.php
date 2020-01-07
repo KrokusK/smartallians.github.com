@@ -38,8 +38,8 @@ $config = [
                 'DELETE /<controller:(region|city|specialization|profile|type-job|kind-user|contractor|attestation|portfolio|position|kind-job|request|response|status-request|status-response|photo|status-feedback|feedback|status-completion|status-payment|order|project|project-documents|job-stages|materials|material-type|status-material|delivery|delivery-place|departure-place|status-delivery)>' => '<controller>/delete',
 
                 // API user data
-                'POST /api/<module:\w+>/user' => '<module>/user/data',
-                'POST /user' => 'v1/user/data',
+                'POST /api/<module:\w+>/user' => '/user/data',
+                'POST /user' => '/user/data',
 
                 // API login
                 'POST /site/<action:\w+>' => 'site/<action>',
