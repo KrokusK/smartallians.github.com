@@ -26,15 +26,10 @@ class RequestController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
+                'only' => ['view', 'create', 'update', 'delete', 'delete-by-param'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'actions' => ['logout'],
+                        'actions' => ['view', 'create', 'update', 'delete', 'delete-by-param'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -43,7 +38,19 @@ class RequestController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'logout' => ['post'],
+                    'view' => ['get'],
+                ],
+                'actions' => [
+                    'create' => ['post'],
+                ],
+                'actions' => [
+                    'update' => ['put', 'patch'],
+                ],
+                'actions' => [
+                    'delete' => ['delete'],
+                ],
+                'actions' => [
+                    'delete-by-param' => ['delete'],
                 ],
             ],
         ];
@@ -57,10 +64,6 @@ class RequestController extends Controller
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
     }
@@ -84,7 +87,8 @@ class RequestController extends Controller
     {
         // check user is a guest
         if (Yii::$app->user->isGuest) {
-            return $this->goHome();
+            //return $this->goHome();
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -148,7 +152,7 @@ class RequestController extends Controller
 
     /**
      * POST Method. Request table.
-     * Insert records by parameters
+     * Insert record
      *
      * @return json
      */
@@ -156,7 +160,8 @@ class RequestController extends Controller
     {
         // check user is a guest
         if (Yii::$app->user->isGuest) {
-            return $this->goHome();
+            //return $this->goHome();
+            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -257,7 +262,7 @@ class RequestController extends Controller
 
     /**
      * PUT, PATCH Method. Request table.
-     * Update records by parameters
+     * Update records by id parameter
      *
      * @return json
      */
@@ -265,7 +270,8 @@ class RequestController extends Controller
     {
         // check user is a guest
         if (Yii::$app->user->isGuest) {
-            return $this->goHome();
+            //return $this->goHome();
+            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -380,7 +386,8 @@ class RequestController extends Controller
 
     /**
      * DELETE Method. Request table.
-     * Delete records by parameters
+     * Delete records by id parameter
+     * or by another parameters
      *
      * @return json
      */
@@ -389,6 +396,7 @@ class RequestController extends Controller
         // check user is a guest
         if (Yii::$app->user->isGuest) {
             //return $this->goHome();
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -425,16 +433,18 @@ class RequestController extends Controller
                     return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
                 }
             } else {
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
+                //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
+                return $this->actionDeleteByParam();
             }
 
             if (!empty($modelRequest)) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     // delete old records from request_kind_job table
-                    RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
+                    //RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
 
-                    // delete from request table
+                    // delete from request table.
+                    // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
                     $countRequestDelete = $modelRequest->delete($modelRequest->id);
 
                     if ($countRequestDelete > 0) {
@@ -456,6 +466,87 @@ class RequestController extends Controller
             return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
         //}
+    }
+
+    /**
+     * DELETE Method. Request table.
+     * Delete records by another parameters
+     *
+     * @return json
+     */
+    public function actionDeleteByParam()
+    {
+        // check user is a guest
+        if (Yii::$app->user->isGuest) {
+            //return $this->goHome();
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+        }
+
+        //if (Yii::$app->request->isAjax) {
+        //GET data from body request
+        //Yii::$app->request->getBodyParams()
+        $fh = fopen("php://input", 'r');
+        $put_string = stream_get_contents($fh);
+        $put_string = urldecode($put_string);
+        //$array_put = $this->parsingRequestFormData($put_string);
+
+        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
+
+        //$modelRequest->setAttributes($bodyRaw);
+
+        // load attributes in Request object
+        // example: yiisoft/yii2/base/Model.php
+
+        if (is_array($bodyRaw)) {
+            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
+            $arrayRequestAssoc = array('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+
+            // Search record by id in the database
+            $queryRequest = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            //foreach (ArrayHelper::toArray($model) as $key => $value) {
+            //    $query->andWhere([$key => $value]);
+            //}
+            $modelValidate = new Request();
+            foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
+                if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
+                    if ($modelValidate->hasAttribute($nameRequestAssoc)) {
+                        $modelValidate->$nameRequestAssoc = $bodyRaw[$arrayRequestAssoc[$nameRequestAssoc]];
+                        if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueRequestAssoc));
+
+                        $queryRequest->andWhere([$nameRequestAssoc => $bodyRaw[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                    }
+                }
+
+            }
+            $modelsRequest = $queryRequest->all();
+
+            if (!empty($modelsRequest) && !empty($modelValidate)) {
+                foreach ($modelsRequest as $modelRequest) {
+                    $transaction = \Yii::$app->db->beginTransaction();
+                    try {
+                        // delete old records from request_kind_job table
+                        //RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
+
+                        // delete from request table.
+                        // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
+                        $countRequestDelete = $modelRequest->delete();
+
+                        if ($countRequestDelete > 0) {
+                            $transaction->commit();
+                        } else {
+                            $transaction->rollBack();
+                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявки не могут быть удалены'));
+                        }
+                    } catch (Exception $ex) {
+                        $transaction->rollBack();
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявки не могут быть удалены'));
+                    }
+                }
+
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявки успешно удалены'));
+            }
+        }
     }
 
 }
