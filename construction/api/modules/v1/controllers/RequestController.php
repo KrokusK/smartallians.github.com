@@ -84,7 +84,7 @@ class RequestController extends Controller
     {
         // check user is a guest
         if (Yii::$app->user->isGuest) {
-            return $this->goHome();
+            //return $this->goHome();
         }
 
         //if (Yii::$app->request->isAjax) {
