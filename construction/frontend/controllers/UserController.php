@@ -1,7 +1,7 @@
 <?php
-namespace frontend\modules\v1\controllers;
+namespace frontend\controllers;
 
-use frontend\modules\v1\models\Profile;
+use frontend\modules\v2\models\Profile;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
