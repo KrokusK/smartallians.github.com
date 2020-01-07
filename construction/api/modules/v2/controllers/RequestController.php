@@ -23,7 +23,7 @@ class RequestController extends Controller
      */
     public function behaviors()
     {
-        return [            
+        return [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

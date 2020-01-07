@@ -142,9 +142,10 @@ class MaterialsController extends Controller
     public function actionCreate()
     {
         // check user is a guest
-        if (Yii::$app->user->isGuest) {
+        $userByToken = User::findIdentityByAccessToken($getParams['token']);
+        if (empty($userByToken)) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -202,7 +203,7 @@ class MaterialsController extends Controller
 
                                     if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueMaterialsAssoc));
 
-                                    $modelMaterials->created_by = Yii::$app->user->getId();
+                                    $modelMaterials->created_by = $userByToken->id;
                                 }
                             }
                         }
@@ -251,9 +252,10 @@ class MaterialsController extends Controller
     public function actionUpdate()
     {
         // check user is a guest
-        if (Yii::$app->user->isGuest) {
+        $userByToken = User::findIdentityByAccessToken($getParams['token']);
+        if (empty($userByToken)) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
@@ -287,7 +289,7 @@ class MaterialsController extends Controller
                             $modelMaterials->$nameMaterialsAssoc = $bodyRaw[$arrayMaterialsAssoc[$nameMaterialsAssoc]];
                             if (!$modelMaterials->validate($nameMaterialsAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
 
-                            $modelMaterials->created_by = Yii::$app->user->getId();
+                            $modelMaterials->created_by = $userByToken->id;
                         }
                     }
                 }
@@ -332,9 +334,10 @@ class MaterialsController extends Controller
     public function actionDelete()
     {
         // check user is a guest
-        if (Yii::$app->user->isGuest) {
+        $userByToken = User::findIdentityByAccessToken($getParams['token']);
+        if (empty($userByToken)) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         //if (Yii::$app->request->isAjax) {
