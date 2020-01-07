@@ -24,17 +24,6 @@ class MaterialsController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['view', 'create', 'update', 'delete', 'delete-by-param'],
-                'rules' => [
-                    [
-                        'actions' => ['view', 'create', 'update', 'delete', 'delete-by-param'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
