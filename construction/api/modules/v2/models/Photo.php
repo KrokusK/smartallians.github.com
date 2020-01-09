@@ -18,6 +18,15 @@ class Photo extends \yii\db\ActiveRecord
     const STATUS_ACTIVE = 2;
 
     /**
+     * @var UploadedFile
+     */
+    public $imageFiles;
+    public $image_src_filename;
+    public $image_web_filename;
+    public $arrayWebFilename;
+    public $msg;
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -67,9 +76,43 @@ class Photo extends \yii\db\ActiveRecord
             [['description'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['caption'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['path'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
+            [['imageFiles'], 'file', 'skipOnEmpty' => false, 'maxFiles' => 5,'mimeTypes' => ['image/gif', 'image/jpeg', 'image/pjpeg', 'image/png'], 'extensions' => ['gif', 'jpg', 'jpeg', 'png'], 'maxSize' => 30*1024*1024, 'message' => 'Файл не соответствует требованиям'],
         ];
 
     }
+
+    /**
+     * upload ad photos to the server
+     */
+    public function upload()
+    {
+        if ($this->validate()) {
+            $this->arrayWebFilename = array();
+
+            // get images for each photo and save to the server as random filenames
+            foreach ($this->imageFiles as $image) {
+                if (!empty($image) && $image->size !== 0) {
+                    $this->image_src_filename = $image->name;
+                    $tmp = explode(".", $image->name);
+                    $ext = end($tmp);
+                    // generate a unique file name to prevent duplicate filenames
+                    $this->image_web_filename = Yii::$app->security->generateRandomString().".{$ext}";
+                    array_push($this->arrayWebFilename, "{$this->image_web_filename}");
+                    // the path to save file, you can set an uploadPath
+                    // in Yii::$app->params (as used in example below)
+                    Yii::$app->params['uploadPath'] = Yii::$app->basePath . '/web/uploads/Photo/';
+                    $path = Yii::$app->params['uploadPath'] . $this->image_web_filename;
+                    $image->saveAs($path);
+                } else {
+                    $this->msg = 'problem1';
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            $this->msg = 'problem2';
+            return false;
+        }
 
     /**
      *
