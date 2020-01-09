@@ -1,6 +1,7 @@
 <?php
 namespace api\modules\v2\controllers;
 
+use api\common\models\User;
 use api\modules\v2\models\Request;
 use api\modules\v2\models\RequestKindJob;
 use Yii;
@@ -74,22 +75,24 @@ class RequestController extends Controller
      */
     public function actionView()
     {
-        // check user is a guest
-        if (Yii::$app->user->isGuest) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         //if (Yii::$app->request->isAjax) {
 
         $getParams = Yii::$app->getRequest()->get();
+
+        // check user is a guest
+        $userByToken = User::findIdentityByAccessToken($getParams['token']);
+        if (empty($userByToken)) {
+            //return $this->goHome();
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+        }
 
         if (is_array($getParams)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
             // Search record by id in the database
-            $query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            //$query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            $query = Request::find()->Where(['created_by' => $userByToken->id]);
             //foreach (ArrayHelper::toArray($model) as $key => $value) {
             //    $query->andWhere([$key => $value]);
             //}
@@ -122,7 +125,8 @@ class RequestController extends Controller
 
         } else {
             // Search all records in the database
-            $query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            //$query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            $query = Request::find()->Where(['created_by' => $userByToken->id]);
 
             $modelRequest = $query->orderBy('created_at')
                 ->with('kindJob')
@@ -147,12 +151,6 @@ class RequestController extends Controller
      */
     public function actionCreate()
     {
-        // check user is a guest
-        if (Yii::$app->user->isGuest) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         //if (Yii::$app->request->isAjax) {
         //GET data from body request
         //Yii::$app->request->getBodyParams()
@@ -165,6 +163,13 @@ class RequestController extends Controller
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
         //$modelRequest->setAttributes($bodyRaw);
+
+        // check user is a guest
+        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+        if (empty($userByToken)) {
+            //return $this->goHome();
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+        }
 
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
@@ -184,7 +189,7 @@ class RequestController extends Controller
 
                             if (!$modelRequest->validate($nameRequestAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
 
-                            $modelRequest->created_by = Yii::$app->user->getId();
+                            $modelRequest->created_by = $userByToken->id;
                             $modelRequest->created_at = time();
                             $modelRequest->updated_at = time();
                         }
@@ -257,12 +262,6 @@ class RequestController extends Controller
      */
     public function actionUpdate()
     {
-        // check user is a guest
-        if (Yii::$app->user->isGuest) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         //if (Yii::$app->request->isAjax) {
         //GET data from body request
         //Yii::$app->request->getBodyParams()
@@ -275,6 +274,13 @@ class RequestController extends Controller
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
         //$modelRequest->setAttributes($bodyRaw);
+
+        // check user is a guest
+        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+        if (empty($userByToken)) {
+            //return $this->goHome();
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+        }
 
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
@@ -291,7 +297,7 @@ class RequestController extends Controller
 
                 // Search record by id in the database
                 $queryRequest = Request::find()
-                    ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
+                    ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
                 $modelRequest = $queryRequest->orderBy('created_at')->one();
 
                 if (!empty($modelRequest)) {
@@ -304,7 +310,7 @@ class RequestController extends Controller
 
                                     if (!$modelRequest->validate($nameRequestAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
 
-                                    $modelRequest->created_by = Yii::$app->user->getId();
+                                    $modelRequest->created_by = $userByToken->id;
                                     $modelRequest->updated_at = time();
                                 }
                             }
@@ -382,12 +388,6 @@ class RequestController extends Controller
      */
     public function actionDelete()
     {
-        // check user is a guest
-        if (Yii::$app->user->isGuest) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         //if (Yii::$app->request->isAjax) {
         //GET data from body request
         //Yii::$app->request->getBodyParams()
@@ -400,6 +400,13 @@ class RequestController extends Controller
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
         //$modelRequest->setAttributes($bodyRaw);
+
+        // check user is a guest
+        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+        if (empty($userByToken)) {
+            //return $this->goHome();
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+        }
 
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
@@ -415,7 +422,7 @@ class RequestController extends Controller
 
                 // Search record by id in the database
                 $queryRequest = Request::find()
-                    ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
+                    ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
                 $modelRequest = $queryRequest->orderBy('created_at')->one();
 
                 if (empty($modelRequest)) {
@@ -492,7 +499,7 @@ class RequestController extends Controller
             $arrayRequestAssoc = array('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
             // Search record by id in the database
-            $queryRequest = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            $queryRequest = Request::find()->Where(['created_by' => $userByToken->id]);
             //foreach (ArrayHelper::toArray($model) as $key => $value) {
             //    $query->andWhere([$key => $value]);
             //}
