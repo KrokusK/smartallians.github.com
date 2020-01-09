@@ -160,7 +160,7 @@ class MaterialsController extends Controller
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
         if (empty($userByToken)) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         // load attributes in Materials object
@@ -268,7 +268,7 @@ class MaterialsController extends Controller
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
         if (empty($userByToken)) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         // load attributes in Materials object
@@ -350,7 +350,7 @@ class MaterialsController extends Controller
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
         if (empty($userByToken)) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         // load attributes in Materials object
@@ -431,7 +431,7 @@ class MaterialsController extends Controller
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
         if (empty($userByToken)) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         // load attributes in Materials object
