@@ -168,7 +168,7 @@ class RequestController extends Controller
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
         if (empty($userByToken)) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         // load attributes in Request object
@@ -279,7 +279,7 @@ class RequestController extends Controller
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
         if (empty($userByToken)) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         // load attributes in Request object
@@ -405,7 +405,7 @@ class RequestController extends Controller
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
         if (empty($userByToken)) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         // load attributes in Request object
@@ -472,12 +472,6 @@ class RequestController extends Controller
      */
     public function actionDeleteByParam()
     {
-        // check user is a guest
-        if (Yii::$app->user->isGuest) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         //if (Yii::$app->request->isAjax) {
         //GET data from body request
         //Yii::$app->request->getBodyParams()
@@ -490,6 +484,13 @@ class RequestController extends Controller
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
         //$modelRequest->setAttributes($bodyRaw);
+
+        // check user is a guest
+        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+        if (empty($userByToken)) {
+            //return $this->goHome();
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+        }
 
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
