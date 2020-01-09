@@ -405,7 +405,7 @@ class RequestController extends Controller
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
         if (empty($userByToken)) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена1'));
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         // load attributes in Request object
@@ -489,7 +489,7 @@ class RequestController extends Controller
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
         if (empty($userByToken)) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена2'));
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         // load attributes in Request object
