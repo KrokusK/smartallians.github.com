@@ -147,8 +147,6 @@ class PhotoController extends Controller
 
         $postParams = Yii::$app->getRequest()->post();
 
-        //$modelPhoto = new Photo();
-
         if (is_array($postParams)) {
         //if ($modelPhoto->load(Yii::$app->request->post())) {
             // check user is a guest
@@ -158,14 +156,13 @@ class PhotoController extends Controller
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
 
-
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
 
             $modelPhoto = new Photo();
 
             // fill in the properties in the Photo object
-            /*
+            //$modelPhoto->load(Yii::$app->request->post());
             foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
                 if (array_key_exists($valuePhotoAssoc, $postParams)) {
                     if ($modelPhoto->hasAttribute($namePhotoAssoc)) {
@@ -179,21 +176,14 @@ class PhotoController extends Controller
                     }
                 }
             }
-            */
 
-            //$modelPhoto->imageFiles = $postParams['imagefiles'];
-            $modelPhoto->load(Yii::$app->request->post());
-
-            //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles');
-            $modelPhoto->imageFiles = UploadedFile::getInstancesByName('imageFiles');
+            //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
+            $modelPhoto->imageFiles = UploadedFile::getInstancesByName('imageFiles[]');
             if ($modelPhoto->upload()) { // save ad photos
             }
 
-            $bodyRaw = Yii::$app->getRequest()->bodyParams;
-
             $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
-            //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
-            array_push($PhotoResponse, $bodyRaw);
+            array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
             return Json::encode($PhotoResponse);
 
             if ($modelPhoto->validate()) {
@@ -539,30 +529,6 @@ class PhotoController extends Controller
                 return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявки успешно удалены'));
             }
         }
-    }
-
-    /**
-     *  getInstancesByName Method. Photo table.
-     *  Get array by name attribute (Form parameter).
-     *  Request header: Content-Type: multipart/form-data
-     *  example: yii\web\UploadedFile:: getInstancesByName
-     *
-     * @return array
-     */
-    public static function getInstancesByName($name)
-    {
-        $files = self::loadFiles();
-        if (isset($files[$name])) {
-            return [new static($files[$name])];
-        }
-        $results = [];
-        foreach ($files as $key => $file) {
-            if (strpos($key, "{$name}[") === 0) {
-                $results[] = new static($file);
-            }
-        }
-
-        return $results;
     }
 
 }
