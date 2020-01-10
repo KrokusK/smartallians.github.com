@@ -167,7 +167,7 @@ class PhotoController extends Controller
             foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
                 if (array_key_exists($valuePhotoAssoc, $postParams)) {
                     if ($modelPhoto->hasAttribute($namePhotoAssoc)) {
-                        if ($namePhotoAssoc != 'id' && $namePhotoAssoc != 'created_at' && $namePhotoAssoc != 'updated_at') {
+                        if ($namePhotoAssoc != 'id' && $namePhotoAssoc != 'path') {
                             $modelPhoto->$namePhotoAssoc = $postParams[$valuePhotoAssoc];
 
                             if (!$modelPhoto->validate($namePhotoAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valuePhotoAssoc));
