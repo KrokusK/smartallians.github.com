@@ -41,7 +41,7 @@ class Photo extends \yii\db\ActiveRecord
     {
 
         return [
-            [['description', 'caption', 'path', 'imageFiles', 'created_by'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['description', 'caption', 'imageFiles'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer', 'skipOnEmpty' => true],
             [['response_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
