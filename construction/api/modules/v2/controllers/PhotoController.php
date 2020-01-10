@@ -145,7 +145,7 @@ class PhotoController extends Controller
         //if (Yii::$app->request->isAjax) {
 
         // check user is a guest
-        $userByToken = User::findIdentityByAccessToken(Yii::$app->request->post('token'););
+        $userByToken = User::findIdentityByAccessToken(Yii::$app->request->post('token'));
         if (empty($userByToken)) {
             //return $this->goHome();
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
