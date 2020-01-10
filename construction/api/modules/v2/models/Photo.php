@@ -96,7 +96,7 @@ class Photo extends \yii\db\ActiveRecord
                     $tmp = explode(".", $image->name);
                     $ext = end($tmp);
                     // generate a unique file name to prevent duplicate filenames
-                    $this->image_web_filename = Yii::$app->security->generateRandomString().".{$ext}";
+                    $this->image_web_filename = Yii::$app->security->generateRandomString() . ".{$ext}";
                     array_push($this->arrayWebFilename, "{$this->image_web_filename}");
                     // the path to save file, you can set an uploadPath
                     // in Yii::$app->params (as used in example below)
@@ -113,6 +113,7 @@ class Photo extends \yii\db\ActiveRecord
             $this->msg = 'Файл не прошел валидацию';
             return false;
         }
+    }
 
     /**
      *
