@@ -202,11 +202,11 @@ class PhotoController extends Controller
                             $transactionPhoto->commit();
                         } else {
                             $transactionPhoto->rollBack();
-                            return Json::encode(array('status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/'.$file.' не может быть сохранено'));
+                            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/'.$file.' не может быть сохранено'));
                         }
                     } catch (Exception $ex) {
                         $transactionPhoto->rollBack();
-                        return Json::encode(array('status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/'.$file.' не может быть сохранено'));
+                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/'.$file.' не может быть сохранено'));
                     }
                 }
             }
