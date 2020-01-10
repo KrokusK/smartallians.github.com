@@ -155,83 +155,80 @@ class PhotoController extends Controller
             if (empty($userByToken)) {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } 
+            }
 
-            /*
+
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayPhotoAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
-            $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
+            $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
 
             $modelPhoto = new Photo();
 
             // fill in the properties in the Photo object
             foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
-                if (array_key_exists($valuePhotoAssoc, $bodyRaw)) {
+                if (array_key_exists($valuePhotoAssoc, $postParams)) {
                     if ($modelPhoto->hasAttribute($namePhotoAssoc)) {
                         if ($namePhotoAssoc != 'id' && $namePhotoAssoc != 'created_at' && $namePhotoAssoc != 'updated_at') {
-                            $modelPhoto->$namePhotoAssoc = $bodyRaw[$valuePhotoAssoc];
+                            $modelPhoto->$namePhotoAssoc = $postParams[$valuePhotoAssoc];
 
                             if (!$modelPhoto->validate($namePhotoAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valuePhotoAssoc));
 
                             $modelPhoto->created_by = $userByToken->id;
-                            $modelPhoto->created_at = time();
-                            $modelPhoto->updated_at = time();
                         }
                     }
                 }
             }
+            /*
+                                    // check parametr for the KindJob object
+                                    foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
+                                        if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
+                                            if ($nameKindJobAssoc == 'kind_job_id' && !is_array($bodyRaw[$valueKindJobAssoc])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре work_type ожидается массив'));
+                                        }
+                                    }
 
-            // check parametr for the KindJob object
-            foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
-                if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
-                    if ($nameKindJobAssoc == 'kind_job_id' && !is_array($bodyRaw[$valueKindJobAssoc])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре work_type ожидается массив'));
-                }
-            }
+                                    if ($modelPhoto->validate()) {
+                                        $transaction = \Yii::$app->db->beginTransaction();
+                                        try {
+                                            $flagPhoto = $modelPhoto->save(false); // insert into Photo table
 
-            if ($modelPhoto->validate()) {
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    $flagPhoto = $modelPhoto->save(false); // insert into Photo table
+                                            $flagPhotoKindJob = true;
+                                            if ($flagPhoto) {
 
-                    $flagPhotoKindJob = true;
-                    if ($flagPhoto) {
+                                                // Save records into Photo_kind_job table
+                                                if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
+                                                    foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
+                                                        $modelPhotoKindJob = new PhotoKindJob();
 
-                        // Save records into Photo_kind_job table
-                        if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
-                            foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
-                                $modelPhotoKindJob = new PhotoKindJob();
+                                                        // fill in the properties in the KindJob object
+                                                        if ($modelPhotoKindJob->hasAttribute('kind_job_id')) {
+                                                            $modelPhotoKindJob->kind_job_id = $value;
+                                                        }
 
-                                // fill in the properties in the KindJob object
-                                if ($modelPhotoKindJob->hasAttribute('kind_job_id')) {
-                                    $modelPhotoKindJob->kind_job_id = $value;
-                                }
+                                                        if ($modelPhotoKindJob->validate('kind_job_id')) {
+                                                            $modelPhotoKindJob->Photo_id = $modelPhoto->id;
 
-                                if ($modelPhotoKindJob->validate('kind_job_id')) {
-                                    $modelPhotoKindJob->Photo_id = $modelPhoto->id;
+                                                            if (!$modelPhotoKindJob->save(false)) $flagPhotoKindJob = false; // insert into Photo_kind_job table
+                                                        }
+                                                    }
+                                                }
+                                            }
 
-                                    if (!$modelPhotoKindJob->save(false)) $flagPhotoKindJob = false; // insert into Photo_kind_job table
-                                }
-                            }
-                        }
-                    }
+                                            if ($flagPhoto == true && $flagPhotoKindJob == true) {
+                                                $transaction->commit();
+                                            } else {
+                                                $transaction->rollBack();
+                                                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+                                            }
+                                        } catch (Exception $ex) {
+                                            $transaction->rollBack();
+                                            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+                                        }
 
-                    if ($flagPhoto == true && $flagPhotoKindJob == true) {
-                        $transaction->commit();
-                    } else {
-                        $transaction->rollBack();
-                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
-                    }
-                } catch (Exception $ex) {
-                    $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
-                }
-
-                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelPhoto))));
-                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
-            } else {
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
-            }
-            */
+                                        //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelPhoto))));
+                                        return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
+                                    } else {
+                                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+                                    }
+                                    */
         } else {
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
