@@ -177,15 +177,9 @@ class PhotoController extends Controller
                     }
                 }
             }
-            /*
-                                    // check parametr for the KindJob object
-                                    foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
-                                        if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
-                                            if ($nameKindJobAssoc == 'kind_job_id' && !is_array($bodyRaw[$valueKindJobAssoc])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре work_type ожидается массив'));
-                                        }
-                                    }
 
-                                    if ($modelPhoto->validate()) {
+            if ($modelPhoto->validate()) {
+            /*                          
                                         $transaction = \Yii::$app->db->beginTransaction();
                                         try {
                                             $flagPhoto = $modelPhoto->save(false); // insert into Photo table
@@ -225,10 +219,11 @@ class PhotoController extends Controller
 
                                         //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelPhoto))));
                                         return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
-                                    } else {
-                                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
-                                    }
                                     */
+            } else {
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+            }
+
         } else {
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
