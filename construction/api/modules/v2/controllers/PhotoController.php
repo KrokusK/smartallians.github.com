@@ -7,6 +7,7 @@ use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
+use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
@@ -176,6 +177,12 @@ class PhotoController extends Controller
                         }
                     }
                 }
+            }
+            
+            $modelPhoto->imageFiles = $postParams['imagefiles'];
+
+            $modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles');
+            if ($modelPhoto->upload()) { // save ad photos
             }
 
             //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
