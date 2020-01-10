@@ -143,28 +143,18 @@ class PhotoController extends Controller
     public function actionCreate()
     {
         //if (Yii::$app->request->isAjax) {
-        //GET data from body request
-        //Yii::$app->request->getBodyParams()
-        $fh = fopen("php://input", 'r');
-        $put_string = stream_get_contents($fh);
-        $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
-
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
-
-        //$modelPhoto->setAttributes($bodyRaw);
 
         // check user is a guest
-        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+        $userByToken = User::findIdentityByAccessToken(Yii::$app->request->post('token'););
         if (empty($userByToken)) {
             //return $this->goHome();
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
-        // load attributes in Photo object
-        // example: yiisoft/yii2/base/Model.php
-        if (is_array($bodyRaw)) {
+        $modelPhoto = new Photo();
+
+        if ($modelPhoto->load(Yii::$app->request->post())) {
+            /*
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayPhotoAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
             $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
@@ -238,6 +228,7 @@ class PhotoController extends Controller
             } else {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
+            */
         } else {
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
