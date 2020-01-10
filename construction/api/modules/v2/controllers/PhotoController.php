@@ -165,6 +165,7 @@ class PhotoController extends Controller
             $modelPhoto = new Photo();
 
             // fill in the properties in the Photo object
+            /*
             foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
                 if (array_key_exists($valuePhotoAssoc, $postParams)) {
                     if ($modelPhoto->hasAttribute($namePhotoAssoc)) {
@@ -178,9 +179,10 @@ class PhotoController extends Controller
                     }
                 }
             }
+            */
 
             //$modelPhoto->imageFiles = $postParams['imagefiles'];
-            $modelPhoto->load(Yii::$app->request->post('imageFiles'));
+            $modelPhoto->load(Yii::$app->request->post());
 
             $modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles');
             if ($modelPhoto->upload()) { // save ad photos
