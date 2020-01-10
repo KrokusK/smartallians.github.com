@@ -179,7 +179,7 @@ class PhotoController extends Controller
             }
 
             if ($modelPhoto->validate()) {
-            /*                          
+            /*
                                         $transaction = \Yii::$app->db->beginTransaction();
                                         try {
                                             $flagPhoto = $modelPhoto->save(false); // insert into Photo table
