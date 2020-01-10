@@ -188,7 +188,7 @@ class PhotoController extends Controller
             if ($modelPhoto->upload()) { // save ad photos
             }
 
-            $bodyRaw = Yii::$app->getRequest()->getRawBody();
+            $bodyRaw = Yii::$app->getRequest()->bodyParams;
 
             $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
             //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
