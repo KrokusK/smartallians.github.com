@@ -100,17 +100,17 @@ class Photo extends \yii\db\ActiveRecord
                     array_push($this->arrayWebFilename, "{$this->image_web_filename}");
                     // the path to save file, you can set an uploadPath
                     // in Yii::$app->params (as used in example below)
-                    Yii::$app->params['uploadPath'] = Yii::$app->basePath . '/web/uploads/Photo/';
+                    Yii::$app->params['uploadPath'] = Yii::$app->basePath . '/web/uploads/photo/';
                     $path = Yii::$app->params['uploadPath'] . $this->image_web_filename;
                     $image->saveAs($path);
                 } else {
-                    $this->msg = 'problem1';
+                    $this->msg = 'Файл не был загружен';
                     return false;
                 }
             }
             return true;
         } else {
-            $this->msg = 'problem2';
+            $this->msg = 'Файл не прошел валидацию';
             return false;
         }
 

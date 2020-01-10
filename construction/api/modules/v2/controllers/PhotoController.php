@@ -2,8 +2,7 @@
 namespace api\modules\v2\controllers;
 
 use api\common\models\User;
-use api\modules\v2\models\Request;
-use api\modules\v2\models\RequestKindJob;
+use api\modules\v2\models\Photo;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -15,9 +14,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * API Request controller
+ * API Photo controller
  */
-class RequestController extends Controller
+class PhotoController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -60,7 +59,7 @@ class RequestController extends Controller
 
 
     /**
-     * GET Method. Request table.
+     * GET Method. Photo table.
      * Get records by parameters
      *
      * @return json
@@ -80,63 +79,63 @@ class RequestController extends Controller
 
         if (is_array($getParams)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
 
             // Search record by id in the database
-            //$query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
-            $query = Request::find()->Where(['created_by' => $userByToken->id]);
+            //$query = Photo::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            $query = Photo::find()->Where(['created_by' => $userByToken->id]);
             //foreach (ArrayHelper::toArray($model) as $key => $value) {
             //    $query->andWhere([$key => $value]);
             //}
-            $modelValidate = new Request();
-            foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                if (array_key_exists($valueRequestAssoc, $getParams)) {
-                    if ($modelValidate->hasAttribute($nameRequestAssoc)) {
-                        $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]];
-                        if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+            $modelValidate = new Photo();
+            foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
+                if (array_key_exists($valuePhotoAssoc, $getParams)) {
+                    if ($modelValidate->hasAttribute($namePhotoAssoc)) {
+                        $modelValidate->$namePhotoAssoc = $getParams[$arrayPhotoAssoc[$namePhotoAssoc]];
+                        if (!$modelValidate->validate($namePhotoAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valuePhotoAssoc));
 
-                        $query->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                        $query->andWhere([$namePhotoAssoc => $getParams[$arrayPhotoAssoc[$namePhotoAssoc]]]);
                     }
                 }
 
             }
 
-            $modelRequest = $query->orderBy('created_at')
+            $modelPhoto = $query->orderBy('id')
                 //->offset($pagination->offset)
                 //->limit($pagination->limit)
-                ->with('kindJob')
+                ->with('requests','responses','positions')
                 ->asArray()
                 ->all();
 
-            // get properties from Request object and from links
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
-            //array_push($RequestResponse, var_dump($modelRequest));
+            // get properties from Photo object and from links
+            $PhotoResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
+            array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
+            //array_push($PhotoResponse, var_dump($modelPhoto));
 
-            return Json::encode($RequestResponse);
+            return Json::encode($PhotoResponse);
 
         } else {
             // Search all records in the database
-            //$query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
-            $query = Request::find()->Where(['created_by' => $userByToken->id]);
+            //$query = Photo::find()->Where(['created_by' => Yii::$app->user->getId()]);
+            $query = Photo::find()->Where(['created_by' => $userByToken->id]);
 
-            $modelRequest = $query->orderBy('created_at')
-                ->with('kindJob')
+            $modelPhoto = $query->orderBy('id')
+                ->with('requests','responses','positions')
                 ->asArray()
                 ->all();
 
-            // get properties from Request object
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
+            // get properties from Photo object
+            $PhotoResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
+            array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
 
-            return Json::encode($RequestResponse);
+            return Json::encode($PhotoResponse);
         }
         //}
     }
 
 
     /**
-     * POST Method. Request table.
+     * POST Method. Photo table.
      * Insert record
      *
      * @return json
@@ -154,7 +153,7 @@ class RequestController extends Controller
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
+        //$modelPhoto->setAttributes($bodyRaw);
 
         // check user is a guest
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
@@ -163,27 +162,27 @@ class RequestController extends Controller
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
-        // load attributes in Request object
+        // load attributes in Photo object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayPhotoAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
             $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
 
-            $modelRequest = new Request();
+            $modelPhoto = new Photo();
 
-            // fill in the properties in the Request object
-            foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
-                    if ($modelRequest->hasAttribute($nameRequestAssoc)) {
-                        if ($nameRequestAssoc != 'id' && $nameRequestAssoc != 'created_at' && $nameRequestAssoc != 'updated_at') {
-                            $modelRequest->$nameRequestAssoc = $bodyRaw[$valueRequestAssoc];
+            // fill in the properties in the Photo object
+            foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
+                if (array_key_exists($valuePhotoAssoc, $bodyRaw)) {
+                    if ($modelPhoto->hasAttribute($namePhotoAssoc)) {
+                        if ($namePhotoAssoc != 'id' && $namePhotoAssoc != 'created_at' && $namePhotoAssoc != 'updated_at') {
+                            $modelPhoto->$namePhotoAssoc = $bodyRaw[$valuePhotoAssoc];
 
-                            if (!$modelRequest->validate($nameRequestAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+                            if (!$modelPhoto->validate($namePhotoAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valuePhotoAssoc));
 
-                            $modelRequest->created_by = $userByToken->id;
-                            $modelRequest->created_at = time();
-                            $modelRequest->updated_at = time();
+                            $modelPhoto->created_by = $userByToken->id;
+                            $modelPhoto->created_at = time();
+                            $modelPhoto->updated_at = time();
                         }
                     }
                 }
@@ -196,34 +195,34 @@ class RequestController extends Controller
                 }
             }
 
-            if ($modelRequest->validate()) {
+            if ($modelPhoto->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flagRequest = $modelRequest->save(false); // insert into request table
+                    $flagPhoto = $modelPhoto->save(false); // insert into Photo table
 
-                    $flagRequestKindJob = true;
-                    if ($flagRequest) {
+                    $flagPhotoKindJob = true;
+                    if ($flagPhoto) {
 
-                        // Save records into request_kind_job table
+                        // Save records into Photo_kind_job table
                         if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
                             foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
-                                $modelRequestKindJob = new RequestKindJob();
+                                $modelPhotoKindJob = new PhotoKindJob();
 
                                 // fill in the properties in the KindJob object
-                                if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
-                                    $modelRequestKindJob->kind_job_id = $value;
+                                if ($modelPhotoKindJob->hasAttribute('kind_job_id')) {
+                                    $modelPhotoKindJob->kind_job_id = $value;
                                 }
 
-                                if ($modelRequestKindJob->validate('kind_job_id')) {
-                                    $modelRequestKindJob->request_id = $modelRequest->id;
+                                if ($modelPhotoKindJob->validate('kind_job_id')) {
+                                    $modelPhotoKindJob->Photo_id = $modelPhoto->id;
 
-                                    if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
+                                    if (!$modelPhotoKindJob->save(false)) $flagPhotoKindJob = false; // insert into Photo_kind_job table
                                 }
                             }
                         }
                     }
 
-                    if ($flagRequest == true && $flagRequestKindJob == true) {
+                    if ($flagPhoto == true && $flagPhotoKindJob == true) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
@@ -234,7 +233,7 @@ class RequestController extends Controller
                     return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
                 }
 
-                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
+                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelPhoto))));
                 return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
             } else {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
@@ -247,7 +246,7 @@ class RequestController extends Controller
 
 
     /**
-     * PUT, PATCH Method. Request table.
+     * PUT, PATCH Method. Photo table.
      * Update records by id parameter
      *
      * @return json
@@ -265,7 +264,7 @@ class RequestController extends Controller
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
+        //$modelPhoto->setAttributes($bodyRaw);
 
         // check user is a guest
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
@@ -274,36 +273,36 @@ class RequestController extends Controller
             return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
-        // load attributes in Request object
+        // load attributes in Photo object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayPhotoAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
             $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
 
-            if (array_key_exists($arrayRequestAssoc['id'], $bodyRaw)) {
+            if (array_key_exists($arrayPhotoAssoc['id'], $bodyRaw)) {
                 // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayRequestAssoc['id']])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayPhotoAssoc['id']])) {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $queryRequest = Request::find()
-                    ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
-                $modelRequest = $queryRequest->orderBy('created_at')->one();
+                $queryPhoto = Photo::find()
+                    ->where(['AND', ['id' => $bodyRaw[$arrayPhotoAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                $modelPhoto = $queryPhoto->orderBy('created_at')->one();
 
-                if (!empty($modelRequest)) {
-                    // fill in the properties in the Request object
-                    foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                        if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
-                            if ($modelRequest->hasAttribute($nameRequestAssoc)) {
-                                if ($nameRequestAssoc != 'id' && $nameRequestAssoc != 'created_at' && $nameRequestAssoc != 'updated_at') {
-                                    $modelRequest->$nameRequestAssoc = $bodyRaw[$valueRequestAssoc];
+                if (!empty($modelPhoto)) {
+                    // fill in the properties in the Photo object
+                    foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
+                        if (array_key_exists($valuePhotoAssoc, $bodyRaw)) {
+                            if ($modelPhoto->hasAttribute($namePhotoAssoc)) {
+                                if ($namePhotoAssoc != 'id' && $namePhotoAssoc != 'created_at' && $namePhotoAssoc != 'updated_at') {
+                                    $modelPhoto->$namePhotoAssoc = $bodyRaw[$valuePhotoAssoc];
 
-                                    if (!$modelRequest->validate($nameRequestAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+                                    if (!$modelPhoto->validate($namePhotoAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valuePhotoAssoc));
 
-                                    $modelRequest->created_by = $userByToken->id;
-                                    $modelRequest->updated_at = time();
+                                    $modelPhoto->created_by = $userByToken->id;
+                                    $modelPhoto->updated_at = time();
                                 }
                             }
                         }
@@ -322,37 +321,37 @@ class RequestController extends Controller
                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
             }
 
-            if ($modelRequest->validate()) {
+            if ($modelPhoto->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flagRequest = $modelRequest->save(false); // insert into request table
+                    $flagPhoto = $modelPhoto->save(false); // insert into Photo table
 
-                    $flagRequestKindJob = true;
-                    if ($flagRequest) {
+                    $flagPhotoKindJob = true;
+                    if ($flagPhoto) {
 
-                        // Save records into request_kind_job table
+                        // Save records into Photo_kind_job table
                         if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
-                            // delete old records from request_kind_job table
-                            RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
+                            // delete old records from Photo_kind_job table
+                            PhotoKindJob::deleteAll(['Photo_id' => $modelPhoto->id]);
 
                             foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
-                                $modelRequestKindJob = new RequestKindJob();
+                                $modelPhotoKindJob = new PhotoKindJob();
 
                                 // fill in the properties in the KindJob object
-                                if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
-                                    $modelRequestKindJob->kind_job_id = $value;
+                                if ($modelPhotoKindJob->hasAttribute('kind_job_id')) {
+                                    $modelPhotoKindJob->kind_job_id = $value;
                                 }
 
-                                if ($modelRequestKindJob->validate('kind_job_id')) {
-                                    $modelRequestKindJob->request_id = $modelRequest->id;
+                                if ($modelPhotoKindJob->validate('kind_job_id')) {
+                                    $modelPhotoKindJob->Photo_id = $modelPhoto->id;
 
-                                    if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
+                                    if (!$modelPhotoKindJob->save(false)) $flagPhotoKindJob = false; // insert into Photo_kind_job table
                                 }
                             }
                         }
                     }
 
-                    if ($flagRequest == true && $flagRequestKindJob == true) {
+                    if ($flagPhoto == true && $flagPhotoKindJob == true) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
@@ -372,7 +371,7 @@ class RequestController extends Controller
 
 
     /**
-     * DELETE Method. Request table.
+     * DELETE Method. Photo table.
      * Delete records by id parameter
      * or by another parameters
      *
@@ -391,7 +390,7 @@ class RequestController extends Controller
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
+        //$modelPhoto->setAttributes($bodyRaw);
 
         // check user is a guest
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
@@ -400,24 +399,24 @@ class RequestController extends Controller
             return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
-        // load attributes in Request object
+        // load attributes in Photo object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayPhotoAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
-            if (array_key_exists($arrayRequestAssoc['id'], $bodyRaw)) {
+            if (array_key_exists($arrayPhotoAssoc['id'], $bodyRaw)) {
                 // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayRequestAssoc['id']])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayPhotoAssoc['id']])) {
                     return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $queryRequest = Request::find()
-                    ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
-                $modelRequest = $queryRequest->orderBy('created_at')->one();
+                $queryPhoto = Photo::find()
+                    ->where(['AND', ['id' => $bodyRaw[$arrayPhotoAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                $modelPhoto = $queryPhoto->orderBy('created_at')->one();
 
-                if (empty($modelRequest)) {
+                if (empty($modelPhoto)) {
                     return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
                 }
             } else {
@@ -425,17 +424,17 @@ class RequestController extends Controller
                 return $this->actionDeleteByParam();
             }
 
-            if (!empty($modelRequest)) {
+            if (!empty($modelPhoto)) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    // delete old records from request_kind_job table
-                    //RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
+                    // delete old records from Photo_kind_job table
+                    //PhotoKindJob::deleteAll(['Photo_id' => $modelPhoto->id]);
 
-                    // delete from request table.
-                    // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
-                    $countRequestDelete = $modelRequest->delete($modelRequest->id);
+                    // delete from Photo table.
+                    // Because the foreign keys with cascade delete that if a record in the parent table (Photo table) is deleted, then the corresponding records in the child table will automatically be deleted.
+                    $countPhotoDelete = $modelPhoto->delete($modelPhoto->id);
 
-                    if ($countRequestDelete > 0) {
+                    if ($countPhotoDelete > 0) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
@@ -457,7 +456,7 @@ class RequestController extends Controller
     }
 
     /**
-     * DELETE Method. Request table.
+     * DELETE Method. Photo table.
      * Delete records by another parameters
      *
      * @return json
@@ -475,7 +474,7 @@ class RequestController extends Controller
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
+        //$modelPhoto->setAttributes($bodyRaw);
 
         // check user is a guest
         $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
@@ -484,44 +483,44 @@ class RequestController extends Controller
             return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
-        // load attributes in Request object
+        // load attributes in Photo object
         // example: yiisoft/yii2/base/Model.php
 
         if (is_array($bodyRaw)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayPhotoAssoc = array('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
             // Search record by id in the database
-            $queryRequest = Request::find()->Where(['created_by' => $userByToken->id]);
+            $queryPhoto = Photo::find()->Where(['created_by' => $userByToken->id]);
             //foreach (ArrayHelper::toArray($model) as $key => $value) {
             //    $query->andWhere([$key => $value]);
             //}
-            $modelValidate = new Request();
-            foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
-                    if ($modelValidate->hasAttribute($nameRequestAssoc)) {
-                        $modelValidate->$nameRequestAssoc = $bodyRaw[$arrayRequestAssoc[$nameRequestAssoc]];
-                        if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueRequestAssoc));
+            $modelValidate = new Photo();
+            foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
+                if (array_key_exists($valuePhotoAssoc, $bodyRaw)) {
+                    if ($modelValidate->hasAttribute($namePhotoAssoc)) {
+                        $modelValidate->$namePhotoAssoc = $bodyRaw[$arrayPhotoAssoc[$namePhotoAssoc]];
+                        if (!$modelValidate->validate($namePhotoAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valuePhotoAssoc));
 
-                        $queryRequest->andWhere([$nameRequestAssoc => $bodyRaw[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                        $queryPhoto->andWhere([$namePhotoAssoc => $bodyRaw[$arrayPhotoAssoc[$namePhotoAssoc]]]);
                     }
                 }
 
             }
-            $modelsRequest = $queryRequest->all();
+            $modelsPhoto = $queryPhoto->all();
 
-            if (!empty($modelsRequest) && !empty($modelValidate)) {
-                foreach ($modelsRequest as $modelRequest) {
+            if (!empty($modelsPhoto) && !empty($modelValidate)) {
+                foreach ($modelsPhoto as $modelPhoto) {
                     $transaction = \Yii::$app->db->beginTransaction();
                     try {
-                        // delete old records from request_kind_job table
-                        //RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
+                        // delete old records from Photo_kind_job table
+                        //PhotoKindJob::deleteAll(['Photo_id' => $modelPhoto->id]);
 
-                        // delete from request table.
-                        // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
-                        $countRequestDelete = $modelRequest->delete();
+                        // delete from Photo table.
+                        // Because the foreign keys with cascade delete that if a record in the parent table (Photo table) is deleted, then the corresponding records in the child table will automatically be deleted.
+                        $countPhotoDelete = $modelPhoto->delete();
 
-                        if ($countRequestDelete > 0) {
+                        if ($countPhotoDelete > 0) {
                             $transaction->commit();
                         } else {
                             $transaction->rollBack();
