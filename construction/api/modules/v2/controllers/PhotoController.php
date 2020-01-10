@@ -188,14 +188,17 @@ class PhotoController extends Controller
                         $modelPhotoFile = new Photo();
 
                         foreach ($modelPhoto as $key => $value) {
-                            if ($modelPhoto->hasAttribute($key)) $modelPhotoFile->$key = $value;
+                            if ($modelPhoto->hasAttribute($key))
+                                if ($key != 'id' && $key != 'path') {
+                                    $modelPhotoFile->$key = $value;
+                                }
                         }
 
                         $modelPhotoFile->path = '/uploads/photo/'.$file;
 
-                        $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
-                        array_push($PhotoResponse, ArrayHelper::toArray($modelPhotoFile));
-                        return Json::encode($PhotoResponse);
+                        //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
+                        //array_push($PhotoResponse, ArrayHelper::toArray($modelPhotoFile));
+                        //return Json::encode($PhotoResponse);
 
                         if ($modelPhotoFile->validate()) {
                             $flagPhoto = $modelPhotoFile->save(false); // insert
