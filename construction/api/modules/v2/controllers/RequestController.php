@@ -156,16 +156,16 @@ class RequestController extends Controller
 
         //$modelRequest->setAttributes($bodyRaw);
 
-        // check user is a guest
-        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
-        if (empty($userByToken)) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
+            // check user is a guest
+            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            if (empty($userByToken)) {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            }
+
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
             $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
@@ -267,16 +267,16 @@ class RequestController extends Controller
 
         //$modelRequest->setAttributes($bodyRaw);
 
-        // check user is a guest
-        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
-        if (empty($userByToken)) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
+            // check user is a guest
+            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            if (empty($userByToken)) {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            }
+
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
             $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
@@ -393,16 +393,16 @@ class RequestController extends Controller
 
         //$modelRequest->setAttributes($bodyRaw);
 
-        // check user is a guest
-        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
-        if (empty($userByToken)) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
+            // check user is a guest
+            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            if (empty($userByToken)) {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            }
+
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
@@ -477,17 +477,17 @@ class RequestController extends Controller
 
         //$modelRequest->setAttributes($bodyRaw);
 
-        // check user is a guest
-        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
-        if (empty($userByToken)) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         // load attributes in Request object
         // example: yiisoft/yii2/base/Model.php
 
         if (is_array($bodyRaw)) {
+            // check user is a guest
+            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            if (empty($userByToken)) {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            }
+
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayRequestAssoc = array('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 

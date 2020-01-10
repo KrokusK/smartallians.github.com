@@ -156,16 +156,16 @@ class MaterialsController extends Controller
 
         //$modelRequest->setAttributes($bodyRaw);
 
-        // check user is a guest
-        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
-        if (empty($userByToken)) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         // load attributes in Materials object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
+            // check user is a guest
+            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            if (empty($userByToken)) {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            }
+
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id');
             $arraySubMaterialsAssoc = array ('delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
@@ -264,16 +264,16 @@ class MaterialsController extends Controller
 
         //$modelMaterials->setAttributes($bodyRaw);
 
-        // check user is a guest
-        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
-        if (empty($userByToken)) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         // load attributes in Materials object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
+            // check user is a guest
+            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            if (empty($userByToken)) {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            }
+
             if (array_key_exists('id', $bodyRaw)) {
                 // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
                 $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
@@ -346,16 +346,16 @@ class MaterialsController extends Controller
 
         //$modelMaterials->setAttributes($bodyRaw);
 
-        // check user is a guest
-        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
-        if (empty($userByToken)) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         // load attributes in Materials object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
+            // check user is a guest
+            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            if (empty($userByToken)) {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            }
+
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
@@ -427,16 +427,16 @@ class MaterialsController extends Controller
 
         //$modelMaterials->setAttributes($bodyRaw);
 
-        // check user is a guest
-        $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
-        if (empty($userByToken)) {
-            //return $this->goHome();
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
         // load attributes in Materials object
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
+            // check user is a guest
+            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            if (empty($userByToken)) {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            }
+
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
