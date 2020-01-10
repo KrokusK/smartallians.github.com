@@ -41,7 +41,7 @@ class Photo extends \yii\db\ActiveRecord
     {
 
         return [
-            [['description', 'caption'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['description', 'caption', 'imageFiles'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer', 'skipOnEmpty' => true],
             [['response_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
@@ -76,7 +76,7 @@ class Photo extends \yii\db\ActiveRecord
             [['description'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['caption'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['path'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['imageFiles'], 'file', 'skipOnEmpty' => true, 'maxFiles' => 5,'mimeTypes' => ['image/gif', 'image/jpeg', 'image/pjpeg', 'image/png'], 'extensions' => ['gif', 'jpg', 'jpeg', 'png'], 'maxSize' => 30*1024*1024, 'message' => 'Файл не соответствует требованиям'],
+            [['imageFiles'], 'file', 'maxFiles' => 5,'mimeTypes' => ['image/gif', 'image/jpeg', 'image/pjpeg', 'image/png'], 'extensions' => ['gif', 'jpg', 'jpeg', 'png'], 'maxSize' => 30*1024*1024, 'message' => 'Файл не соответствует требованиям'],
         ];
 
     }
