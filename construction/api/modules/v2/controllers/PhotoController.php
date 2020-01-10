@@ -177,7 +177,7 @@ class PhotoController extends Controller
                 }
             }
 
-            $modelPhoto->load(Yii::$app->request->post());
+            //$modelPhoto->load(Yii::$app->request->post());
             //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
             $modelPhoto->imageFiles = UploadedFile::getInstancesByName('imageFiles');
             if ($modelPhoto->upload()) { // save ad photos
