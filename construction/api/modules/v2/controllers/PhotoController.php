@@ -158,6 +158,7 @@ class PhotoController extends Controller
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
+            $arraySubPhotoAssoc = array ('photos' => 'photos');
 
             $modelPhoto = new Photo();
 
@@ -178,7 +179,7 @@ class PhotoController extends Controller
             }
 
             //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
-            $modelPhoto->imageFiles = UploadedFile::getInstancesByName('photos');
+            $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arraySubPhotoAssoc['photos']);
             if ($modelPhoto->upload()) { // save photos
             }
 
