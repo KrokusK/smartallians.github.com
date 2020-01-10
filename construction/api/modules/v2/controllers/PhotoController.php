@@ -181,58 +181,35 @@ class PhotoController extends Controller
             //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
             $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arraySubPhotoAssoc['photos']);
             if ($modelPhoto->upload()) { // save photos
+                // Insert each new Photo in database
+                foreach ($modelPhoto->arrayWebFilename as $file) {
+                    $transactionPhoto = \Yii::$app->db->beginTransaction();
+                    try {
+                        $modelPhotoFile = new Photo();
+
+                        foreach ($modelPhoto as $key => $value) {
+                            if ($modelPhotoFile->hasAttribute($key)) $modelPhotoFile->$key = $value;
+                        }
+
+                        $modelPhotoFile->path = '/uploads/photo/'.$file;
+                        if ($modelPhotoFile->validate()) {
+                            $flagPhoto = $modelPhotoFile->save(false); // insert
+                        } else {
+                            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+                        }
+
+                        if ($flagPhoto == true) {
+                            $transactionPhoto->commit();
+                        } else {
+                            $transactionPhoto->rollBack();
+                            return Json::encode(array('status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/'.$file.' не может быть сохранено'));
+                        }
+                    } catch (Exception $ex) {
+                        $transactionPhoto->rollBack();
+                        return Json::encode(array('status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/'.$file.' не может быть сохранено'));
+                    }
+                }
             }
-
-            $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
-            array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
-            return Json::encode($PhotoResponse);
-
-            if ($modelPhoto->validate()) {
-            /*
-                                        $transaction = \Yii::$app->db->beginTransaction();
-                                        try {
-                                            $flagPhoto = $modelPhoto->save(false); // insert into Photo table
-
-                                            $flagPhotoKindJob = true;
-                                            if ($flagPhoto) {
-
-                                                // Save records into Photo_kind_job table
-                                                if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
-                                                    foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
-                                                        $modelPhotoKindJob = new PhotoKindJob();
-
-                                                        // fill in the properties in the KindJob object
-                                                        if ($modelPhotoKindJob->hasAttribute('kind_job_id')) {
-                                                            $modelPhotoKindJob->kind_job_id = $value;
-                                                        }
-
-                                                        if ($modelPhotoKindJob->validate('kind_job_id')) {
-                                                            $modelPhotoKindJob->Photo_id = $modelPhoto->id;
-
-                                                            if (!$modelPhotoKindJob->save(false)) $flagPhotoKindJob = false; // insert into Photo_kind_job table
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            if ($flagPhoto == true && $flagPhotoKindJob == true) {
-                                                $transaction->commit();
-                                            } else {
-                                                $transaction->rollBack();
-                                                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
-                                            }
-                                        } catch (Exception $ex) {
-                                            $transaction->rollBack();
-                                            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
-                                        }
-
-                                        //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelPhoto))));
-                                        return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
-                                    */
-            } else {
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
-            }
-
         } else {
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
