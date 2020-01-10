@@ -209,6 +209,8 @@ class PhotoController extends Controller
                         return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/'.$file.' не может быть сохранено'));
                     }
                 }
+
+                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно сохранено(ы)'));
             }
         } else {
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
