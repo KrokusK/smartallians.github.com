@@ -188,7 +188,7 @@ class PhotoController extends Controller
                         $modelPhotoFile = new Photo();
 
                         foreach ($modelPhoto as $key => $value) {
-                            if ($modelPhotoFile->hasAttribute($key)) $modelPhotoFile->$key = $value;
+                            if ($modelPhoto->hasAttribute($key)) $modelPhotoFile->$key = $value;
                         }
 
                         $modelPhotoFile->path = '/uploads/photo/'.$file;
