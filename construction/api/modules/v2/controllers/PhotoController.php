@@ -178,6 +178,10 @@ class PhotoController extends Controller
                 }
             }
 
+            $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
+            array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
+            return Json::encode($PhotoResponse);
+
             if ($modelPhoto->validate()) {
             /*
                                         $transaction = \Yii::$app->db->beginTransaction();
