@@ -180,15 +180,15 @@ class PhotoController extends Controller
             }
 
             //$modelPhoto->imageFiles = $postParams['imagefiles'];
-            $modelPhoto->load(Yii::$app->request->post('imagefiles'));
+            $modelPhoto->load(Yii::$app->request->post('imageFiles'));
 
             $modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles');
             if ($modelPhoto->upload()) { // save ad photos
             }
 
-            //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
-            //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
-            //return Json::encode($PhotoResponse);
+            $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
+            array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
+            return Json::encode($PhotoResponse);
 
             if ($modelPhoto->validate()) {
             /*
