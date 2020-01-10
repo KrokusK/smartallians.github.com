@@ -192,9 +192,11 @@ class PhotoController extends Controller
                         }
 
                         $modelPhotoFile->path = '/uploads/photo/'.$file;
-                        // get properties from Photo object and from links
+
                         $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
                         array_push($PhotoResponse, ArrayHelper::toArray($modelPhotoFile));
+                        return Json::encode($PhotoResponse);
+
                         if ($modelPhotoFile->validate()) {
                             $flagPhoto = $modelPhotoFile->save(false); // insert
                         } else {
