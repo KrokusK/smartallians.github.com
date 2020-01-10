@@ -184,7 +184,8 @@ class PhotoController extends Controller
             //$modelPhoto->imageFiles = $postParams['imagefiles'];
             $modelPhoto->load(Yii::$app->request->post());
 
-            $modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles');
+            //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles');
+            $modelPhoto->imageFiles = static::getInstancesByName('imageFiles');
             if ($modelPhoto->upload()) { // save ad photos
             }
 
@@ -538,6 +539,30 @@ class PhotoController extends Controller
                 return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявки успешно удалены'));
             }
         }
+    }
+
+    /**
+     *  getInstancesByName Method. Photo table.
+     *  Get array by name attribute (Form parameter).
+     *  Request header: Content-Type: multipart/form-data
+     *  example: yii\web\UploadedFile:: getInstancesByName
+     *
+     * @return array
+     */
+    public static function getInstancesByName($name)
+    {
+        $files = self::loadFiles();
+        if (isset($files[$name])) {
+            return [new static($files[$name])];
+        }
+        $results = [];
+        foreach ($files as $key => $file) {
+            if (strpos($key, "{$name}[") === 0) {
+                $results[] = new static($file);
+            }
+        }
+
+        return $results;
     }
 
 }
