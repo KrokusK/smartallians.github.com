@@ -157,8 +157,10 @@ class PhotoController extends Controller
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
+            // Attribute names associated by request parameters
             $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
-            $arraySubPhotoAssoc = array ('photos' => 'photos');
+            // Name form with data. Request: multipart/form-data request
+            $arrayPhotoFormAssoc = array ('photos' => 'photos');
 
             $modelPhoto = new Photo();
 
@@ -179,7 +181,7 @@ class PhotoController extends Controller
             }
 
             //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
-            $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arraySubPhotoAssoc['photos']);
+            $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arrayPhotoFormAssoc['photos']);
             if ($modelPhoto->upload()) { // save photos
                 // Insert each new Photo in database
                 foreach ($modelPhoto->arrayWebFilename as $file) {
