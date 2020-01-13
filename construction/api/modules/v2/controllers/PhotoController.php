@@ -289,8 +289,8 @@ class PhotoController extends Controller
                     }
 
                     //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
-                    $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arrayPhotoFormAssoc['photos']);
-                    if ($modelPhoto->upload()) { // save photos
+                    $modelPhoto->imageFiles = UploadedFile::getInstancesByName($postParams['photos']);
+                    if ($modelPhoto->upload() && !empty($modelPhoto->imageFiles)) { // save photos
                         // Insert each new Photo in database
                         foreach ($modelPhoto->arrayWebFilename as $file) {
                             $transactionPhoto = \Yii::$app->db->beginTransaction();
@@ -317,6 +317,32 @@ class PhotoController extends Controller
                                 $transactionPhoto->rollBack();
                                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/' . $file . ' не может быть сохранено'));
                             }
+                        }
+
+                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно сохранено(ы)'));
+                    } elseif ($modelPhoto->upload() && empty($modelPhoto->imageFiles)) {
+
+                        $transactionPhoto = \Yii::$app->db->beginTransaction();
+                        try {
+                            //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
+                            //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
+                            //return Json::encode($PhotoResponse);
+
+                            if ($modelPhoto->validate()) {
+                                $flagPhoto = $modelPhoto->save(false); // update
+                            } else {
+                                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+                            }
+
+                            if ($flagPhoto == true) {
+                                $transactionPhoto->commit();
+                            } else {
+                                $transactionPhoto->rollBack();
+                                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Фото не может быть сохранено'));
+                            }
+                        } catch (Exception $ex) {
+                            $transactionPhoto->rollBack();
+                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Фото не может быть сохранено'));
                         }
 
                         return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно сохранено(ы)'));
