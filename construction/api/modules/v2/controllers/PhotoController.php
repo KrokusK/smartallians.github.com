@@ -246,6 +246,7 @@ class PhotoController extends Controller
         //$array_put = $this->parsingRequestFormData($put_string);
 
         $bodyRaw = Yii::$app->getRequest()->getRawBody();
+        $bodyRaw = iconv("CP1251", "UTF-8", $bodyRaw);
 
         //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
         //array_push($PhotoResponse, ArrayHelper::toArray($bodyRaw));
