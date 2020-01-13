@@ -289,7 +289,7 @@ class PhotoController extends Controller
                     }
 
                     //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
-                    $modelPhoto->imageFiles = UploadedFile::getInstancesByName($postParams['photos']);
+                    $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arrayPhotoFormAssoc['photos']);
                     if ($modelPhoto->upload() && !empty($modelPhoto->imageFiles)) { // save photos
                         // Insert each new Photo in database
                         foreach ($modelPhoto->arrayWebFilename as $file) {
