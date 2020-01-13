@@ -268,7 +268,7 @@ class PhotoController extends Controller
 
                 // Search record by id in the database
                 $queryPhoto = Photo::find()
-                    ->where(['AND', ['id' => $arrayPhotoAssoc[$arrayPhotoAssoc['id']]], ['created_by' => $userByToken->id]]);
+                    ->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by' => $userByToken->id]]);
                 $modelPhoto = $queryPhoto->orderBy('id')->one();
 
                 if (!empty($modelPhoto)) {
