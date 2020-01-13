@@ -238,6 +238,18 @@ class PhotoController extends Controller
     public function actionUpdate()
     {
         //if (Yii::$app->request->isAjax) {
+        //GET data from body request
+        //Yii::$app->request->getBodyParams()
+        $fh = fopen("php://input", 'r');
+        $put_string = stream_get_contents($fh);
+        $put_string = urldecode($put_string);
+        //$array_put = $this->parsingRequestFormData($put_string);
+
+        $bodyRaw = Yii::$app->getRequest()->getRawBody();
+
+        $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
+        array_push($PhotoResponse, ArrayHelper::toArray($bodyRaw));
+        return Json::encode($PhotoResponse);
 
         $postParams = Yii::$app->getRequest()->post();
 
