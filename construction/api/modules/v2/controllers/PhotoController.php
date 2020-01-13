@@ -290,10 +290,11 @@ class PhotoController extends Controller
 
                     //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
                     //$restRequestData = Yii::$app->request->getBodyParams();
-                    $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arrayPhotoFormAssoc['photos']);
-                    if ($modelPhoto->upload() && !empty($modelPhoto->imageFiles)) { // save photos
+                    $modelPhotoFile = new Photo();
+                    $modelPhotoFile->imageFiles = UploadedFile::getInstancesByName($arrayPhotoFormAssoc['photos']);
+                    if ($modelPhotoFile->upload() && !empty($modelPhotoFile->imageFiles)) { // save photos
                         // Insert each new Photo in database
-                        foreach ($modelPhoto->arrayWebFilename as $file) {
+                            $file = $modelPhotoFile->arrayWebFilename;
                             $transactionPhoto = \Yii::$app->db->beginTransaction();
                             try {
                                 $modelPhoto->path = '/uploads/photo/' . $file;
@@ -318,7 +319,7 @@ class PhotoController extends Controller
                                 $transactionPhoto->rollBack();
                                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/' . $file . ' не может быть сохранено'));
                             }
-                        }
+
 
                         return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно сохранено(ы)'));
                     } elseif ($modelPhoto->upload() && empty($modelPhoto->imageFiles)) {
