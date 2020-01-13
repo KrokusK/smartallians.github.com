@@ -290,11 +290,10 @@ class PhotoController extends Controller
 
                     //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
                     //$restRequestData = Yii::$app->request->getBodyParams();
-                    $modelPhotoFile = new Photo();
-                    $modelPhotoFile->imageFiles = UploadedFile::getInstancesByName($arrayPhotoFormAssoc['photos']);
-                    if ($modelPhotoFile->upload() && !empty($modelPhotoFile->imageFiles)) { // save photos
+                    $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arrayPhotoFormAssoc['photos']);
+                    if ($modelPhoto->upload() && !empty($modelPhoto->imageFiles)) { // save photos
                         // Insert each new Photo in database
-                            $file = $modelPhotoFile->arrayWebFilename;
+                            $file = $modelPhoto->arrayWebFilename;
                             $transactionPhoto = \Yii::$app->db->beginTransaction();
                             try {
                                 $modelPhoto->path = '/uploads/photo/' . $file;
