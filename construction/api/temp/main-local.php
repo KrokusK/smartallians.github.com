@@ -22,7 +22,7 @@ $config = [
                 'OPTIONS /<controller:\w+>/<action:\w*>' => 'site/options',
 
                 // API test
-                'POST /<module:\w+>/photo-update' => '<module>/photo/update',
+                'PUT,PATCH /<module:\w+>/photo-update' => '<module>/photo/update',
 
                 // API modules
                 'GET /<module:\w+>/<controller:(region|city|specialization|profile|type-job|kind-user|contractor|attestation|portfolio|position|kind-job|request|response|status-request|status-response|photo|status-feedback|feedback|status-completion|status-payment|order|project|project-documents|job-stages|materials|material-type|status-material|delivery|delivery-place|departure-place|status-delivery)>' => '<module>/<controller>/view',
