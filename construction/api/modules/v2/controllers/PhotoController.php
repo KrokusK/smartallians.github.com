@@ -260,7 +260,7 @@ class PhotoController extends Controller
             // Name form with data. Request: multipart/form-data request
             $arrayPhotoFormAssoc = array ('photos' => 'photos');
 
-            if (array_key_exists($arrayPhotoAssoc['id'], $arrayPhotoAssoc)) {
+            if (array_key_exists($arrayPhotoAssoc['id'], $postParams)) {
                 // check id parametr
                 if (!preg_match("/^[0-9]*$/", $postParams[$arrayPhotoAssoc['id']])) {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
