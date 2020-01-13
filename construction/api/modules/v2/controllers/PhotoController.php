@@ -287,6 +287,9 @@ class PhotoController extends Controller
                             }
                         }
                     }
+                    $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
+                    array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
+                    return Json::encode($PhotoResponse);
 
                     //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
                     //$restRequestData = Yii::$app->request->getBodyParams();
