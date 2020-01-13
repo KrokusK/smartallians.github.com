@@ -182,7 +182,7 @@ class PhotoController extends Controller
 
             //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
             $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arrayPhotoFormAssoc['photos']);
-            if ($modelPhoto->upload()) { // save photos
+            if ($modelPhoto->upload() && !empty($modelPhoto)) { // save photos
                 // Insert each new Photo in database
                 foreach ($modelPhoto->arrayWebFilename as $file) {
                     $transactionPhoto = \Yii::$app->db->beginTransaction();
@@ -221,6 +221,8 @@ class PhotoController extends Controller
                 }
 
                 return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно сохранено(ы)'));
+            } else {
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Файл(ы) фото не были переданы'));
             }
         } else {
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
