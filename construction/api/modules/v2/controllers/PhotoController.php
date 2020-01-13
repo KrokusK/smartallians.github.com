@@ -262,7 +262,7 @@ class PhotoController extends Controller
 
             if (array_key_exists($arrayPhotoAssoc['id'], $arrayPhotoAssoc)) {
                 // check id parametr
-                if (!preg_match("/^[0-9]*$/", $arrayPhotoAssoc[$arrayPhotoAssoc['id']])) {
+                if (!preg_match("/^[0-9]*$/", $postParams[$arrayPhotoAssoc['id']])) {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
