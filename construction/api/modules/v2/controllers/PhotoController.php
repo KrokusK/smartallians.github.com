@@ -258,12 +258,18 @@ class PhotoController extends Controller
             // Name form with data. Request: multipart/form-data request
             $arrayPhotoFormAssoc = array ('photos' => 'photos');
 
-            //$modelPhoto = new Photo();
             if (array_key_exists($arrayPhotoAssoc['id'], $postParams)) {
                 // check id parametr
                 if (!preg_match("/^[0-9]*$/", $postParams[$arrayPhotoAssoc['id']])) {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
+
+                //$modelPhoto = new Photo();
+                
+                // Search record by id in the database
+                $queryPhoto = Photo::find()
+                    ->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by' => $userByToken->id]]);
+                $modelPhoto = $queryPhoto->orderBy('id')->one();
 
                 // fill in the properties in the Photo object
                 //$modelPhoto->load(Yii::$app->request->post());
