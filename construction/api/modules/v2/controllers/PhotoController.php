@@ -304,14 +304,14 @@ class PhotoController extends Controller
                             }
 
                             $modelPhotoFile->path = '/uploads/photo/' . $file;
-                            $modelPhoto->path = $modelPhotoFile->path;
+                            //$modelPhoto->path = $modelPhotoFile->path;
 
-                            $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
-                            array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
-                            return Json::encode($PhotoResponse);
+                            //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
+                            //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
+                            //return Json::encode($PhotoResponse);
 
                             if ($modelPhotoFile->validate()) {
-                                $flagPhoto = $modelPhoto->save(false); // insert
+                                $flagPhoto = $modelPhotoFile->save(false); // insert
                             } else {
                                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
                             }
