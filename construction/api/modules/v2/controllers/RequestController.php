@@ -292,6 +292,10 @@ class RequestController extends Controller
                     ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
                 $modelRequest = $queryRequest->orderBy('created_at')->one();
 
+                if (empty($modelRequest)) {
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
+                }
+
                 if (!empty($modelRequest)) {
                     // fill in the properties in the Request object
                     foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {

@@ -278,7 +278,7 @@ class PhotoController extends Controller
                 $modelPhoto = $queryPhoto->orderBy('id')->one();
 
                 if (empty($modelPhoto)) {
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена запись по id'));
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена запись по id'));
                 }
 
                 // fill in the properties in the Photo object

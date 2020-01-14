@@ -283,6 +283,11 @@ class MaterialsController extends Controller
                     //->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
                     ->where(['id' => $bodyRaw[$arrayMaterialsAssoc['id']]]);
                 $modelMaterials = $queryMaterials->one();
+
+                if (empty($modelMaterials)) {
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Материал по id'));
+                }
+
                 foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
                     if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
                         if ($modelMaterials->hasAttribute($nameMaterialsAssoc)) {
