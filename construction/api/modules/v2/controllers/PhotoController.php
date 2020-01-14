@@ -236,7 +236,10 @@ class PhotoController extends Controller
      * Update records by id parameter
      *
      * PUT, POST methods not working.
-     * Photo files by UploadedFile::getInstancesByName('photos') can't be get (https://www.yiiframework.com/doc/api/2.0/yii-web-multipartformdataparser).
+     * Class yii\web\MultipartFormDataParser
+     * This parser provides the fallback for the 'multipart/form-data' processing on non POST requests, for example: the one with 'PUT' request method.
+     * But photo files by UploadedFile::getInstancesByName('photos') can't be get.
+     * (https://www.yiiframework.com/doc/api/2.0/yii-web-multipartformdataparser)
      *
      * @return json
      */
@@ -273,6 +276,10 @@ class PhotoController extends Controller
                 $queryPhoto = Photo::find()
                     ->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by' => $userByToken->id]]);
                 $modelPhoto = $queryPhoto->orderBy('id')->one();
+
+                if (empty($modelPhoto)) {
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена запись по id'));
+                }
 
                 // fill in the properties in the Photo object
                 //$modelPhoto->load(Yii::$app->request->post());
@@ -378,7 +385,84 @@ class PhotoController extends Controller
      *
      * @return json
      */
+
     public function actionDelete()
+    {
+        //if (Yii::$app->request->isAjax) {
+        $postParams = Yii::$app->getRequest()->post();
+
+        if (is_array($postParams)) {
+
+            // check user is a guest
+            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            if (empty($userByToken)) {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            }
+
+            // load attributes in Photo object
+            // example: yiisoft/yii2/base/Model.php
+            if (is_array($postParams)) {
+                // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
+                // Attribute names associated by request parameters
+                $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
+
+                if (array_key_exists($arrayPhotoAssoc['id'], $postParams)) {
+                    // check id parametr
+                    if (!preg_match("/^[0-9]*$/", $postParams[$arrayPhotoAssoc['id']])) {
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
+                    }
+
+                    // Search record by id in the database
+                    $queryPhoto = Photo::find()
+                        ->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by' => $userByToken->id]]);
+                    $modelPhoto = $queryPhoto->orderBy('id')->one();
+
+                    if (empty($modelPhoto)) {
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена запись по id'));
+                    }
+                } else {
+                    //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
+                    return $this->actionDeleteByParam();
+                }
+
+                if (!empty($modelPhoto)) {
+                    $transaction = \Yii::$app->db->beginTransaction();
+                    try {
+                        // delete old records from Photo_kind_job table
+                        //PhotoKindJob::deleteAll(['Photo_id' => $modelPhoto->id]);
+
+                        // delete from Photo table.
+                        // Because the foreign keys with cascade delete that if a record in the parent table (Photo table) is deleted, then the corresponding records in the child table will automatically be deleted.
+                        $countPhotoDelete = $modelPhoto->delete($modelPhoto->id);
+
+                        if ($countPhotoDelete > 0) {
+                            $transaction->commit();
+                        } else {
+                            $transaction->rollBack();
+                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                        }
+                    } catch (Exception $ex) {
+                        $transaction->rollBack();
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                    }
+
+                    return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена'));
+                } else {
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                }
+            } else {
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
+            }
+        } else {
+            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
+        }
+        //}
+    }
+
+
+    /*
+     public function actionDelete()
     {
         //if (Yii::$app->request->isAjax) {
         //GET data from body request
@@ -455,6 +539,8 @@ class PhotoController extends Controller
         }
         //}
     }
+    */
+
 
     /**
      * DELETE Method. Photo table.
