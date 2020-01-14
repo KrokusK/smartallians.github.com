@@ -265,7 +265,7 @@ class PhotoController extends Controller
                 }
 
                 //$modelPhoto = new Photo();
-                
+
                 // Search record by id in the database
                 $queryPhoto = Photo::find()
                     ->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by' => $userByToken->id]]);
@@ -303,14 +303,14 @@ class PhotoController extends Controller
                                     }
                             }
 
-                            $modelPhotoFile->path = '/uploads/photo/' . $file;
+                            $modelPhoto->path = '/uploads/photo/' . $file;
 
                             //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
                             //array_push($PhotoResponse, ArrayHelper::toArray($modelPhotoFile));
                             //return Json::encode($PhotoResponse);
 
-                            if ($modelPhotoFile->validate()) {
-                                $flagPhoto = $modelPhotoFile->save(false); // insert
+                            if ($modelPhoto->validate()) {
+                                $flagPhoto = $modelPhoto->save(false); // insert
                             } else {
                                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
                             }
