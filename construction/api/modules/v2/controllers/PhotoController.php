@@ -264,12 +264,12 @@ class PhotoController extends Controller
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
-                $modelPhoto = new Photo();
+                //$modelPhoto = new Photo();
 
                 // Search record by id in the database
-                //$queryPhoto = Photo::find()
-                //    ->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by' => $userByToken->id]]);
-                //$modelPhoto = $queryPhoto->orderBy('id')->one();
+                $queryPhoto = Photo::find()
+                    ->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by' => $userByToken->id]]);
+                $modelPhoto = $queryPhoto->orderBy('id')->one();
 
                 // fill in the properties in the Photo object
                 //$modelPhoto->load(Yii::$app->request->post());
