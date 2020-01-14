@@ -302,7 +302,7 @@ class PhotoController extends Controller
                                 //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
                                 //return Json::encode($PhotoResponse);
 
-                                if ($modelPhotoFile->validate()) {
+                                if ($modelPhoto->validate()) {
                                     $flagPhoto = $modelPhoto->save(false); // insert
                                 } else {
                                     return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
@@ -326,7 +326,7 @@ class PhotoController extends Controller
                             //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
                             //return Json::encode($PhotoResponse);
 
-                            if ($modelPhotoFile->validate()) {
+                            if ($modelPhoto->validate()) {
                                 $flagPhoto = $modelPhoto->save(false); // insert
                             } else {
                                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
