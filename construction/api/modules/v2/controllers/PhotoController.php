@@ -296,13 +296,23 @@ class PhotoController extends Controller
                         foreach ($modelPhoto->arrayWebFilename as $file) {
                             $transactionPhoto = \Yii::$app->db->beginTransaction();
                             try {
+                                $modelPhotoFile = new Photo();
+
+                                foreach ($modelPhoto as $key => $value) {
+                                    if ($modelPhoto->hasAttribute($key))
+                                        if ($key != 'id' && $key != 'path') {
+                                            $modelPhotoFile->$key = $value;
+                                        }
+                                }
+
+                                $modelPhotoFile->path = '/uploads/photo/'.$file;
                                 $modelPhoto->path = '/uploads/photo/' . $file;
 
                                 //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
                                 //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
                                 //return Json::encode($PhotoResponse);
 
-                                if ($modelPhoto->validate()) {
+                                if ($modelPhotoFile->validate()) {
                                     $flagPhoto = $modelPhoto->save(false); // insert
                                 } else {
                                     return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
