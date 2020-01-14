@@ -302,7 +302,7 @@ class PhotoController extends Controller
 
                     $modelPhotoNew->upload();
 
-                    if (!empty($modelPhoto->imageFiles)) { // save photos
+                    if (!empty($modelPhotoNew->imageFiles)) { // save photos
                         //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
                         //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
                         //return Json::encode($PhotoResponse);
