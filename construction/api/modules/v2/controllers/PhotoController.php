@@ -232,7 +232,7 @@ class PhotoController extends Controller
 
 
     /**
-     * PUT, PATCH Method. Photo table.
+     * POST Method. Photo table.
      * Update records by id parameter
      *
      * @return json
@@ -261,7 +261,7 @@ class PhotoController extends Controller
             if (array_key_exists($arrayPhotoAssoc['id'], $postParams)) {
                 // check id parametr
                 if (!preg_match("/^[0-9]*$/", $postParams[$arrayPhotoAssoc['id']])) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 //$modelPhoto = new Photo();
@@ -346,11 +346,11 @@ class PhotoController extends Controller
                                 $transactionPhoto->commit();
                             } else {
                                 $transactionPhoto->rollBack();
-                                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/' . $file . ' не может быть сохранено'));
+                                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Фото не может быть сохранено'));
                             }
                         } catch (Exception $ex) {
                             $transactionPhoto->rollBack();
-                            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/' . $file . ' не может быть сохранено'));
+                            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Фото не может быть сохранено'));
                         }
                     }
 
@@ -359,7 +359,7 @@ class PhotoController extends Controller
                     return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
                 }
             } else {
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id фото'));
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id фото'));
             }
         } else {
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
