@@ -394,66 +394,57 @@ class PhotoController extends Controller
         if (is_array($postParams)) {
 
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            $userByToken = User::findIdentityByAccessToken($postParams['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
 
-            // load attributes in Photo object
-            // example: yiisoft/yii2/base/Model.php
-            if (is_array($postParams)) {
-                // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-                // Attribute names associated by request parameters
-                $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
+            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
+            // Attribute names associated by request parameters
+            $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
 
-                if (array_key_exists($arrayPhotoAssoc['id'], $postParams)) {
-                    // check id parametr
-                    if (!preg_match("/^[0-9]*$/", $postParams[$arrayPhotoAssoc['id']])) {
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
-                    }
-
-                    // Search record by id in the database
-                    $queryPhoto = Photo::find()
-                        ->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by' => $userByToken->id]]);
-                    $modelPhoto = $queryPhoto->orderBy('id')->one();
-
-                    if (empty($modelPhoto)) {
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена запись по id'));
-                    }
-                } else {
-                    //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
-                    return $this->actionDeleteByParam();
+            if (array_key_exists($arrayPhotoAssoc['id'], $postParams)) {
+                // check id parametr
+                if (!preg_match("/^[0-9]*$/", $postParams[$arrayPhotoAssoc['id']])) {
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
-                if (!empty($modelPhoto)) {
-                    $transaction = \Yii::$app->db->beginTransaction();
-                    try {
-                        // delete old records from Photo_kind_job table
-                        //PhotoKindJob::deleteAll(['Photo_id' => $modelPhoto->id]);
+                // Search record by id in the database
+                $queryPhoto = Photo::find()
+                    ->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by' => $userByToken->id]]);
+                $modelPhoto = $queryPhoto->orderBy('id')->one();
 
-                        // delete from Photo table.
-                        // Because the foreign keys with cascade delete that if a record in the parent table (Photo table) is deleted, then the corresponding records in the child table will automatically be deleted.
-                        $countPhotoDelete = $modelPhoto->delete($modelPhoto->id);
-
-                        if ($countPhotoDelete > 0) {
-                            $transaction->commit();
-                        } else {
-                            $transaction->rollBack();
-                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
-                        }
-                    } catch (Exception $ex) {
-                        $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
-                    }
-
-                    return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена'));
-                } else {
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                if (empty($modelPhoto)) {
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена запись по id'));
                 }
             } else {
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
+                //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
+                return $this->actionDeleteByParam();
             }
+
+            if (!empty($modelPhoto)) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    // delete from Photo table.
+                    $countPhotoDelete = $modelPhoto->delete($modelPhoto->id);
+
+                    if ($countPhotoDelete > 0) {
+                        $transaction->commit();
+                    } else {
+                        $transaction->rollBack();
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Фото не может быть удалено'));
+                    }
+                } catch (Exception $ex) {
+                    $transaction->rollBack();
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Фото не может быть удалено'));
+                }
+
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно удалено'));
+            } else {
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Фото не может быть удалено'));
+            }
+
         } else {
             return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
