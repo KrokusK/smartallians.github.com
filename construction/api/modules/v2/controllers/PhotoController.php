@@ -289,23 +289,39 @@ class PhotoController extends Controller
 
                 //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
                 $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arrayPhotoFormAssoc['photos']);
-                if ($modelPhoto->upload() && !empty($modelPhoto->imageFiles)) { // save photos
-                    // Insert each new Photo in database
-                    foreach ($modelPhoto->arrayWebFilename as $file) {
+
+                if ($modelPhoto->upload()) { // save photos
+                    if (!empty($modelPhoto->imageFiles)) {
+                        // Insert each new Photo in database
+                        foreach ($modelPhoto->arrayWebFilename as $file) {
+                            $transactionPhoto = \Yii::$app->db->beginTransaction();
+                            try {
+                                $modelPhoto->path = '/uploads/photo/' . $file;
+
+                                //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
+                                //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
+                                //return Json::encode($PhotoResponse);
+
+                                if ($modelPhotoFile->validate()) {
+                                    $flagPhoto = $modelPhoto->save(false); // insert
+                                } else {
+                                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+                                }
+
+                                if ($flagPhoto == true) {
+                                    $transactionPhoto->commit();
+                                } else {
+                                    $transactionPhoto->rollBack();
+                                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/' . $file . ' не может быть сохранено'));
+                                }
+                            } catch (Exception $ex) {
+                                $transactionPhoto->rollBack();
+                                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/' . $file . ' не может быть сохранено'));
+                            }
+                        }
+                    } else {
                         $transactionPhoto = \Yii::$app->db->beginTransaction();
                         try {
-                            $modelPhotoFile = new Photo();
-
-                            foreach ($modelPhoto as $key => $value) {
-                                if ($modelPhoto->hasAttribute($key))
-                                    if ($key != 'id' && $key != 'path') {
-                                        $modelPhotoFile->$key = $value;
-                                    }
-                            }
-
-                            $modelPhotoFile->path = '/uploads/photo/' . $file;
-                            $modelPhoto->path = '/uploads/photo/' . $file;
-
                             //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
                             //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
                             //return Json::encode($PhotoResponse);
@@ -330,7 +346,7 @@ class PhotoController extends Controller
 
                     return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно сохранено(ы)'));
                 } else {
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Файл(ы) фото не были переданы'));
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
                 }
             } else {
                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id фото'));
