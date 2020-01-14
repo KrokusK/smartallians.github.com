@@ -294,7 +294,7 @@ class PhotoController extends Controller
                     //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
                     //$restRequestData = Yii::$app->request->getBodyParams();
                     $modelPhotoNew = new Photo();
-                    $modelPhotoNew->imageFiles = UploadedFile::getInstanceByName($arrayPhotoFormAssoc['photos']);
+                    $modelPhoto->imageFiles = UploadedFile::getInstanceByName($arrayPhotoFormAssoc['photos']);
 
                     //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
                     //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
