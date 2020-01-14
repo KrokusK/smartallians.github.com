@@ -243,6 +243,104 @@ class PhotoController extends Controller
 
         $postParams = Yii::$app->getRequest()->post();
 
+        if (is_array($postParams)) {
+            //if ($modelPhoto->load(Yii::$app->request->post())) {
+            // check user is a guest
+            $userByToken = User::findIdentityByAccessToken($postParams['token']);
+            if (empty($userByToken)) {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            }
+
+            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
+            // Attribute names associated by request parameters
+            $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
+            // Name form with data. Request: multipart/form-data request
+            $arrayPhotoFormAssoc = array ('photos' => 'photos');
+
+            $modelPhoto = new Photo();
+
+            // fill in the properties in the Photo object
+            //$modelPhoto->load(Yii::$app->request->post());
+            foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
+                if (array_key_exists($valuePhotoAssoc, $postParams)) {
+                    if ($modelPhoto->hasAttribute($namePhotoAssoc)) {
+                        if ($namePhotoAssoc != 'id' && $namePhotoAssoc != 'path') {
+                            $modelPhoto->$namePhotoAssoc = $postParams[$valuePhotoAssoc];
+
+                            if (!$modelPhoto->validate($namePhotoAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valuePhotoAssoc));
+
+                            $modelPhoto->created_by = $userByToken->id;
+                        }
+                    }
+                }
+            }
+
+            //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
+            $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arrayPhotoFormAssoc['photos']);
+            if ($modelPhoto->upload() && !empty($modelPhoto->imageFiles)) { // save photos
+                // Insert each new Photo in database
+                foreach ($modelPhoto->arrayWebFilename as $file) {
+                    $transactionPhoto = \Yii::$app->db->beginTransaction();
+                    try {
+                        $modelPhotoFile = new Photo();
+
+                        foreach ($modelPhoto as $key => $value) {
+                            if ($modelPhoto->hasAttribute($key))
+                                if ($key != 'id' && $key != 'path') {
+                                    $modelPhotoFile->$key = $value;
+                                }
+                        }
+
+                        $modelPhotoFile->path = '/uploads/photo/'.$file;
+
+                        //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
+                        //array_push($PhotoResponse, ArrayHelper::toArray($modelPhotoFile));
+                        //return Json::encode($PhotoResponse);
+
+                        if ($modelPhotoFile->validate()) {
+                            $flagPhoto = $modelPhotoFile->save(false); // insert
+                        } else {
+                            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
+                        }
+
+                        if ($flagPhoto == true) {
+                            $transactionPhoto->commit();
+                        } else {
+                            $transactionPhoto->rollBack();
+                            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/'.$file.' не может быть сохранено'));
+                        }
+                    } catch (Exception $ex) {
+                        $transactionPhoto->rollBack();
+                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Фото /uploads/photo/'.$file.' не может быть сохранено'));
+                    }
+                }
+
+                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно сохранено(ы)'));
+            } else {
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Файл(ы) фото не были переданы'));
+            }
+        } else {
+            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
+        }
+        //}
+    }
+
+
+
+    /**
+     * PUT, PATCH Method. Photo table.
+     * Update records by id parameter
+     *
+     * @return json
+     */
+    /*
+    public function actionUpdate()
+    {
+        //if (Yii::$app->request->isAjax) {
+
+        $postParams = Yii::$app->getRequest()->post();
+
         //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
         //array_push($PhotoResponse, ArrayHelper::toArray($postParams));
         //return Json::encode($PhotoResponse);
@@ -375,7 +473,7 @@ class PhotoController extends Controller
         }
         //}
     }
-
+*/
 
 
 
