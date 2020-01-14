@@ -289,6 +289,16 @@ class PhotoController extends Controller
 
                 //$modelPhoto->imageFiles = UploadedFile::getInstances($modelPhoto, 'imageFiles'); // Format form parameters: Photo[imageFiles][]
                 $restRequestData = Yii::$app->request->getBodyParams();
+                $uploadedFile = UploadedFile::getInstancesByName('photos');
+
+                $model = new Item();
+                $model->populate($restRequestData);
+                copy($uploadedFile->tempName, '/uploads/photo/');
+
+                $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
+                array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
+                return Json::encode($PhotoResponse);
+
                 $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arrayPhotoFormAssoc['photos']);
                 if ($modelPhoto->upload() && !empty($modelPhoto->imageFiles)) { // save photos
                     // Insert each new Photo in database
