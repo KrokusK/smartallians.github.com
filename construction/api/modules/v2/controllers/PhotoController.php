@@ -300,9 +300,9 @@ class PhotoController extends Controller
                     //array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
                     //return Json::encode($PhotoResponse);
 
+                    $modelPhotoNew->upload();
 
-
-                    if ($modelPhotoNew->upload() && !empty($modelPhotoNew->imageFiles)) { // save photos
+                    if (!empty($modelPhotoNew->imageFiles)) { // save photos
                         $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
                         array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
                         return Json::encode($PhotoResponse);
@@ -336,7 +336,7 @@ class PhotoController extends Controller
 
 
                         return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно сохранено(ы)'));
-                    } elseif ($modelPhoto->upload() && empty($modelPhoto->imageFiles)) {
+                    } else {
 
                         $transactionPhoto = \Yii::$app->db->beginTransaction();
                         try {
