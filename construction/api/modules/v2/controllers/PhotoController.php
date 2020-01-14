@@ -306,9 +306,9 @@ class PhotoController extends Controller
                             $modelPhotoFile->path = '/uploads/photo/' . $file;
                             $modelPhoto->path = $modelPhotoFile->path;
 
-                            //$PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
-                            //array_push($PhotoResponse, ArrayHelper::toArray($modelPhotoFile));
-                            //return Json::encode($PhotoResponse);
+                            $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
+                            array_push($PhotoResponse, ArrayHelper::toArray($modelPhoto));
+                            return Json::encode($PhotoResponse);
 
                             if ($modelPhotoFile->validate()) {
                                 $flagPhoto = $modelPhoto->save(false); // insert
