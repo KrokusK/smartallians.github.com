@@ -291,8 +291,8 @@ class PhotoController extends Controller
                 $restRequestData = Yii::$app->request->getBodyParams();
                 $uploadedFile = UploadedFile::getInstancesByName('photos');
 
-                $model = new Photo();
-                $model->populate($restRequestData);
+                //$model = new Photo();
+                //$model->populate($restRequestData);
                 copy($uploadedFile->tempName, '/uploads/photo/');
 
                 $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'test');
