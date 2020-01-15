@@ -230,7 +230,6 @@ class RbacController extends Controller
         $auth->add($customer);
         $auth->addChild($customer, $createCustomer);
         $auth->addChild($customer, $viewOwnCustomer);
-        $auth->addChild($customer, $createOwnCustomer);
         $auth->addChild($customer, $updateOwnCustomer);
         $auth->addChild($customer, $deleteOwnCustomer);
 
@@ -239,7 +238,6 @@ class RbacController extends Controller
         $auth->add($contractor);
         $auth->addChild($contractor, $createContractor);
         $auth->addChild($contractor, $viewOwnContractor);
-        $auth->addChild($contractor, $createOwnContractor);
         $auth->addChild($contractor, $updateOwnContractor);
         $auth->addChild($contractor, $deleteOwnContractor);
 
@@ -248,7 +246,6 @@ class RbacController extends Controller
         $auth->add($mediator);
         $auth->addChild($mediator, $createMediator);
         $auth->addChild($mediator, $viewOwnMediator);
-        $auth->addChild($mediator, $createOwnMediator);
         $auth->addChild($mediator, $updateOwnMediator);
         $auth->addChild($mediator, $deleteOwnMediator);
 
@@ -257,7 +254,6 @@ class RbacController extends Controller
         $auth->add($provider);
         $auth->addChild($provider, $createProvider);
         $auth->addChild($provider, $viewOwnProvider);
-        $auth->addChild($provider, $createOwnProvider);
         $auth->addChild($provider, $updateOwnProvider);
         $auth->addChild($provider, $deleteOwnProvider);
 
