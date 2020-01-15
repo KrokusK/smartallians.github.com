@@ -26,7 +26,7 @@ $config = [
                 'POST /<module:\w+>/photo-update' => '<module>/photo/update',
 
                 // API RBAC
-                'POST /<module:\w+>/rbac/<action:\w+>' => '<module>/rbac-actions/<action>',
+                'POST /<module:\w+>/<controller:(rbac)>/<action:\w+>' => '<module>/rbac-actions/<action>',
 
                 // API modules
                 'GET /<module:\w+>/<controller:(region|city|specialization|profile|type-job|kind-user|contractor|attestation|portfolio|position|kind-job|request|response|status-request|status-response|photo|status-feedback|feedback|status-completion|status-payment|order|project|project-documents|job-stages|materials|material-type|status-material|delivery|delivery-place|departure-place|status-delivery)>' => '<module>/<controller>/view',
