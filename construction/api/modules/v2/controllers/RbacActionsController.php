@@ -60,13 +60,6 @@ class RbacActionsController extends Controller
             //return $this->goHome();
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
-        //$userByToken = User::findIdentityByAccessToken($getParams['token']);
-        //if (empty($userByToken)) {
-        //    //return $this->goHome();
-        //    return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        //} else {
-        //    \Yii::$app->user->loginByAccessToken($getParams['token']);
-        //}
 
         if (\Yii::$app->user->can('createCustomer')) {
             return Json::encode(array('method' => 'GET', 'status' => 0, 'type' => 'success', 'message' => 'Успешно: Вы можете добавлять записи в таблицы Заказчика'));
