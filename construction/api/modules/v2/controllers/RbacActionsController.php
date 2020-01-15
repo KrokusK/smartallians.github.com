@@ -61,7 +61,7 @@ class RbacActionsController extends Controller
             //return $this->goHome();
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         } else {
-            \Yii::$app->user = $userByToken;
+            \Yii::$app->user->loginByAccessToken($getParams['token']);
         }
 
         if (\Yii::$app->user->can('createCustomer')) {
