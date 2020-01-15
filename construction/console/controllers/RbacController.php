@@ -44,6 +44,24 @@ class RbacController extends Controller
         // "viewOwnCustomer" will be used from "viewCustomer"
         $auth->addChild($viewOwnCustomer, $viewCustomer);
 
+        // add permission "updateOwnCustomer" and link him with a rule.
+        $updateOwnCustomer = $auth->createPermission('updateOwnCustomer');
+        $updateOwnCustomer->description = 'Update own records from the Customer tables';
+        $updateOwnCustomer->ruleName = $ruleCustomer->name;
+        $auth->add($updateOwnCustomer);
+
+        // "updateOwnCustomer" will be used from "updateCustomer"
+        $auth->addChild($updateOwnCustomer, $updateCustomer);
+
+        // add permission "deleteOwnCustomer" and link him with a rule.
+        $deleteOwnCustomer = $auth->createPermission('deleteOwnCustomer');
+        $deleteOwnCustomer->description = 'Delete own records from the Customer tables';
+        $deleteOwnCustomer->ruleName = $ruleCustomer->name;
+        $auth->add($deleteOwnCustomer);
+
+        // "deleteOwnCustomer" will be used from "deleteCustomer"
+        $auth->addChild($deleteOwnCustomer, $deleteCustomer);
+
 
         // Contractor
         // add the rule
@@ -78,6 +96,24 @@ class RbacController extends Controller
 
         // "viewOwnContractor" will be used from "viewContractor"
         $auth->addChild($viewOwnContractor, $viewContractor);
+
+        // add permission "updateOwnContractor" and link him with a rule.
+        $updateOwnContractor = $auth->createPermission('updateOwnContractor');
+        $updateOwnContractor->description = 'Update own records from the Contractor tables';
+        $updateOwnContractor->ruleName = $ruleContractor->name;
+        $auth->add($updateOwnContractor);
+
+        // "updateOwnContractor" will be used from "updateContractor"
+        $auth->addChild($updateOwnContractor, $updateContractor);
+
+        // add permission "deleteOwnContractor" and link him with a rule.
+        $deleteOwnContractor = $auth->createPermission('deleteOwnContractor');
+        $deleteOwnContractor->description = 'Delete own records from the Contractor tables';
+        $deleteOwnContractor->ruleName = $ruleContractor->name;
+        $auth->add($deleteOwnContractor);
+
+        // "deleteOwnContractor" will be used from "deleteContractor"
+        $auth->addChild($deleteOwnContractor, $deleteContractor);
 
 
         // Mediator
@@ -114,6 +150,24 @@ class RbacController extends Controller
         // "viewOwnMediator" will be used from "viewMediator"
         $auth->addChild($viewOwnMediator, $viewMediator);
 
+        // add permission "updateOwnMediator" and link him with a rule.
+        $updateOwnMediator = $auth->createPermission('updateOwnMediator');
+        $updateOwnMediator->description = 'Update own records from the Mediator tables';
+        $updateOwnMediator->ruleName = $ruleMediator->name;
+        $auth->add($updateOwnMediator);
+
+        // "updateOwnMediator" will be used from "updateMediator"
+        $auth->addChild($updateOwnMediator, $updateMediator);
+
+        // add permission "deleteOwnMediator" and link him with a rule.
+        $deleteOwnMediator = $auth->createPermission('deleteOwnMediator');
+        $deleteOwnMediator->description = 'Delete own records from the Mediator tables';
+        $deleteOwnMediator->ruleName = $ruleMediator->name;
+        $auth->add($deleteOwnMediator);
+
+        // "deleteOwnMediator" will be used from "deleteMediator"
+        $auth->addChild($deleteOwnMediator, $deleteMediator);
+
 
         // Provider
         // add the rule
@@ -148,6 +202,24 @@ class RbacController extends Controller
 
         // "viewOwnProvider" will be used from "viewProvider"
         $auth->addChild($viewOwnProvider, $viewProvider);
+
+        // add permission "updateOwnProvider" and link him with a rule.
+        $updateOwnProvider = $auth->createPermission('updateOwnProvider');
+        $updateOwnProvider->description = 'Update own records from the Provider tables';
+        $updateOwnProvider->ruleName = $ruleProvider->name;
+        $auth->add($updateOwnProvider);
+
+        // "updateOwnProvider" will be used from "updateProvider"
+        $auth->addChild($updateOwnProvider, $updateProvider);
+
+        // add permission "deleteOwnProvider" and link him with a rule.
+        $deleteOwnProvider = $auth->createPermission('deleteOwnProvider');
+        $deleteOwnProvider->description = 'Delete own records from the Provider tables';
+        $deleteOwnProvider->ruleName = $ruleProvider->name;
+        $auth->add($deleteOwnProvider);
+
+        // "deleteOwnProvider" will be used from "deleteProvider"
+        $auth->addChild($deleteOwnProvider, $deleteProvider);
 
 
         // Roles
@@ -192,29 +264,29 @@ class RbacController extends Controller
         $admin = $auth->createRole('admin');
         $auth->add($admin);
         $auth->addChild($admin, $viewCustomer);
-        $auth->addChild($admin, $createCustomer);
         $auth->addChild($admin, $updateCustomer);
         $auth->addChild($admin, $deleteCustomer);
         $auth->addChild($admin, $customer);
         $auth->addChild($admin, $viewContractor);
-        $auth->addChild($admin, $createContractor);
         $auth->addChild($admin, $updateContractor);
         $auth->addChild($admin, $deleteContractor);
         $auth->addChild($admin, $contractor);
         $auth->addChild($admin, $viewMediator);
-        $auth->addChild($admin, $createMediator);
         $auth->addChild($admin, $updateMediator);
         $auth->addChild($admin, $deleteMediator);
         $auth->addChild($admin, $mediator);
         $auth->addChild($admin, $viewProvider);
-        $auth->addChild($admin, $createProvider);
         $auth->addChild($admin, $updateProvider);
         $auth->addChild($admin, $deleteProvider);
         $auth->addChild($admin, $provider);
 
-        // Назначение ролей пользователям. 1 и 2 это IDs возвращаемые IdentityInterface::getId()
+        // Assigning roles to users.
+        // 1 и 2 это IDs возвращаемые IdentityInterface::getId()
         // обычно реализуемый в модели User.
-        //$auth->assign($author, 2);
-        //$auth->assign($admin, 1);
+        //$auth->assign($customer, 1);
+        //$auth->assign($contractor, 2);
+        //$auth->assign($contractor, 3);
+        //$auth->assign($contractor, 4);
+        //$auth->assign($mediator, 5);
     }
 }
