@@ -277,11 +277,22 @@ class RbacController extends Controller
         $auth->addChild($admin, $updateProvider);
         $auth->addChild($admin, $deleteProvider);
         $auth->addChild($admin, $provider);
+    }
+
+    public function actionUserAssign()
+    {
+        $auth = \Yii::$app->authManager;
+
+        $customer = $auth->getRole('customer');
+        $contractor = $auth->getRole('contractor');
+        $mediator = $auth->getRole('mediator');
+        $provider = $auth->getRole('provider');
+        $admin = $auth->getRole('admin');
 
         // Assigning roles to users.
         // 1 и 2 это IDs возвращаемые IdentityInterface::getId()
         // обычно реализуемый в модели User.
-        //$auth->assign($customer, 1);
+        $auth->assign($customer, 1);
         //$auth->assign($contractor, 2);
         //$auth->assign($contractor, 3);
         //$auth->assign($contractor, 4);
