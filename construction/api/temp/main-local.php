@@ -21,8 +21,12 @@ $config = [
                 'OPTIONS /<controller:\w*>' => 'site/options',
                 'OPTIONS /<controller:\w+>/<action:\w*>' => 'site/options',
 
-                // API test
+                // API photo
+                // Not working: 'PUT,PATCH /<module:\w+>/<controller:(photo)>>' => '<module>/<controller>/update',
                 'POST /<module:\w+>/photo-update' => '<module>/photo/update',
+
+                // API RBAC
+                'GET /<module:\w+>/rbac' => '<module>/rbac-actions/customer-create',
 
                 // API modules
                 'GET /<module:\w+>/<controller:(region|city|specialization|profile|type-job|kind-user|contractor|attestation|portfolio|position|kind-job|request|response|status-request|status-response|photo|status-feedback|feedback|status-completion|status-payment|order|project|project-documents|job-stages|materials|material-type|status-material|delivery|delivery-place|departure-place|status-delivery)>' => '<module>/<controller>/view',
