@@ -1,8 +1,10 @@
 <?php
 namespace console\controllers;
 
+use console\rbac\CustomerRule;
 use Yii;
 use yii\console\Controller;
+use yii\console\rbac;
 
 class RbacController extends Controller
 {
@@ -12,7 +14,7 @@ class RbacController extends Controller
 
         // Customer
         // add the rule
-        $ruleCustomer = new \console\rbac\CustomerRule;
+        $ruleCustomer = new CustomerRule();
         $auth->add($ruleCustomer);
 
         // add permission "viewCustomer"
