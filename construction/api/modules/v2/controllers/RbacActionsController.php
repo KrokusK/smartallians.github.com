@@ -28,7 +28,7 @@ class RbacActionsController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'customer-create' => ['get'],
+                    'customer-create' => ['post'],
                 ],
             ],
         ];
@@ -60,13 +60,13 @@ class RbacActionsController extends Controller
         // check user is a guest
         if (empty(\Yii::$app->user->loginByAccessToken($postParams['token']))) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         if (\Yii::$app->user->can('createCustomer')) {
-            return Json::encode(array('method' => 'GET', 'status' => 0, 'type' => 'success', 'message' => 'Успешно: Вы можете добавлять записи в таблицы Заказчика'));
+            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Успешно: Вы можете добавлять записи в таблицы Заказчика'));
         } else {
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вы не можете добавлять записи в таблицы Заказчика'));
+            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вы не можете добавлять записи в таблицы Заказчика'));
         }
     }
 
@@ -84,7 +84,7 @@ class RbacActionsController extends Controller
         // check user is a guest
         if (empty(\Yii::$app->user->loginByAccessToken($postParams['token']))) {
             //return $this->goHome();
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
         // Search record by id in the database
@@ -93,9 +93,9 @@ class RbacActionsController extends Controller
         $modelRequest = $queryRequest->one();
 
         if (\Yii::$app->user->can('updateOwnCustomer')) {
-            return Json::encode(array('method' => 'GET', 'status' => 0, 'type' => 'success', 'message' => 'Успешно: Вы можете обновить запись в таблице Заказчика с id: '.$postParams['id']));
+            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Успешно: Вы можете обновить запись в таблице Заказчика с id: '.$postParams['id']));
         } else {
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вы не можете обновить запись в таблице Заказчика с id: '.$postParams['id']));
+            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вы не можете обновить запись в таблице Заказчика с id: '.$postParams['id']));
         }
     }
 }
