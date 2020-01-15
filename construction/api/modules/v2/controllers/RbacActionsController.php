@@ -92,7 +92,7 @@ class RbacActionsController extends Controller
             ->where(['id' => $postParams['id']]);
         $modelRequest = $queryRequest->one();
 
-        if (\Yii::$app->user->can('updateOwnCustomer')) {
+        if (\Yii::$app->user->can('updateCustomer', ['recordCustomer' => $modelRequest])) {
             return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Успешно: Вы можете обновить запись в таблице Заказчика с id: '.$postParams['id']));
         } else {
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вы не можете обновить запись в таблице Заказчика с id: '.$postParams['id']));
