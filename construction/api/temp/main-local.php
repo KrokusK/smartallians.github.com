@@ -26,6 +26,7 @@ $config = [
                 'POST /<module:\w+>/photo-update' => '<module>/photo/update',
 
                 // API RBAC
+                'POST /<module:\w+>/rbac/<action:\w+>' => '<module>/rbac-actions/<action>',
                 'POST /<module:\w+>/<controller:(rbac)>/<action:\w+>' => '<module>/rbac-actions/<action>',
 
                 // API modules
