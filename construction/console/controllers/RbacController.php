@@ -10,7 +10,7 @@ class RbacController extends Controller
 {
     public function actionInit()
     {
-        $auth = Yii::$app->authManager;
+        $auth = \Yii::$app->authManager;
 
         // Customer
         // add the rule
