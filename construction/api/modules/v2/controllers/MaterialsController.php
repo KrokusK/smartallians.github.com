@@ -75,6 +75,8 @@ class MaterialsController extends Controller
         if (empty($userByToken)) {
             //return $this->goHome();
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+        } else {
+            \Yii::$app->user->loginByAccessToken($getParams['token']);
         }
 
         if (is_array($getParams)) {
@@ -163,7 +165,9 @@ class MaterialsController extends Controller
             $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            } else {
+                \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
@@ -271,7 +275,9 @@ class MaterialsController extends Controller
             $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            } else {
+                \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             }
 
             if (array_key_exists('id', $bodyRaw)) {
@@ -358,7 +364,9 @@ class MaterialsController extends Controller
             $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            } else {
+                \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
@@ -439,7 +447,9 @@ class MaterialsController extends Controller
             $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            } else {
+                \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
