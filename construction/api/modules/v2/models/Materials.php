@@ -68,7 +68,7 @@ class Materials extends \yii\db\ActiveRecord
                 },
                 'message' => 'Статус материала не выбран из списка'],
             [['name'], 'string', 'max' => 50, 'message' => 'Число знаков не должно превышать 50'],
-            [['mesuare'], 'string', 'max' => 15, 'message' => 'Число знаков не должно превышать 15'],
+            [['measure'], 'string', 'max' => 15, 'message' => 'Число знаков не должно превышать 15'],
             [['count'], 'double', 'message' => 'поле должно быть типа вещественным числом'],
             [['cost'], 'double', 'message' => 'Значение должно быть числом'],
         ];
