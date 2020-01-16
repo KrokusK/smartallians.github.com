@@ -241,21 +241,9 @@ class RequestController extends Controller
      */
     public function actionUpdate()
     {
-        //if (Yii::$app->request->isAjax) {
-        //GET data from body request
-        //Yii::$app->request->getBodyParams()
-        $fh = fopen("php://input", 'r');
-        $put_string = stream_get_contents($fh);
-        $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
-
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
-
-        // load attributes in Request object
-        // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // check user is a guest
             $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
@@ -375,21 +363,8 @@ class RequestController extends Controller
      */
     public function actionDelete()
     {
-        //if (Yii::$app->request->isAjax) {
-        //GET data from body request
-        //Yii::$app->request->getBodyParams()
-        $fh = fopen("php://input", 'r');
-        $put_string = stream_get_contents($fh);
-        $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
-
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
-
-        // load attributes in Request object
-        // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // check user is a guest
             $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
@@ -408,7 +383,6 @@ class RequestController extends Controller
                     return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
-                // Search record by id in the database
                 // Search record by id in the database
                 if ($userRole === 'admin') {
                     $queryRequest = Request::find()->where(['id' => $bodyRaw[$arrayRequestAssoc['id']]]);
@@ -453,7 +427,6 @@ class RequestController extends Controller
         } else {
             return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
-        //}
     }
 
     /**
@@ -464,21 +437,7 @@ class RequestController extends Controller
      */
     public function actionDeleteByParam()
     {
-        //if (Yii::$app->request->isAjax) {
-        //GET data from body request
-        //Yii::$app->request->getBodyParams()
-        $fh = fopen("php://input", 'r');
-        $put_string = stream_get_contents($fh);
-        $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
-
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
-
-        //$modelRequest->setAttributes($bodyRaw);
-
-        // load attributes in Request object
-        // example: yiisoft/yii2/base/Model.php
 
         if (is_array($bodyRaw)) {
             // check user is a guest
