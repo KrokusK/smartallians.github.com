@@ -67,8 +67,6 @@ class RequestController extends Controller
      */
     public function actionView()
     {
-        //if (Yii::$app->request->isAjax) {
-
         $getParams = Yii::$app->getRequest()->get();
 
         // check user is a guest
@@ -135,7 +133,6 @@ class RequestController extends Controller
 
             return Json::encode($RequestResponse);
         }
-        //}
     }
 
 
@@ -147,21 +144,8 @@ class RequestController extends Controller
      */
     public function actionCreate()
     {
-        //if (Yii::$app->request->isAjax) {
-        //GET data from body request
-        //Yii::$app->request->getBodyParams()
-        $fh = fopen("php://input", 'r');
-        $put_string = stream_get_contents($fh);
-        $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
-
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelRequest->setAttributes($bodyRaw);
-
-        // load attributes in Request object
-        // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // check user is a guest
             $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
@@ -246,7 +230,6 @@ class RequestController extends Controller
         } else {
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
-        //}
     }
 
 
