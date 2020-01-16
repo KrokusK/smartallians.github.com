@@ -141,12 +141,10 @@ class MaterialsController extends Controller
 
         if (is_array($bodyRaw)) {
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } else {
-                \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
@@ -234,16 +232,16 @@ class MaterialsController extends Controller
     public function actionUpdate()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
         if (is_array($bodyRaw)) {
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } else {
-                \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             }
+            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
             if (array_key_exists('id', $bodyRaw)) {
                 // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
@@ -310,16 +308,16 @@ class MaterialsController extends Controller
     public function actionDelete()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
         if (is_array($bodyRaw)) {
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } else {
-                \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             }
+            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'measure' => 'measure');
@@ -380,16 +378,16 @@ class MaterialsController extends Controller
     public function actionDeleteByParam()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
         if (is_array($bodyRaw)) {
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } else {
-                \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             }
+            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'measure' => 'measure');
