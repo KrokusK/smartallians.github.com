@@ -15,9 +15,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * API Request controller
+ * API Profile controller
  */
-class RequestController extends Controller
+class ProfileController extends Controller
 {
     /**
      * {@inheritdoc}
