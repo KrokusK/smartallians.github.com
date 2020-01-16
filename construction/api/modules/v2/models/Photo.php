@@ -76,7 +76,7 @@ class Photo extends \yii\db\ActiveRecord
             [['description'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['caption'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['path'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['imageFiles'], 'file', 'maxFiles' => 5,'mimeTypes' => ['image/gif', 'image/jpeg', 'image/pjpeg', 'image/png'], 'extensions' => ['gif', 'jpg', 'jpeg', 'png'], 'maxSize' => 30*1024*1024, 'message' => 'Файл не соответствует требованиям'],
+            [['imageFiles'], 'file', 'maxFiles' => 10,'mimeTypes' => ['image/jpeg', 'image/pjpeg', 'image/png'], 'extensions' => ['jpg', 'jpeg', 'png'], 'maxSize' => 5*1024*1024, 'message' => 'Файл не соответствует требованиям'],
         ];
 
     }

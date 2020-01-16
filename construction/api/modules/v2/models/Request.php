@@ -32,7 +32,7 @@ class Request extends \yii\db\ActiveRecord
     {
 
         return [
-            [['city_id', 'address', 'description', 'task', 'budjet', 'date_begin', 'date_end', 'updated_at', 'created_at'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['city_id', 'address', 'description', 'name', 'budjet', 'date_begin', 'date_end', 'updated_at', 'created_at'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer', 'skipOnEmpty' => true],
             [['status_request_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
@@ -55,10 +55,10 @@ class Request extends \yii\db\ActiveRecord
                 },
                 'message' => 'Город не выбран из списка'],
             [['address'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['description'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
+            [['name'], 'string', 'max' => 100, 'message' => 'Число знаков не должно превышать 100'],
+            [['description'], 'string', 'max' => 512, 'message' => 'Число знаков не должно превышать 255'],
             [['task'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['budjet'], 'double', 'message' => 'Значение должно быть числом'],
+            [['budjet'], 'integer', 'message' => 'Значение должно быть целыи числом числом'],
             [['period'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['date_begin'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['updated_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],

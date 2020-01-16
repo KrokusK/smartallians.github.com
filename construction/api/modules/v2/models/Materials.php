@@ -25,7 +25,7 @@ class Materials extends \yii\db\ActiveRecord
     {
 
         return [
-            [['material_type_id', 'status_material_id', 'name', 'count', 'cost'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['name', 'count', 'measure'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
             [['request_id'], 'in', 'range' =>
                 function ($attribute, $params) {
@@ -67,8 +67,9 @@ class Materials extends \yii\db\ActiveRecord
                     return $statusMaterialIdStr;
                 },
                 'message' => 'Статус материала не выбран из списка'],
-            [['name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['count'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
+            [['name'], 'string', 'max' => 50, 'message' => 'Число знаков не должно превышать 50'],
+            [['mesuare'], 'string', 'max' => 15, 'message' => 'Число знаков не должно превышать 15'],
+            [['count'], 'double', 'message' => 'поле должно быть типа вещественным числом'],
             [['cost'], 'double', 'message' => 'Значение должно быть числом'],
         ];
 
