@@ -80,7 +80,7 @@ class MaterialsController extends Controller
 
         if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
+            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'mesuare' => 'measure');
 
             if ($userRole === 'admin') {
                 $query = Materials::find();
@@ -151,7 +151,7 @@ class MaterialsController extends Controller
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id');
-            $arraySubMaterialsAssoc = array ('delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
+            $arraySubMaterialsAssoc = array ('delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'mesuare' => 'measure');
 
             if (array_key_exists('materials', $bodyRaw)) {
                 if (!is_array($bodyRaw['materials'])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре materials ожидается массив'));
@@ -233,21 +233,8 @@ class MaterialsController extends Controller
      */
     public function actionUpdate()
     {
-        //if (Yii::$app->request->isAjax) {
-        //GET data from body request
-        //Yii::$app->request->getBodyParams()
-        $fh = fopen("php://input", 'r');
-        $put_string = stream_get_contents($fh);
-        $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
-
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
-
-        //$modelMaterials->setAttributes($bodyRaw);
-
-        // load attributes in Materials object
-        // example: yiisoft/yii2/base/Model.php
+        
         if (is_array($bodyRaw)) {
             // check user is a guest
             $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
@@ -260,7 +247,7 @@ class MaterialsController extends Controller
 
             if (array_key_exists('id', $bodyRaw)) {
                 // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-                $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
+                $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'mesuare' => 'measure');
 
                 // Search record by id in the database
                 $queryMaterials = Materials::find()
@@ -322,21 +309,8 @@ class MaterialsController extends Controller
      */
     public function actionDelete()
     {
-        //if (Yii::$app->request->isAjax) {
-        //GET data from body request
-        //Yii::$app->request->getBodyParams()
-        $fh = fopen("php://input", 'r');
-        $put_string = stream_get_contents($fh);
-        $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
-
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelMaterials->setAttributes($bodyRaw);
-
-        // load attributes in Materials object
-        // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // check user is a guest
             $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
@@ -348,7 +322,7 @@ class MaterialsController extends Controller
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
+            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'mesuare' => 'measure');
 
             if (array_key_exists($arrayMaterialsAssoc['id'], $bodyRaw)) {
                 // check id parametr
@@ -405,21 +379,8 @@ class MaterialsController extends Controller
      */
     public function actionDeleteByParam()
     {
-        //if (Yii::$app->request->isAjax) {
-        //GET data from body request
-        //Yii::$app->request->getBodyParams()
-        $fh = fopen("php://input", 'r');
-        $put_string = stream_get_contents($fh);
-        $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
-
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //$modelMaterials->setAttributes($bodyRaw);
-
-        // load attributes in Materials object
-        // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // check user is a guest
             $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
@@ -431,7 +392,7 @@ class MaterialsController extends Controller
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
+            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'mesuare' => 'measure');
 
             // Search record by id in the database
             //$queryMaterials = Materials::find()->Where(['created_by' => Yii::$app->user->getId()]);
