@@ -88,7 +88,7 @@ class ProfileController extends Controller
             //$arrayCityAssoc = array ('city_id' => 'city_id');
 
             // Search record by id in the database
-            if (($userRole !== 'admin') && ($getParams[$arrayProfileAssoc['user_id']] !== $userByToken->id)) { // check role is a Admin or user_id equal id user
+            if (($userRole !== 'admin') && ($getParams[$arrayProfileAssoc['user_id']] != $userByToken->id)) { // check role is a Admin or user_id equal id user
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Доступ запрещен'));
             }
 
