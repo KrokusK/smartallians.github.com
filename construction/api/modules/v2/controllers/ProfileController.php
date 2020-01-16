@@ -115,7 +115,7 @@ class ProfileController extends Controller
             }*/
 
             $modelRequest = $query->orderBy('created_at')
-                ->with('users','kindUser','specializations','typeJob','city')
+                ->with('users','kindUser','specializations','typeJob','cities')
                 ->asArray()
                 ->all();
 
