@@ -79,7 +79,9 @@ class ProfileController extends Controller
         }
         $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
-        if (is_array($getParams)) {
+        unset($getParams['token']);
+
+        if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayProfileAssoc = array ('user_id' => 'user_id', 'kind_user_id' => 'kind_user_id', 'type_job_id' => 'type_job_id', 'fio' => 'fio', 'firm_name' => 'firm_name', 'inn' => 'inn', 'site' => 'site', 'avatar' => 'avatar', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
             $arraySpecializationAssoc = array ('specialization_id' => 'specialization_id');
