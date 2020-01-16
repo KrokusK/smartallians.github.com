@@ -66,29 +66,27 @@ class MaterialsController extends Controller
      */
     public function actionView()
     {
-        //if (Yii::$app->request->isAjax) {
-
         $getParams = Yii::$app->getRequest()->get();
 
         // check user is a guest
-        $userByToken = User::findIdentityByAccessToken($getParams['token']);
+        $userByToken = \Yii::$app->user->loginByAccessToken($getParams['token']);
         if (empty($userByToken)) {
             //return $this->goHome();
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        } else {
-            \Yii::$app->user->loginByAccessToken($getParams['token']);
         }
+        $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
-        if (is_array($getParams)) {
+        unset($getParams['token']);
+
+        if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost');
 
-            // Search record by id in the database
-            //$query = Materials::find()->Where(['created_by' => Yii::$app->user->getId()]);
-            $query = Materials::find();
-            //foreach (ArrayHelper::toArray($model) as $key => $value) {
-            //    $query->andWhere([$key => $value]);
-            //}
+            if ($userRole === 'admin') {
+                $query = Materials::find();
+            } else {
+                $query = Materials::find()->Where(['created_by' => $userByToken->id]);
+            }
             $modelValidate = new Materials();
             foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
                 if (array_key_exists($valueMaterialsAssoc, $getParams)) {
@@ -102,8 +100,6 @@ class MaterialsController extends Controller
             }
 
             $modelMaterials = $query->orderBy('id')
-                //->offset($pagination->offset)
-                //->limit($pagination->limit)
                 ->asArray()
                 ->with('requests','deliveries','materialType','statusMaterial')
                 ->all();
@@ -117,8 +113,7 @@ class MaterialsController extends Controller
 
         } else {
             // Search all records in the database
-            //$query = Materials::find()->Where(['created_by' => Yii::$app->user->getId()]);
-            $query = Materials::find();
+            $query = Materials::find()->Where(['created_by' => $userByToken->id]);
 
             $modelMaterials = $query->orderBy('id')
                 ->asArray()
@@ -131,7 +126,6 @@ class MaterialsController extends Controller
 
             return Json::encode($RequestResponse);
         }
-        //}
     }
 
 
@@ -143,23 +137,8 @@ class MaterialsController extends Controller
      */
     public function actionCreate()
     {
-        //if (Yii::$app->request->isAjax) {
-        //GET data from body request
-        //Yii::$app->request->getBodyParams()
-        $fh = fopen("php://input", 'r');
-        $put_string = stream_get_contents($fh);
-        $put_string = urldecode($put_string);
-        //$array_put = $this->parsingRequestFormData($put_string);
-
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
-        //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'test', var_dump($bodyRaw) ));
-
-        //$modelRequest->setAttributes($bodyRaw);
-
-        // load attributes in Materials object
-        // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // check user is a guest
             $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
@@ -243,7 +222,6 @@ class MaterialsController extends Controller
         } else {
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
-        //}
     }
 
 
