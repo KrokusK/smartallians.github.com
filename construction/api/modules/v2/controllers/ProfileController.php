@@ -84,11 +84,11 @@ class ProfileController extends Controller
         if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayProfileAssoc = array ('user_id' => 'user_id', 'kind_user_id' => 'kind_user_id', 'type_job_id' => 'type_job_id', 'fio' => 'fio', 'firm_name' => 'firm_name', 'inn' => 'inn', 'site' => 'site', 'avatar' => 'avatar', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
-            $arraySpecializationAssoc = array ('specialization_id' => 'specialization_id');
-            $arrayCityAssoc = array ('city_id' => 'city_id');
+            //$arraySpecializationAssoc = array ('specialization_id' => 'specialization_id');
+            //$arrayCityAssoc = array ('city_id' => 'city_id');
 
             // Search record by id in the database
-            if (($userRole !== 'admin') && ($arrayProfileAssoc['user_id'] !== $userByToken->id)) { // check role is a Admin or user_id equal id user
+            if (($userRole !== 'admin') && ($getParams[$arrayProfileAssoc['user_id']] !== $userByToken->id)) { // check role is a Admin or user_id equal id user
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Доступ запрещен'));
             }
 
