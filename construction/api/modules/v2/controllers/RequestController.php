@@ -86,7 +86,11 @@ class RequestController extends Controller
             $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
             // Search record by id in the database
-            $query = Request::find()->Where(['created_by' => $userByToken->id]);
+            if ($userRole === 'admin') {
+                $query = Request::find();
+            } else {
+                $query = Request::find()->Where(['created_by' => $userByToken->id]);
+            }
             $modelValidate = new Request();
             foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
                 if (array_key_exists($valueRequestAssoc, $getParams)) {
@@ -288,8 +292,11 @@ class RequestController extends Controller
                 }
 
                 // Search record by id in the database
-                $queryRequest = Request::find()
-                    ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                if ($userRole === 'admin') {
+                    $queryRequest = Request::find()->where(['id' => $bodyRaw[$arrayRequestAssoc['id']]]);
+                } else {
+                    $queryRequest = Request::find()->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                }
                 $modelRequest = $queryRequest->orderBy('created_at')->one();
 
                 if (empty($modelRequest)) {
@@ -417,8 +424,12 @@ class RequestController extends Controller
                 }
 
                 // Search record by id in the database
-                $queryRequest = Request::find()
-                    ->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                // Search record by id in the database
+                if ($userRole === 'admin') {
+                    $queryRequest = Request::find()->where(['id' => $bodyRaw[$arrayRequestAssoc['id']]]);
+                } else {
+                    $queryRequest = Request::find()->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                }
                 $modelRequest = $queryRequest->orderBy('created_at')->one();
 
                 if (empty($modelRequest)) {
@@ -496,10 +507,11 @@ class RequestController extends Controller
             $arrayRequestAssoc = array('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
             // Search record by id in the database
-            $queryRequest = Request::find()->Where(['created_by' => $userByToken->id]);
-            //foreach (ArrayHelper::toArray($model) as $key => $value) {
-            //    $query->andWhere([$key => $value]);
-            //}
+            if ($userRole === 'admin') {
+                $queryRequest = Request::find();
+            } else {
+                $queryRequest = Request::find()->where(['created_by'=> $userByToken->id]);
+            }
             $modelValidate = new Request();
             foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
                 if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
