@@ -77,13 +77,20 @@ class RequestController extends Controller
             //return $this->goHome();
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
+        $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
         if (is_array($getParams)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayProfileAssoc = array ('kind_user_id' => 'kind_user_id', 'type_job_id' => 'type_job_id', 'fio' => 'fio', 'firm_name' => 'firm_name', 'inn' => 'inn', 'site' => 'site', 'avatar' => 'avatar', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayProfileAssoc = array ('user_id' => 'user_id', 'kind_user_id' => 'kind_user_id', 'type_job_id' => 'type_job_id', 'fio' => 'fio', 'firm_name' => 'firm_name', 'inn' => 'inn', 'site' => 'site', 'avatar' => 'avatar', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arraySpecializationAssoc = array ('specialization_id' => 'specialization_id');
+            $arrayCityAssoc = array ('city_id' => 'city_id');
 
             // Search record by id in the database
-            $query = Profile::find()->Where(['created_by' => $userByToken->id]);
+            if (($userRole !== 'admin') && ($arrayProfileAssoc['user_id'] !== $userByToken->id)) { // check role is a Admin or user_id equal id user
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Доступ запрещен'));
+            }
+
+            $query = Profile::find()->Where(['user_id' => $arrayProfileAssoc['user_id']]);
             $modelValidate = new Profile();
             foreach ($arrayProfileAssoc as $nameProfileAssoc => $valueProfileAssoc) {
                 if (array_key_exists($valueProfileAssoc, $getParams)) {
@@ -95,6 +102,15 @@ class RequestController extends Controller
                     }
                 }
             }
+            /*$modelValidate = new Specialization();
+            if (array_key_exists($arraySpecializationAssoc['specialization_id'], $getParams)) {
+                //if ($modelValidate->hasAttribute('specialization_id')) {
+                    $modelValidate->name = $getParams[$arraySpecializationAssoc['specialization_id']];
+                    if (!$modelValidate->validate('name')) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$arraySpecializationAssoc['specialization_id']));
+
+                    $query->andWhere([$nameProfileAssoc => $getParams[$arrayProfileAssoc[$nameProfileAssoc]]]);
+                //}
+            }*/
 
             $modelRequest = $query->orderBy('created_at')
                 ->with('users','kindUser','specializations','typeJob','city')
@@ -110,7 +126,7 @@ class RequestController extends Controller
 
         } else {
             // Search all records in the database
-            $query = Request::find()->Where(['created_by' => $userByToken->id]);
+            $query = Profile::find()->Where(['user_id' => $userByToken->id]);
 
             $modelRequest = $query->orderBy('created_at')
                 ->with('users','kindUser','specializations','typeJob','city')
