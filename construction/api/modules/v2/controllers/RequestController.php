@@ -72,24 +72,21 @@ class RequestController extends Controller
         $getParams = Yii::$app->getRequest()->get();
 
         // check user is a guest
-        $userByToken = User::findIdentityByAccessToken($getParams['token']);
+        $userByToken = \Yii::$app->user->loginByAccessToken($getParams['token']);
         if (empty($userByToken)) {
             //return $this->goHome();
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        } else {
-            \Yii::$app->user->loginByAccessToken($getParams['token']);
         }
+        $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
-        if (is_array($getParams)) {
+        unset($getParams['token']);
+
+        if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
             // Search record by id in the database
-            //$query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
             $query = Request::find()->Where(['created_by' => $userByToken->id]);
-            //foreach (ArrayHelper::toArray($model) as $key => $value) {
-            //    $query->andWhere([$key => $value]);
-            //}
             $modelValidate = new Request();
             foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
                 if (array_key_exists($valueRequestAssoc, $getParams)) {
@@ -98,7 +95,7 @@ class RequestController extends Controller
                         if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
 
                         if ($nameRequestAssoc == 'description') {
-                            $query->andWhere(['like', $nameRequestAssoc, $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                            $query->andWhere(['like', $nameRequestAssoc, $getParams[$arrayRequestAssoc[$nameRequestAssoc]], 'filter', 'filter'=>'strtolower']);
                         } else {
                             $query->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
                         }
@@ -108,8 +105,6 @@ class RequestController extends Controller
             }
 
             $modelRequest = $query->orderBy('created_at')
-                //->offset($pagination->offset)
-                //->limit($pagination->limit)
                 ->with('kindJob')
                 ->asArray()
                 ->all();
@@ -123,7 +118,6 @@ class RequestController extends Controller
 
         } else {
             // Search all records in the database
-            //$query = Request::find()->Where(['created_by' => Yii::$app->user->getId()]);
             $query = Request::find()->Where(['created_by' => $userByToken->id]);
 
             $modelRequest = $query->orderBy('created_at')
