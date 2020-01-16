@@ -131,7 +131,7 @@ class ProfileController extends Controller
             $query = Profile::find()->Where(['user_id' => $userByToken->id]);
 
             $modelRequest = $query->orderBy('created_at')
-                ->with('users','kindUser','specializations','typeJob','city')
+                ->with('users','kindUser','specializations','typeJob','cities')
                 ->asArray()
                 ->all();
 
