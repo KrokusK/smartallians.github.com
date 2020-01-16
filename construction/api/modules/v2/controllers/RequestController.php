@@ -160,12 +160,10 @@ class RequestController extends Controller
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } else {
-                \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
@@ -273,12 +271,10 @@ class RequestController extends Controller
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } else {
-                \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
@@ -405,12 +401,10 @@ class RequestController extends Controller
         // example: yiisoft/yii2/base/Model.php
         if (is_array($bodyRaw)) {
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } else {
-                \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
@@ -492,12 +486,10 @@ class RequestController extends Controller
 
         if (is_array($bodyRaw)) {
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($bodyRaw['token']);
+            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } else {
-                \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
