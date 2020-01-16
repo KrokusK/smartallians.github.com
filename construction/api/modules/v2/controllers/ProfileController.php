@@ -92,7 +92,7 @@ class ProfileController extends Controller
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Доступ запрещен'));
             }
 
-            $query = Profile::find()->Where(intval(['user_id' => $arrayProfileAssoc['user_id']]));
+            $query = Profile::find()->Where(['user_id' => intval($getParams[$arrayProfileAssoc['user_id']])]);
             $modelValidate = new Profile();
             foreach ($arrayProfileAssoc as $nameProfileAssoc => $valueProfileAssoc) {
                 if (array_key_exists($valueProfileAssoc, $getParams)) {
