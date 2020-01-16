@@ -95,7 +95,7 @@ class RequestController extends Controller
                         if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
 
                         if ($nameRequestAssoc == 'description') {
-                            $query->andWhere(['like', $nameRequestAssoc, $getParams[$arrayRequestAssoc[$nameRequestAssoc]], 'filter', 'filter'=>'strtolower']);
+                            $query->andWhere(['like', 'lower('.$nameRequestAssoc.')', strtolower($getParams[$arrayRequestAssoc[$nameRequestAssoc]])]);
                         } else {
                             $query->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
                         }
