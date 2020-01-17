@@ -90,7 +90,7 @@ class PhotoController extends Controller
             } else {
                 $query = Photo::find()->Where(['created_by' => $userByToken->id]);
             }
-            $modelRequest = $queryPhoto->one();
+            $modelRequest = $query->one();
             $modelValidate = new Photo();
             foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
                 if (array_key_exists($valuePhotoAssoc, $getParams)) {
