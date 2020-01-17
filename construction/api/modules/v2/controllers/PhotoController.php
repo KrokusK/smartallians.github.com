@@ -80,7 +80,9 @@ class PhotoController extends Controller
         }
         $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
-        if (is_array($getParams)) {
+        unset($getParams['token']);
+
+        if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
 
