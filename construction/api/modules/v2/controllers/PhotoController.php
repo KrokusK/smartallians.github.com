@@ -162,18 +162,18 @@ class PhotoController extends Controller
             $userRole =[];
             $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
             foreach($userAssigned as $userAssign){
-                array_push($userRole, $userAssign->roleName[0]);
+                array_push($userRole, $userAssign->roleName);
             }
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
+            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
+            $flagRights = false;
             foreach(array('admin', 'customer', 'contractor') as $value) {
-                if (!in_array($value, $userRole)) {
-                    //return $this->goHome();
-                    return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+                if (in_array($value, $userRole)) {
+                    $flagRights = true;
                 }
             }
+            if (!$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
