@@ -293,9 +293,9 @@ class RbacController extends Controller
         // 1 и 2 это IDs возвращаемые IdentityInterface::getId()
         // обычно реализуемый в модели User.
         $auth->assign($customer, 1);
-        //$auth->assign($contractor, 2);
-        //$auth->assign($contractor, 3);
-        //$auth->assign($contractor, 4);
-        //$auth->assign($mediator, 5);
+        $auth->assign($contractor, 2);
+        $auth->assign($contractor, 3);
+        $auth->assign($contractor, 4);
+        $auth->assign($mediator, 5);
     }
 }
