@@ -248,9 +248,11 @@ class MaterialsController extends Controller
                 $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'measure' => 'measure');
 
                 // Search record by id in the database
-                $queryMaterials = Materials::find()
-                    //->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
-                    ->where(['id' => $bodyRaw[$arrayMaterialsAssoc['id']]]);
+                if ($userRole === 'admin') {
+                    $queryMaterials = Request::find()->where(['id' => $bodyRaw[$arrayRequestAssoc['id']]]);
+                } else {
+                    $queryMaterials = Request::find()->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                }
                 $modelMaterials = $queryMaterials->one();
 
                 if (empty($modelMaterials)) {
@@ -329,9 +331,11 @@ class MaterialsController extends Controller
                 }
 
                 // Search record by id in the database
-                $queryMaterials = Materials::find()
-                    //->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> Yii::$app->user->getId()]]);
-                    ->where(['id' => $bodyRaw[$arrayMaterialsAssoc['id']]]);
+                if ($userRole === 'admin') {
+                    $queryMaterials = Request::find()->where(['id' => $bodyRaw[$arrayRequestAssoc['id']]]);
+                } else {
+                    $queryMaterials = Request::find()->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                }
                 $modelMaterials = $queryMaterials->one();
 
                 if (empty($modelMaterials)) {
@@ -393,11 +397,11 @@ class MaterialsController extends Controller
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'measure' => 'measure');
 
             // Search record by id in the database
-            //$queryMaterials = Materials::find()->Where(['created_by' => Yii::$app->user->getId()]);
-            $queryMaterials = Materials::find();
-            //foreach (ArrayHelper::toArray($model) as $key => $value) {
-            //    $query->andWhere([$key => $value]);
-            //}
+            if ($userRole === 'admin') {
+                $queryMaterials = Materials::find();
+            } else {
+                $queryMaterials = Materials::find()->where(['created_by'=> $userByToken->id]);
+            }
             $modelValidate = new Materials();
             foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
                 if (array_key_exists($valueMaterialsAssoc, $bodyRaw)) {
