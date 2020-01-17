@@ -91,7 +91,7 @@ class PhotoController extends Controller
         //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
         // Check rights
-        if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
+        if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
         }
         /*
@@ -103,7 +103,7 @@ class PhotoController extends Controller
         }
         if (!$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
         */
-        
+
         unset($getParams['token']);
 
         if (count($getParams) > 0) {
