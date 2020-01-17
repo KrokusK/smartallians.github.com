@@ -164,7 +164,7 @@ class PhotoController extends Controller
             foreach($userAssigned as $userAssign){
                 array_push($userRole, $userAssign->roleName);
             }
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole[0]));
 
 
             // Check rights
