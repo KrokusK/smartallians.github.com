@@ -175,10 +175,10 @@ class PhotoController extends Controller
                 $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
                 if (empty($userByToken)) {
                     //return $this->goHome();
-                    return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
                 }
             } else {
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
 
             // Get array with user Roles
@@ -196,7 +196,7 @@ class PhotoController extends Controller
                     $flagRights = true;
                 }
             }
-            if (!$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            if (!$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -297,10 +297,10 @@ class PhotoController extends Controller
                 $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
                 if (empty($userByToken)) {
                     //return $this->goHome();
-                    return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
                 }
             } else {
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
 
             // Get array with user Roles
@@ -318,7 +318,7 @@ class PhotoController extends Controller
                     $flagRights = true;
                 }
             }
-            if (!$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            if (!$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -462,10 +462,10 @@ class PhotoController extends Controller
                 $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
                 if (empty($userByToken)) {
                     //return $this->goHome();
-                    return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
                 }
             } else {
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
 
             // Get array with user Roles
@@ -483,7 +483,7 @@ class PhotoController extends Controller
                     $flagRights = true;
                 }
             }
-            if (!$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            if (!$flagRights) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -557,10 +557,10 @@ class PhotoController extends Controller
                 $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
                 if (empty($userByToken)) {
                     //return $this->goHome();
-                    return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
                 }
             } else {
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
 
             // Get array with user Roles
@@ -578,7 +578,7 @@ class PhotoController extends Controller
                     $flagRights = true;
                 }
             }
-            if (!$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            if (!$flagRights) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -595,7 +595,7 @@ class PhotoController extends Controller
                 if (array_key_exists($valuePhotoAssoc, $postParams)) {
                     if ($modelValidate->hasAttribute($namePhotoAssoc)) {
                         $modelValidate->$namePhotoAssoc = $postParams[$arrayPhotoAssoc[$namePhotoAssoc]];
-                        if (!$modelValidate->validate($namePhotoAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valuePhotoAssoc));
+                        if (!$modelValidate->validate($namePhotoAssoc)) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valuePhotoAssoc));
 
                         $queryPhoto->andWhere([$namePhotoAssoc => $postParams[$arrayPhotoAssoc[$namePhotoAssoc]]]);
                     }
