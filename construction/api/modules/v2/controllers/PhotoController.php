@@ -72,9 +72,13 @@ class PhotoController extends Controller
         $getParams = Yii::$app->getRequest()->get();
 
         // check user is a guest
-        $userByToken = \Yii::$app->user->loginByAccessToken($getParams['token']);
-        if (empty($userByToken)) {
-            //return $this->goHome();
+        if (array_key_exists('token', $getParams)) {
+            $userByToken = \Yii::$app->user->loginByAccessToken($getParams['token']);
+            if (empty($userByToken)) {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            }
+        } else {
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
 
