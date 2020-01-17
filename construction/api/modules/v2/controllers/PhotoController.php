@@ -158,10 +158,10 @@ class PhotoController extends Controller
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
             $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'userRole' => $userRole));
+            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'userRole' => $userRole));
 
             // Check rights
-            if ($userRole['name'] !== 'admin' && $userRole['name'] !== 'customer' && $userRole['name'] !== 'contractor') {
+            if ($userRole['customer']['name'] !== 'admin' && $userRole['customer']['name'] !== 'customer' && $userRole['customer']['name'] !== 'contractor') {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
             }
@@ -269,7 +269,7 @@ class PhotoController extends Controller
             $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
             // Check rights
-            if ($userRole['name'] !== 'admin' && $userRole['name'] !== 'customer' && $userRole['name'] !== 'contractor') {
+            if ($userRole['customer']['name'] !== 'admin' && $userRole['customer']['name'] !== 'customer' && $userRole['customer']['name'] !== 'contractor') {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию обновления'));
             }
@@ -421,7 +421,7 @@ class PhotoController extends Controller
             $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
             // Check rights
-            if ($userRole['name'] !== 'admin' && $userRole['name'] !== 'customer' && $userRole['name'] !== 'contractor') {
+            if ($userRole['customer']['name'] !== 'admin' && $userRole['customer']['name'] !== 'customer' && $userRole['customer']['name'] !== 'contractor') {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
@@ -503,7 +503,7 @@ class PhotoController extends Controller
             $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
             // Check rights
-            if ($userRole['name'] !== 'admin' && $userRole['name'] !== 'customer' && $userRole['name'] !== 'contractor') {
+            if ($userRole['customer']['name'] !== 'admin' && $userRole['customer']['name'] !== 'customer' && $userRole['customer']['name'] !== 'contractor') {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
