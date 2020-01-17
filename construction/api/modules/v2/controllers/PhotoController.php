@@ -157,18 +157,16 @@ class PhotoController extends Controller
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
-            //$userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
+            // Get array with user Roles
             $userRole =[];
             $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
             foreach($userAssigned as $userAssign){
                 $userRole[] = $userAssign->roleName;
             }
 
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'userRole' => ArrayHelper::toArray($userRole)));
-
             // Check rights
-            if (in_array(array('admin','customer','contractor'), $userRole)) {
+            if (!in_array(array('admin','customer','contractor'), $userRole)) {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
             }
