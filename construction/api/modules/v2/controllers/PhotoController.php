@@ -86,11 +86,11 @@ class PhotoController extends Controller
 
             // Search record by id in the database
             if ($userRole === 'admin') {
-                $query = Photo::find();
+                $queryPhoto = Photo::find();
             } else {
-                $query = Photo::find()->Where(['created_by' => $userByToken->id]);
+                $queryPhoto = Photo::find()->Where(['created_by' => $userByToken->id]);
             }
-            $modelRequest = $queryRequest->orderBy('created_at')->one();
+            $modelRequest = $queryPhoto->orderBy('created_at')->one();
             $modelValidate = new Photo();
             foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
                 if (array_key_exists($valuePhotoAssoc, $getParams)) {
@@ -487,9 +487,9 @@ class PhotoController extends Controller
 
             // Search record by id in the database
             if ($userRole === 'admin') {
-                $queryRequest = Photo::find();
+                $queryPhoto = Photo::find();
             } else {
-                $queryRequest = Photo::find()->where(['created_by'=> $userByToken->id]);
+                $queryPhoto = Photo::find()->where(['created_by'=> $userByToken->id]);
             }
             $modelValidate = new Photo();
             foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
