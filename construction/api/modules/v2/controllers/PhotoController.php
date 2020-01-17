@@ -86,9 +86,9 @@ class PhotoController extends Controller
 
             // Search record by id in the database
             if ($userRole === 'admin') {
-                $queryPhoto = Photo::find();
+                $query = Photo::find();
             } else {
-                $queryPhoto = Photo::find()->Where(['created_by' => $userByToken->id]);
+                $query = Photo::find()->Where(['created_by' => $userByToken->id]);
             }
             $modelRequest = $queryPhoto->one();
             $modelValidate = new Photo();
