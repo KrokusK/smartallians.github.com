@@ -158,7 +158,7 @@ class PhotoController extends Controller
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
             $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'userRole' => $userRole));
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'userRole' => $userRole->customer->name));
 
             // Check rights
             if ($userRole['customer']['name'] !== 'admin' && $userRole['customer']['name'] !== 'customer' && $userRole['customer']['name'] !== 'contractor') {
