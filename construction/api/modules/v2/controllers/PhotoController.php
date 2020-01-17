@@ -3,7 +3,6 @@ namespace api\modules\v2\controllers;
 
 use api\common\models\User;
 use api\modules\v2\models\Photo;
-use api\modules\v2\models\Request;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -158,6 +157,13 @@ class PhotoController extends Controller
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
+            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
+
+            // Check rights
+            if ($userRole !== 'admin' && $userRole !== 'customer' && $userRole !== 'contractor') {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -260,6 +266,12 @@ class PhotoController extends Controller
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
             $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
+
+            // Check rights
+            if ($userRole !== 'admin' && $userRole !== 'customer' && $userRole !== 'contractor') {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -407,6 +419,12 @@ class PhotoController extends Controller
             }
             $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
+            // Check rights
+            if ($userRole !== 'admin' && $userRole !== 'customer' && $userRole !== 'contractor') {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            }
+
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
             $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
@@ -482,6 +500,12 @@ class PhotoController extends Controller
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
             $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
+
+            // Check rights
+            if ($userRole !== 'admin' && $userRole !== 'customer' && $userRole !== 'contractor') {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
