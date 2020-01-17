@@ -103,12 +103,10 @@ class PhotoController extends Controller
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
-                    $query = Photo::find();
-                } else {
-                    $query = Photo::find()->Where(['created_by' => $userByToken->id]);
-                }
+                $query = Photo::find();
+            } else {
+                $query = Photo::find()->Where(['created_by' => $userByToken->id]);
             }
-            $modelRequest = $query->one();
             $modelValidate = new Photo();
             foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
                 if (array_key_exists($valuePhotoAssoc, $getParams)) {
