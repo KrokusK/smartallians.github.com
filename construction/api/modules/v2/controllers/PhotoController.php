@@ -91,7 +91,7 @@ class PhotoController extends Controller
         //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
         // Check rights
-        if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
+        if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
         }
         /*
@@ -195,6 +195,10 @@ class PhotoController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
+            if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
+            }
+            /*
             $flagRights = false;
             foreach(array('admin', 'customer', 'contractor') as $value) {
                 if (in_array($value, $userRole)) {
@@ -202,6 +206,7 @@ class PhotoController extends Controller
                 }
             }
             if (!$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -317,6 +322,10 @@ class PhotoController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
+            if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
+            }
+            /*
             $flagRights = false;
             foreach(array('admin', 'customer', 'contractor') as $value) {
                 if (in_array($value, $userRole)) {
@@ -324,6 +333,7 @@ class PhotoController extends Controller
                 }
             }
             if (!$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -482,6 +492,10 @@ class PhotoController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
+            if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
+            }
+            /*
             $flagRights = false;
             foreach(array('admin', 'customer', 'contractor') as $value) {
                 if (in_array($value, $userRole)) {
@@ -489,6 +503,7 @@ class PhotoController extends Controller
                 }
             }
             if (!$flagRights) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -577,6 +592,10 @@ class PhotoController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
+            if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
+            }
+            /*
             $flagRights = false;
             foreach(array('admin', 'customer', 'contractor') as $value) {
                 if (in_array($value, $userRole)) {
@@ -584,7 +603,8 @@ class PhotoController extends Controller
                 }
             }
             if (!$flagRights) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
-
+            */
+            
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
             $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
