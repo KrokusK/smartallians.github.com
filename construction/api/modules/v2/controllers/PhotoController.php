@@ -165,10 +165,10 @@ class PhotoController extends Controller
                 $userRole[] = $userAssign->roleName;
             }
 
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'userRole' => ArrayHelper::toArray($userRole)));
+            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'userRole' => ArrayHelper::toArray($userRole)));
 
             // Check rights
-            if ($userRole['customer']['name'] !== 'admin' && $userRole['customer']['name'] !== 'customer' && $userRole['customer']['name'] !== 'contractor') {
+            if (in_array(array('admin','customer','contractor'), $userRole[])) {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
             }
