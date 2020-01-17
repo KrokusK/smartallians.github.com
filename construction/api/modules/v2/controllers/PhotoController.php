@@ -171,9 +171,13 @@ class PhotoController extends Controller
 
         if (is_array($postParams)) {
             // check user is a guest
-            $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
-            if (empty($userByToken)) {
-                //return $this->goHome();
+            if (array_key_exists('token', $postParams)) {
+                $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
+                if (empty($userByToken)) {
+                    //return $this->goHome();
+                    return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                }
+            } else {
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
 
@@ -289,18 +293,32 @@ class PhotoController extends Controller
 
         if (is_array($postParams)) {
             // check user is a guest
-            $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
-            if (empty($userByToken)) {
-                //return $this->goHome();
+            if (array_key_exists('token', $postParams)) {
+                $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
+                if (empty($userByToken)) {
+                    //return $this->goHome();
+                    return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                }
+            } else {
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
-            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
+
+            // Get array with user Roles
+            $userRole =[];
+            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
+            foreach($userAssigned as $userAssign){
+                array_push($userRole, $userAssign->roleName);
+            }
+            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            if ($userRole['customer']['name'] !== 'admin' && $userRole['customer']['name'] !== 'customer' && $userRole['customer']['name'] !== 'contractor') {
-                //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию обновления'));
+            $flagRights = false;
+            foreach(array('admin', 'customer', 'contractor') as $value) {
+                if (in_array($value, $userRole)) {
+                    $flagRights = true;
+                }
             }
+            if (!$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -317,7 +335,7 @@ class PhotoController extends Controller
                 //$modelPhoto = new Photo();
 
                 // Search record by id in the database
-                if ($userRole === 'admin') {
+                if (in_array('admin', $userRole)) {
                     $queryPhoto = Photo::find()->where(['id' => $postParams[$arrayPhotoAssoc['id']]]);
                 } else {
                     $queryPhoto = Photo::find()->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by'=> $userByToken->id]]);
@@ -439,20 +457,33 @@ class PhotoController extends Controller
         $postParams = Yii::$app->getRequest()->post();
 
         if (is_array($postParams)) {
-
             // check user is a guest
-            $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
-            if (empty($userByToken)) {
-                //return $this->goHome();
+            if (array_key_exists('token', $postParams)) {
+                $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
+                if (empty($userByToken)) {
+                    //return $this->goHome();
+                    return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                }
+            } else {
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
-            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
+
+            // Get array with user Roles
+            $userRole =[];
+            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
+            foreach($userAssigned as $userAssign){
+                array_push($userRole, $userAssign->roleName);
+            }
+            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            if ($userRole['customer']['name'] !== 'admin' && $userRole['customer']['name'] !== 'customer' && $userRole['customer']['name'] !== 'contractor') {
-                //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
+            $flagRights = false;
+            foreach(array('admin', 'customer', 'contractor') as $value) {
+                if (in_array($value, $userRole)) {
+                    $flagRights = true;
+                }
             }
+            if (!$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -465,7 +496,7 @@ class PhotoController extends Controller
                 }
 
                 // Search record by id in the database
-                if ($userRole === 'admin') {
+                if (in_array('admin', $userRole)) {
                     $queryPhoto = Photo::find()->where(['id' => $postParams[$arrayPhotoAssoc['id']]]);
                 } else {
                     $queryPhoto = Photo::find()->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by'=> $userByToken->id]]);
@@ -521,27 +552,40 @@ class PhotoController extends Controller
         $postParams = Yii::$app->getRequest()->post();
 
         if (is_array($postParams)) {
-
             // check user is a guest
-            $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
-            if (empty($userByToken)) {
-                //return $this->goHome();
+            if (array_key_exists('token', $postParams)) {
+                $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
+                if (empty($userByToken)) {
+                    //return $this->goHome();
+                    return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                }
+            } else {
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
-            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
+
+            // Get array with user Roles
+            $userRole =[];
+            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
+            foreach($userAssigned as $userAssign){
+                array_push($userRole, $userAssign->roleName);
+            }
+            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            if ($userRole['customer']['name'] !== 'admin' && $userRole['customer']['name'] !== 'customer' && $userRole['customer']['name'] !== 'contractor') {
-                //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
+            $flagRights = false;
+            foreach(array('admin', 'customer', 'contractor') as $value) {
+                if (in_array($value, $userRole)) {
+                    $flagRights = true;
+                }
             }
+            if (!$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
             $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
 
             // Search record by id in the database
-            if ($userRole === 'admin') {
+            if (in_array('admin', $userRole)) {
                 $queryPhoto = Photo::find();
             } else {
                 $queryPhoto = Photo::find()->where(['created_by'=> $userByToken->id]);
