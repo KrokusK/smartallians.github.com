@@ -77,7 +77,23 @@ class PhotoController extends Controller
             //return $this->goHome();
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
-        $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
+
+        // Get array with user Roles
+        $userRole =[];
+        $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
+        foreach($userAssigned as $userAssign){
+            array_push($userRole, $userAssign->roleName);
+        }
+        //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
+
+        // Check rights
+        $flagRights = false;
+        foreach(array('admin', 'customer', 'contractor', 'mediator') as $value) {
+            if (in_array($value, $userRole)) {
+                $flagRights = true;
+            }
+        }
+        if (!$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
 
         unset($getParams['token']);
 
@@ -86,10 +102,11 @@ class PhotoController extends Controller
             $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
 
             // Search record by id in the database
-            if ($userRole === 'admin') {
-                $query = Photo::find();
-            } else {
-                $query = Photo::find()->Where(['created_by' => $userByToken->id]);
+            if (in_array('admin', $userRole)) {
+                    $query = Photo::find();
+                } else {
+                    $query = Photo::find()->Where(['created_by' => $userByToken->id]);
+                }
             }
             $modelRequest = $query->one();
             $modelValidate = new Photo();
