@@ -160,7 +160,7 @@ class PhotoController extends Controller
             //$userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
             $userRole =[];
-            $userAssigned = Yii::$app->authManager->getAssignments(user_id);
+            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
             foreach($userAssigned as $userAssign){
                 $userRole[] = $userAssign->roleName;
             }
