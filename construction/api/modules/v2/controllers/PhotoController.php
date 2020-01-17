@@ -3,6 +3,7 @@ namespace api\modules\v2\controllers;
 
 use api\common\models\User;
 use api\modules\v2\models\Photo;
+use api\modules\v2\models\Request;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -72,24 +73,24 @@ class PhotoController extends Controller
         $getParams = Yii::$app->getRequest()->get();
 
         // check user is a guest
-        $userByToken = User::findIdentityByAccessToken($getParams['token']);
+        $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
         if (empty($userByToken)) {
             //return $this->goHome();
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        } else {
-            \Yii::$app->user->loginByAccessToken($getParams['token']);
         }
+        $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
         if (is_array($getParams)) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
 
             // Search record by id in the database
-            //$query = Photo::find()->Where(['created_by' => Yii::$app->user->getId()]);
-            $query = Photo::find()->Where(['created_by' => $userByToken->id]);
-            //foreach (ArrayHelper::toArray($model) as $key => $value) {
-            //    $query->andWhere([$key => $value]);
-            //}
+            if ($userRole === 'admin') {
+                $query = Photo::find();
+            } else {
+                $query = Photo::find()->Where(['created_by' => $userByToken->id]);
+            }
+            $modelRequest = $queryRequest->orderBy('created_at')->one();
             $modelValidate = new Photo();
             foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
                 if (array_key_exists($valuePhotoAssoc, $getParams)) {
@@ -119,7 +120,6 @@ class PhotoController extends Controller
 
         } else {
             // Search all records in the database
-            //$query = Photo::find()->Where(['created_by' => Yii::$app->user->getId()]);
             $query = Photo::find()->Where(['created_by' => $userByToken->id]);
 
             $modelPhoto = $query->orderBy('id')
@@ -150,14 +150,11 @@ class PhotoController extends Controller
         $postParams = Yii::$app->getRequest()->post();
 
         if (is_array($postParams)) {
-        //if ($modelPhoto->load(Yii::$app->request->post())) {
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($postParams['token']);
+            $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } else {
-                \Yii::$app->user->loginByAccessToken($postParams['token']);
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
@@ -254,15 +251,13 @@ class PhotoController extends Controller
         $postParams = Yii::$app->getRequest()->post();
 
         if (is_array($postParams)) {
-            //if ($modelPhoto->load(Yii::$app->request->post())) {
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($postParams['token']);
+            $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } else {
-                \Yii::$app->user->loginByAccessToken($postParams['token']);
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
+            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -279,8 +274,11 @@ class PhotoController extends Controller
                 //$modelPhoto = new Photo();
 
                 // Search record by id in the database
-                $queryPhoto = Photo::find()
-                    ->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by' => $userByToken->id]]);
+                if ($userRole === 'admin') {
+                    $queryPhoto = Photo::find()->where(['id' => $postParams[$arrayPhotoAssoc['id']]]);
+                } else {
+                    $queryPhoto = Photo::find()->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                }
                 $modelPhoto = $queryPhoto->orderBy('id')->one();
 
                 if (empty($modelPhoto)) {
@@ -400,13 +398,12 @@ class PhotoController extends Controller
         if (is_array($postParams)) {
 
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($postParams['token']);
+            $userByToken = \Yii::$app->user->loginByAccessToken($postParams['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } else {
-                \Yii::$app->user->loginByAccessToken($postParams['token']);
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
+            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
@@ -419,8 +416,11 @@ class PhotoController extends Controller
                 }
 
                 // Search record by id in the database
-                $queryPhoto = Photo::find()
-                    ->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by' => $userByToken->id]]);
+                if ($userRole === 'admin') {
+                    $queryPhoto = Photo::find()->where(['id' => $postParams[$arrayPhotoAssoc['id']]]);
+                } else {
+                    $queryPhoto = Photo::find()->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                }
                 $modelPhoto = $queryPhoto->orderBy('id')->one();
 
                 if (empty($modelPhoto)) {
@@ -474,23 +474,23 @@ class PhotoController extends Controller
         if (is_array($postParams)) {
 
             // check user is a guest
-            $userByToken = User::findIdentityByAccessToken($postParams['token']);
+            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
             if (empty($userByToken)) {
                 //return $this->goHome();
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            } else {
-                \Yii::$app->user->loginByAccessToken($postParams['token']);
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
+            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             // Attribute names associated by request parameters
             $arrayPhotoAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'position_id' => 'position_id', 'caption' => 'caption', 'description' => 'description', 'path' => 'path');
 
             // Search record by id in the database
-            $queryPhoto = Photo::find()->Where(['created_by' => $userByToken->id]);
-            //foreach (ArrayHelper::toArray($model) as $key => $value) {
-            //    $query->andWhere([$key => $value]);
-            //}
+            if ($userRole === 'admin') {
+                $queryRequest = Photo::find();
+            } else {
+                $queryRequest = Photo::find()->where(['created_by'=> $userByToken->id]);
+            }
             $modelValidate = new Photo();
             foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
                 if (array_key_exists($valuePhotoAssoc, $postParams)) {

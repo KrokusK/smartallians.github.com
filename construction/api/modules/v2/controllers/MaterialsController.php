@@ -249,9 +249,9 @@ class MaterialsController extends Controller
 
                 // Search record by id in the database
                 if ($userRole === 'admin') {
-                    $queryMaterials = Request::find()->where(['id' => $bodyRaw[$arrayRequestAssoc['id']]]);
+                    $queryMaterials = Materials::find()->where(['id' => $bodyRaw[$arrayMaterialsAssoc['id']]]);
                 } else {
-                    $queryMaterials = Request::find()->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                    $queryMaterials = Materials::find()->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> $userByToken->id]]);
                 }
                 $modelMaterials = $queryMaterials->one();
 
@@ -332,9 +332,9 @@ class MaterialsController extends Controller
 
                 // Search record by id in the database
                 if ($userRole === 'admin') {
-                    $queryMaterials = Request::find()->where(['id' => $bodyRaw[$arrayRequestAssoc['id']]]);
+                    $queryMaterials = Materials::find()->where(['id' => $bodyRaw[$arrayMaterialsAssoc['id']]]);
                 } else {
-                    $queryMaterials = Request::find()->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                    $queryMaterials = Materials::find()->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> $userByToken->id]]);
                 }
                 $modelMaterials = $queryMaterials->one();
 
