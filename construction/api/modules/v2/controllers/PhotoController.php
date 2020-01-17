@@ -160,7 +160,7 @@ class PhotoController extends Controller
             $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
             // Check rights
-            if ($userRole !== 'admin' && $userRole !== 'customer' && $userRole !== 'contractor') {
+            if ($userRole != 'admin' && $userRole != 'customer' && $userRole != 'contractor') {
                 //return $this->goHome();
                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
             }
@@ -270,7 +270,7 @@ class PhotoController extends Controller
             // Check rights
             if ($userRole !== 'admin' && $userRole !== 'customer' && $userRole !== 'contractor') {
                 //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию обновления'));
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
@@ -422,7 +422,7 @@ class PhotoController extends Controller
             // Check rights
             if ($userRole !== 'admin' && $userRole !== 'customer' && $userRole !== 'contractor') {
                 //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
@@ -504,7 +504,7 @@ class PhotoController extends Controller
             // Check rights
             if ($userRole !== 'admin' && $userRole !== 'customer' && $userRole !== 'contractor') {
                 //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
