@@ -162,9 +162,9 @@ class PhotoController extends Controller
             $userRole =[];
             $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
             foreach($userAssigned as $userAssign){
-                array_push($userRole, $userAssign->roleName);
+                array_push($userRole, $userAssign->roleName[0]);
             }
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole[0]));
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
 
             // Check rights
