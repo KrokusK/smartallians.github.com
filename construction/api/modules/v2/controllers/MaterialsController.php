@@ -19,6 +19,12 @@ use yii\helpers\Html;
 class MaterialsController extends Controller
 {
     /**
+     * Constants
+     */
+
+    const CHECK_RIGHTS_RBAC = false;  // Enable check rights by rbac model
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()
@@ -69,12 +75,38 @@ class MaterialsController extends Controller
         $getParams = Yii::$app->getRequest()->get();
 
         // check user is a guest
-        $userByToken = \Yii::$app->user->loginByAccessToken($getParams['token']);
-        if (empty($userByToken)) {
-            //return $this->goHome();
+        if (array_key_exists('token', $getParams)) {
+            $userByToken = \Yii::$app->user->loginByAccessToken($getParams['token']);
+            if (empty($userByToken)) {
+                //return $this->goHome();
+                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            }
+        } else {
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
-        $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
+
+        // Get array with user Roles
+        $userRole =[];
+        $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
+        foreach($userAssigned as $userAssign){
+            array_push($userRole, $userAssign->roleName);
+        }
+        //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
+
+        // Check rights
+        // If user have create right that his allowed to other actions to the Materials table
+        if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')  && !\Yii::$app->user->can('createProvider')) {
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
+        }
+        /*
+        $flagRights = false;
+        foreach(array('admin', 'customer', 'contractor', 'mediator') as $value) {
+            if (in_array($value, $userRole)) {
+                $flagRights = true;
+            }
+        }
+        if (!$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
+        */
 
         unset($getParams['token']);
 
@@ -82,10 +114,10 @@ class MaterialsController extends Controller
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'measure' => 'measure');
 
-            if ($userRole === 'admin') {
-                $query = Materials::find();
+            if (in_array('admin', $userRole)) {
+                $query = Materials::find();  // get all records
             } else {
-                $query = Materials::find()->Where(['created_by' => $userByToken->id]);
+                $query = Materials::find()->Where(['created_by' => $userByToken->id]);  // get records created by this user
             }
             $modelValidate = new Materials();
             foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
@@ -113,7 +145,11 @@ class MaterialsController extends Controller
 
         } else {
             // Search all records in the database
-            $query = Materials::find()->Where(['created_by' => $userByToken->id]);
+            if (in_array('admin', $userRole)) {
+                $query = Materials::find();  // get all records
+            } else {
+                $query = Materials::find()->Where(['created_by' => $userByToken->id]);  // get records created by this user
+            }
 
             $modelMaterials = $query->orderBy('id')
                 ->asArray()
@@ -141,11 +177,37 @@ class MaterialsController extends Controller
 
         if (is_array($bodyRaw)) {
             // check user is a guest
-            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-            if (empty($userByToken)) {
-                //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            if (array_key_exists('token', $bodyRaw)) {
+                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
+                if (empty($userByToken)) {
+                    //return $this->goHome();
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                }
+            } else {
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
+
+            // Get array with user Roles
+            $userRole =[];
+            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
+            foreach($userAssigned as $userAssign){
+                array_push($userRole, $userAssign->roleName);
+            }
+            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
+
+            // Check rights
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')  && !\Yii::$app->user->can('createProvider')) {
+                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            }
+            /*
+            $flagRights = false;
+            foreach(array('admin', 'customer', 'contractor') as $value) {
+                if (in_array($value, $userRole)) {
+                    $flagRights = true;
+                }
+            }
+            if (!$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id');
@@ -236,22 +298,53 @@ class MaterialsController extends Controller
 
         if (is_array($bodyRaw)) {
             // check user is a guest
-            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-            if (empty($userByToken)) {
-                //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            if (array_key_exists('token', $bodyRaw)) {
+                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
+                if (empty($userByToken)) {
+                    //return $this->goHome();
+                    return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                }
+            } else {
+                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
-            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
 
-            if (array_key_exists('id', $bodyRaw)) {
-                // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-                $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'measure' => 'measure');
+            // Get array with user Roles
+            $userRole =[];
+            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
+            foreach($userAssigned as $userAssign){
+                array_push($userRole, $userAssign->roleName);
+            }
+            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
+
+            // Check rights
+            // If user have create right that his allowed to other actions to the Materials table
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')  && !\Yii::$app->user->can('createProvider')) {
+                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            }
+            /*
+            $flagRights = false;
+            foreach(array('admin', 'customer', 'contractor') as $value) {
+                if (in_array($value, $userRole)) {
+                    $flagRights = true;
+                }
+            }
+            if (!$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            */
+
+            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
+            $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'measure' => 'measure');
+
+            if (array_key_exists($arrayMaterialsAssoc['id'], $bodyRaw)) {
+                // check id parametr
+                if (!preg_match("/^[0-9]*$/", $bodyRaw[$arrayMaterialsAssoc['id']])) {
+                    return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
+                }
 
                 // Search record by id in the database
-                if ($userRole === 'admin') {
-                    $queryMaterials = Materials::find()->where(['id' => $bodyRaw[$arrayMaterialsAssoc['id']]]);
+                if (in_array('admin', $userRole)) {
+                    $queryMaterials = Materials::find()->where(['id' => $bodyRaw[$arrayMaterialsAssoc['id']]]);  // get all records
                 } else {
-                    $queryMaterials = Materials::find()->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                    $queryMaterials = Materials::find()->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> $userByToken->id]]);   // get records created by this user
                 }
                 $modelMaterials = $queryMaterials->one();
 
@@ -314,12 +407,38 @@ class MaterialsController extends Controller
 
         if (is_array($bodyRaw)) {
             // check user is a guest
-            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-            if (empty($userByToken)) {
-                //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            if (array_key_exists('token', $bodyRaw)) {
+                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
+                if (empty($userByToken)) {
+                    //return $this->goHome();
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                }
+            } else {
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
-            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
+
+            // Get array with user Roles
+            $userRole =[];
+            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
+            foreach($userAssigned as $userAssign){
+                array_push($userRole, $userAssign->roleName);
+            }
+            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
+
+            // Check rights
+            // If user have create right that his allowed to other actions to the Materials table
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')  && !\Yii::$app->user->can('createMProvider')) {
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
+            }
+            /*
+            $flagRights = false;
+            foreach(array('admin', 'customer', 'contractor') as $value) {
+                if (in_array($value, $userRole)) {
+                    $flagRights = true;
+                }
+            }
+            if (!$flagRights) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'measure' => 'measure');
@@ -331,10 +450,10 @@ class MaterialsController extends Controller
                 }
 
                 // Search record by id in the database
-                if ($userRole === 'admin') {
-                    $queryMaterials = Materials::find()->where(['id' => $bodyRaw[$arrayMaterialsAssoc['id']]]);
+                if (in_array('admin', $userRole)) {
+                    $queryMaterials = Materials::find()->where(['id' => $bodyRaw[$arrayMaterialsAssoc['id']]]);  // get all records
                 } else {
-                    $queryMaterials = Materials::find()->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                    $queryMaterials = Materials::find()->where(['AND', ['id' => $bodyRaw[$arrayMaterialsAssoc['id']]], ['created_by'=> $userByToken->id]]);  // get records created by this user
                 }
                 $modelMaterials = $queryMaterials->one();
 
@@ -386,21 +505,47 @@ class MaterialsController extends Controller
 
         if (is_array($bodyRaw)) {
             // check user is a guest
-            $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-            if (empty($userByToken)) {
-                //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            if (array_key_exists('token', $bodyRaw)) {
+                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
+                if (empty($userByToken)) {
+                    //return $this->goHome();
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                }
+            } else {
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             }
-            $userRole = \Yii::$app->authManager->getRolesByUser($userByToken->id);
+
+            // Get array with user Roles
+            $userRole =[];
+            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
+            foreach($userAssigned as $userAssign){
+                array_push($userRole, $userAssign->roleName);
+            }
+            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
+
+            // Check rights
+            // If user have create right that his allowed to other actions to the Materials table
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')  && !\Yii::$app->user->can('createProvider')) {
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
+            }
+            /*
+            $flagRights = false;
+            foreach(array('admin', 'customer', 'contractor') as $value) {
+                if (in_array($value, $userRole)) {
+                    $flagRights = true;
+                }
+            }
+            if (!$flagRights) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
+            */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayMaterialsAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'delivery_id' => 'delivery_id', 'material_type_id' => 'material_type_id', 'status_material_id' => 'status_material_id', 'name' => 'name', 'count' => 'count', 'cost' => 'cost', 'measure' => 'measure');
 
             // Search record by id in the database
-            if ($userRole === 'admin') {
-                $queryMaterials = Materials::find();
+            if (in_array('admin', $userRole)) {
+                $queryMaterials = Materials::find();  // get all records
             } else {
-                $queryMaterials = Materials::find()->where(['created_by'=> $userByToken->id]);
+                $queryMaterials = Materials::find()->where(['created_by'=> $userByToken->id]);  // get records created by this user
             }
             $modelValidate = new Materials();
             foreach ($arrayMaterialsAssoc as $nameMaterialsAssoc => $valueMaterialsAssoc) {
