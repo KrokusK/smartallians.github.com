@@ -20,6 +20,12 @@ use yii\helpers\Html;
 class PhotoController extends Controller
 {
     /**
+     * Check rights by rbac model
+     */
+
+    const CHECK_RIGHTS_RBAC = false;
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()
@@ -91,7 +97,8 @@ class PhotoController extends Controller
         //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
         // Check rights
-        if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
+        // If user have create right that his allowed to other actions to the Photo table
+        if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
         }
         /*
@@ -112,9 +119,9 @@ class PhotoController extends Controller
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
-                $query = Photo::find();
+                $query = Photo::find();  // get all records
             } else {
-                $query = Photo::find()->Where(['created_by' => $userByToken->id]);
+                $query = Photo::find()->Where(['created_by' => $userByToken->id]); // get records created by this user
             }
             $modelValidate = new Photo();
             foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
@@ -145,8 +152,11 @@ class PhotoController extends Controller
 
         } else {
             // Search all records in the database
-            $query = Photo::find()->Where(['created_by' => $userByToken->id]);
-
+            if (in_array('admin', $userRole)) {
+                $query = Photo::find();  // get all records
+            } else {
+                $query = Photo::find()->Where(['created_by' => $userByToken->id]); // get records created by this user
+            }
             $modelPhoto = $query->orderBy('id')
                 ->with('requests','responses','positions')
                 ->asArray()
@@ -195,7 +205,7 @@ class PhotoController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
             }
             /*
@@ -322,7 +332,8 @@ class PhotoController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
+            // If user have create right that his allowed to other actions to the Photo table
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
             }
             /*
@@ -351,9 +362,9 @@ class PhotoController extends Controller
 
                 // Search record by id in the database
                 if (in_array('admin', $userRole)) {
-                    $queryPhoto = Photo::find()->where(['id' => $postParams[$arrayPhotoAssoc['id']]]);
+                    $queryPhoto = Photo::find()->where(['id' => $postParams[$arrayPhotoAssoc['id']]]); // get all records
                 } else {
-                    $queryPhoto = Photo::find()->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                    $queryPhoto = Photo::find()->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by'=> $userByToken->id]]); // get records created by this user
                 }
                 $modelPhoto = $queryPhoto->orderBy('id')->one();
 
@@ -492,7 +503,8 @@ class PhotoController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
+            // If user have create right that his allowed to other actions to the Photo table
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
                 return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
             }
             /*
@@ -517,9 +529,9 @@ class PhotoController extends Controller
 
                 // Search record by id in the database
                 if (in_array('admin', $userRole)) {
-                    $queryPhoto = Photo::find()->where(['id' => $postParams[$arrayPhotoAssoc['id']]]);
+                    $queryPhoto = Photo::find()->where(['id' => $postParams[$arrayPhotoAssoc['id']]]);  // get all records
                 } else {
-                    $queryPhoto = Photo::find()->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by'=> $userByToken->id]]);
+                    $queryPhoto = Photo::find()->where(['AND', ['id' => $postParams[$arrayPhotoAssoc['id']]], ['created_by'=> $userByToken->id]]);  // get records created by this user
                 }
                 $modelPhoto = $queryPhoto->orderBy('id')->one();
 
@@ -592,7 +604,8 @@ class PhotoController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            if (!\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
+            // If user have create right that his allowed to other actions to the Photo table
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')  && !\Yii::$app->user->can('createMediator')) {
                 return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
             }
             /*
@@ -611,9 +624,9 @@ class PhotoController extends Controller
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
-                $queryPhoto = Photo::find();
+                $queryPhoto = Photo::find();  // get all records
             } else {
-                $queryPhoto = Photo::find()->where(['created_by'=> $userByToken->id]);
+                $queryPhoto = Photo::find()->where(['created_by'=> $userByToken->id]);  // get records created by this user
             }
             $modelValidate = new Photo();
             foreach ($arrayPhotoAssoc as $namePhotoAssoc => $valuePhotoAssoc) {
