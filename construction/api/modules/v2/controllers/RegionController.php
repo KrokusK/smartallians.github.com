@@ -224,15 +224,15 @@ class RegionController extends Controller
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Специализация не может быть сохранена'));
+                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть сохранена'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Специализация не может быть сохранена'));
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть сохранена'));
                 }
 
-                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Специализация успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRegion))));
-                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Специализация успешно сохранена'));
+                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Область успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRegion))));
+                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Область успешно сохранена'));
             } else {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
@@ -302,7 +302,7 @@ class RegionController extends Controller
                 $modelRegion = $queryRegion->one();
 
                 if (empty($modelRegion)) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Специализация по id'));
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Область по id'));
                 }
 
                 foreach ($arrayRegionAssoc as $nameRegionAssoc => $valueRegionAssoc) {
@@ -324,17 +324,17 @@ class RegionController extends Controller
                             $transaction->commit();
                         } else {
                             $transaction->rollBack();
-                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Специализация не может быть обновлена'));
+                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть обновлена'));
                         }
                     } catch (Exception $ex) {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Специализация не может быть обновлена'));
+                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть обновлена'));
                     }
                 } else {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
                 }
 
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Специализация успешно сохранена'));
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Область успешно сохранена'));
             } else {
                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id параметр в запросе'));
             }
@@ -405,7 +405,7 @@ class RegionController extends Controller
                 $modelRegion = $queryRegion->one();
 
                 if (empty($modelRegion)) {
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Специализация по id'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Область по id'));
                 }
             } else {
                 //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id материала'));
@@ -422,16 +422,16 @@ class RegionController extends Controller
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Специализация не может быть удалена'));
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть удалена'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Специализация не может быть удалена'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть удалена'));
                 }
 
-                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Специализация успешно удалена'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Область успешно удалена'));
             } else {
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Специализация не может быть удалена'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть удалена'));
             }
         } else {
             return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
@@ -514,15 +514,15 @@ class RegionController extends Controller
                             $transaction->commit();
                         } else {
                             $transaction->rollBack();
-                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Специализация не может быть удалена'));
+                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть удалена'));
                         }
                     } catch (Exception $ex) {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Специализация не может быть удалена'));
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть удалена'));
                     }
                 }
 
-                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Специализация успешно удалена'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Область успешно удалена'));
             }
         }
     }
