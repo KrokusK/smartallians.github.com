@@ -96,7 +96,7 @@ class RequestController extends Controller
 
         // Check rights
         // If user have create right that his allowed to other actions to the Request table
-        if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer')) {
+        if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
         }
         /*
@@ -328,7 +328,7 @@ class RequestController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            // If user have create right that his allowed to other actions to the Materials table
+            // If user have create right that his allowed to other actions to the Request table
             if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer')) {
                 return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
             }
@@ -475,7 +475,7 @@ class RequestController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            // If user have create right that his allowed to other actions to the Materials table
+            // If user have create right that his allowed to other actions to the Request table
             if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer')) {
                 return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
@@ -575,7 +575,7 @@ class RequestController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            // If user have create right that his allowed to other actions to the Materials table
+            // If user have create right that his allowed to other actions to the Request table
             if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer')) {
                 return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
