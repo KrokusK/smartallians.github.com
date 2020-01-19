@@ -219,6 +219,10 @@ class FeedbackController extends Controller
                             $modelFeedback->$nameFeedbackAssoc = $bodyRaw[$valueFeedbackAssoc];
 
                             if (!$modelFeedback->validate($nameFeedbackAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueFeedbackAssoc));
+
+                            $modelFeedback->created_by = $userByToken->id;
+                            $modelFeedback->created_at = time();
+                            $modelFeedback->updated_at = time();
                         }
                     }
                 }
@@ -323,6 +327,9 @@ class FeedbackController extends Controller
                         if ($modelFeedback->hasAttribute($nameFeedbackAssoc)) {
                             $modelFeedback->$nameFeedbackAssoc = $bodyRaw[$arrayFeedbackAssoc[$nameFeedbackAssoc]];
                             if (!$modelFeedback->validate($nameFeedbackAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+
+                            $modelFeedback->created_by = $userByToken->id;
+                            $modelFeedback->updated_at = time();
                         }
                     }
                 }
