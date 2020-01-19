@@ -2,8 +2,6 @@
 namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\Feedback;
-use api\modules\v2\models\Feedback;
-use api\modules\v2\models\Feedback;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
