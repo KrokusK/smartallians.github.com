@@ -110,7 +110,7 @@ class CityController extends Controller
 
         if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name');
+            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name', 'region_id' => 'region_id');
 
             $query = City::find();
             $modelValidate = new City();
@@ -200,7 +200,7 @@ class CityController extends Controller
             if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name');
+            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name', 'region_id' => 'region_id');
 
             $modelCity = new City();
 
@@ -291,7 +291,7 @@ class CityController extends Controller
             if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name');
+            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name', 'region_id' => 'region_id');
 
             if (array_key_exists($arrayCityAssoc['id'], $bodyRaw)) {
                 // check id parametr
@@ -394,7 +394,7 @@ class CityController extends Controller
             if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name');
+            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name', 'region_id' => 'region_id');
 
             if (array_key_exists($arrayCityAssoc['id'], $bodyRaw)) {
                 // check id parametr
@@ -487,7 +487,7 @@ class CityController extends Controller
             if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name');
+            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name', 'region_id' => 'region_id');
 
             // Search record by id in the database
             $queryCity = City::find();
