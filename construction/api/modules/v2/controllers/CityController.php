@@ -127,6 +127,7 @@ class CityController extends Controller
 
             $modelCity = $query->orderBy('id')
                 ->asArray()
+                ->with('regions')
                 ->all();
 
             // get properties from City object
@@ -142,6 +143,7 @@ class CityController extends Controller
 
             $modelCity = $query->orderBy('id')
                 ->asArray()
+                ->with('regions')
                 ->all();
 
             // get properties from City object
