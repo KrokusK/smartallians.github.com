@@ -54,8 +54,8 @@ class Response extends \yii\db\ActiveRecord
                     return $statusesRequestIdStr;
                 },
                 'message' => 'Заявка не выбрана из списка'],
-            [['description'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['cost'], 'double', 'message' => 'Значение должно быть числом'],
+            [['description'], 'string', 'max' => 512, 'message' => 'Число знаков не должно превышать 255'],
+            [['cost'], 'integer', 'message' => 'Значение должно быть числом'],
             [['period'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['updated_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['created_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
