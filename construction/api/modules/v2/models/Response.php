@@ -32,7 +32,7 @@ class Response extends \yii\db\ActiveRecord
     {
 
         return [
-            [['status_response_id', 'request_id', 'description', 'cost', 'period', 'updated_at', 'created_at'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['request_id', 'description', 'cost', 'period', 'updated_at', 'created_at'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer', 'skipOnEmpty' => true],
             [['status_response_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
