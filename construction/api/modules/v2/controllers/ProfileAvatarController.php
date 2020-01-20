@@ -110,7 +110,7 @@ class ProfileAvatarController extends Controller
             if ($modelPhoto->upload() && !empty($modelPhoto->imageFiles)) { // save photos
 
                 $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно сохранено(ы)');
-                $PhotoPath = array();
+                $PhotoPath = [];
                 foreach ($modelPhoto->arrayWebFilename as $file) {
                     array_push($PhotoPath, '/uploads/avatar/'.$file);
                 }
