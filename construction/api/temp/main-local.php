@@ -34,6 +34,9 @@ $config = [
                 'PUT,PATCH /<module:\w+>/<controller:(region|city|specialization|profile|type-job|kind-user|contractor|attestation|portfolio|position|kind-job|request|response|status-request|status-response|photo|status-feedback|feedback|status-completion|status-payment|order|project|project-documents|job-stages|materials|material-type|status-material|delivery|delivery-place|departure-place|status-delivery)>' => '<module>/<controller>/update',
                 'DELETE /<module:\w+>/<controller:(region|city|specialization|profile|type-job|kind-user|contractor|attestation|portfolio|position|kind-job|request|response|status-request|status-response|photo|status-feedback|feedback|status-completion|status-payment|order|project|project-documents|job-stages|materials|material-type|status-material|delivery|delivery-place|departure-place|status-delivery)>' => '<module>/<controller>/delete',
 
+                // API Photo for save avatar and passport
+                'POST /<module:\w+>/<controller:(profile-avatar)>' => '<module>/<controller>/create',
+
                 // default routing
                 '/<controller:\w*>' => 'site/index',
                 '/<controller:\w+>/<action:\w*>' => 'site/index',
