@@ -114,7 +114,7 @@ class ProfileAvatarController extends Controller
                 foreach ($modelPhoto->arrayWebFilename as $file) {
                     array_push($PhotoPath, '/uploads/avatar/'.$file);
                 }
-                array_push($PhotoResponse, $PhotoPath);
+                array_push($PhotoResponse, 'photos' => $PhotoPath);
 
                 return Json::encode($PhotoResponse);
             } else {
