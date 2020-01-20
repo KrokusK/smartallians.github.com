@@ -26,7 +26,7 @@ class ProfileAvatar extends Model
 
         return [
             [['imageFiles'], 'required', 'message' => 'Поле должно быть заполнено'],
-            [['imageFiles'], 'file', 'maxFiles' => 1,'mimeTypes' => ['image/jpeg', 'image/pjpeg', 'image/png'], 'extensions' => ['jpg', 'jpeg', 'png'], 'maxSize' => 1.5*1024*1024, 'message' => 'Файл не соответствует требованиям'],
+            [['imageFiles'], 'file', 'maxFiles' => 5,'mimeTypes' => ['image/jpeg', 'image/pjpeg', 'image/png'], 'extensions' => ['jpg', 'jpeg', 'png'], 'maxSize' => 2*1024*1024, 'message' => 'Файл не соответствует требованиям'],
         ];
 
     }
