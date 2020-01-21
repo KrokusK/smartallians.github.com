@@ -36,6 +36,7 @@ $config = [
 
                 // API Photo for save avatar and passport
                 'POST /<module:\w+>/<controller:(profile-avatar)>' => '<module>/<controller>/create',
+                'POST /<module:\w+>/<controller:(profile-passport)>' => '<module>/<controller>/create',
 
                 // default routing
                 '/<controller:\w*>' => 'site/index',
