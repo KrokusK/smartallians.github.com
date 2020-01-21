@@ -7,7 +7,7 @@ use yii\base\Model;
 /**
  * Avatar
  */
-class ProfileAvatar extends Model
+class ProfilePassport extends Model
 {
     /**
      * @var UploadedFile
