@@ -356,7 +356,7 @@ class ResponseController extends Controller
                         $flagResponse = $modelResponse->save(false); // update Response table
 
                         // delete old records from profile_rrod table
-                        ProfileRROD::deleteAll(['request_id' => $modelResponse->id]);
+                        ProfileRROD::deleteAll(['response_id' => $modelResponse->id]);
                         // Save record into profile_rrod table
                         $modelResponse->link('profiles', $modelProfile);
 
@@ -463,7 +463,7 @@ class ResponseController extends Controller
                     $countResponseDelete = $modelResponse->delete($modelResponse->id);
 
                     // delete old records from profile_rrod table
-                    ProfileRROD::deleteAll(['request_id' => $modelResponse->id]);
+                    ProfileRROD::deleteAll(['response_id' => $modelResponse->id]);
 
                     if ($countResponseDelete > 0) {
                         $transaction->commit();
@@ -562,7 +562,7 @@ class ResponseController extends Controller
                          $countResponseDelete = $modelResponse->delete();
 
                         // delete old records from profile_rrod table
-                        ProfileRROD::deleteAll(['request_id' => $modelResponse->id]);
+                        ProfileRROD::deleteAll(['response_id' => $modelResponse->id]);
 
                         if ($countResponseDelete > 0) {
                             $transaction->commit();
