@@ -39,6 +39,7 @@ class Contractor extends \yii\db\ActiveRecord
                 'message' => 'Профиль не выбран из списка'],
             [['experience'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['cost'], 'double', 'message' => 'Значение должно быть числом'],
+            [['passport'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
         ];
 
     }

@@ -63,6 +63,7 @@ class Profile extends \yii\db\ActiveRecord
             [['inn'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['site'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['avatar'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
+            [['about'], 'string', 'max' => 512, 'message' => 'Число знаков не должно превышать 512'],
             [['updated_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['created_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
         ];
