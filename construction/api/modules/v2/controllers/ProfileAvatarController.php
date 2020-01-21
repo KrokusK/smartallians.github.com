@@ -109,7 +109,7 @@ class ProfileAvatarController extends Controller
             $modelPhoto->imageFiles = UploadedFile::getInstancesByName($arrayPhotoFormAssoc['photos']);
             if ($modelPhoto->upload() && !empty($modelPhoto->imageFiles)) { // save photos
 
-                $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно сохранено(ы)');
+                $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно сохранено(ы)', 'count' => count($modelPhoto->arrayWebFilename));
                 //$PhotoPath = [];
                 foreach ($modelPhoto->arrayWebFilename as $file) {
                     array_push($PhotoResponse, '/uploads/avatar/'.$file);
