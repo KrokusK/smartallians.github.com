@@ -1,6 +1,8 @@
 <?php
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\Profile;
+use api\modules\v2\models\ProfileRROD;
 use api\modules\v2\models\Response;
 use Yii;
 use yii\base\InvalidArgumentException;
@@ -228,10 +230,19 @@ class ResponseController extends Controller
                 }
             }
 
+            // Search record by id user in the profile table
+            $queryProfile = Profile::find()->where(['user_id' => $userByToken->id]);
+            $modelProfile = $queryProfile->one();
+
             if ($modelResponse->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     $flagResponse = $modelResponse->save(false); // insert into Response table
+
+                    if ($flagResponse) {
+                        // Save record into profile_rrod table
+                        $modelResponse->link('profiles', $modelProfile);
+                    }
 
                     if ($flagResponse == true) {
                         $transaction->commit();
@@ -334,11 +345,20 @@ class ResponseController extends Controller
                     }
                 }
 
+                // Search record by id user in the profile table
+                $queryProfile = Profile::find()->where(['user_id' => $userByToken->id]);
+                $modelProfile = $queryProfile->one();
+
                 // Save Response object
                 if ($modelResponse->validate()) {
                     $transaction = \Yii::$app->db->beginTransaction();
                     try {
                         $flagResponse = $modelResponse->save(false); // update Response table
+
+                        // delete old records from profile_rrod table
+                        ProfileRROD::deleteAll(['request_id' => $modelResponse->id]);
+                        // Save record into profile_rrod table
+                        $modelResponse->link('profiles', $modelProfile);
 
                         if ($flagResponse) {
                             $transaction->commit();
@@ -442,6 +462,9 @@ class ResponseController extends Controller
                     // delete from Response table
                     $countResponseDelete = $modelResponse->delete($modelResponse->id);
 
+                    // delete old records from profile_rrod table
+                    ProfileRROD::deleteAll(['request_id' => $modelResponse->id]);
+
                     if ($countResponseDelete > 0) {
                         $transaction->commit();
                     } else {
@@ -537,6 +560,9 @@ class ResponseController extends Controller
                     try {
                         // delete from Response table.
                          $countResponseDelete = $modelResponse->delete();
+
+                        // delete old records from profile_rrod table
+                        ProfileRROD::deleteAll(['request_id' => $modelResponse->id]);
 
                         if ($countResponseDelete > 0) {
                             $transaction->commit();
