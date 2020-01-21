@@ -25,7 +25,7 @@ class Contractor extends \yii\db\ActiveRecord
     {
 
         return [
-            [['profile_id', 'experience', 'cost'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['profile_id'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
             [['profile_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
@@ -37,9 +37,9 @@ class Contractor extends \yii\db\ActiveRecord
                     return $statusesProfileIdStr;
                 },
                 'message' => 'Профиль не выбран из списка'],
-            [['experience'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['cost'], 'double', 'message' => 'Значение должно быть числом'],
-            [['passport'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
+            [['experience'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
+            [['cost'], 'double', 'message' => 'Значение должно быть числом', 'skipOnEmpty' => true],
+            [['passport'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
         ];
 
     }

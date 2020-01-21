@@ -26,7 +26,7 @@ class Profile extends \yii\db\ActiveRecord
     {
 
         return [
-            [['user_id', 'kind_user_id', 'type_job_id', 'fio', 'firm_name', 'inn', 'site', 'avatar', 'updated_at', 'created_at'], 'required', 'message' => 'Поле должно быть заполнено'],
+            [['user_id', 'kind_user_id', 'type_job_id', 'fio', 'avatar', 'updated_at', 'created_at'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
             [['user_id'], 'in', 'range' =>
                 function ( $attribute, $params ) {
@@ -59,9 +59,9 @@ class Profile extends \yii\db\ActiveRecord
                 },
                 'message' => 'Форма работы не выбрана из списка'],
             [['fio'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['firm_name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['inn'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['site'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
+            [['firm_name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
+            [['inn'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
+            [['site'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
             [['avatar'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['about'], 'string', 'max' => 512, 'message' => 'Число знаков не должно превышать 512'],
             [['updated_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],

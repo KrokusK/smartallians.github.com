@@ -17,7 +17,7 @@ use yii\helpers\Html;
 /**
  * API Profile controller
  */
-class ProfileController extends Controller
+class ProfileOldController extends Controller
 {
     /**
      * {@inheritdoc}
