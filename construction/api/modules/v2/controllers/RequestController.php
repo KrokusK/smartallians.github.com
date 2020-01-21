@@ -551,6 +551,9 @@ class RequestController extends Controller
                     // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
                     $countRequestDelete = $modelRequest->delete($modelRequest->id);
 
+                    // delete old records from profile_rrod table
+                    ProfileRROD::deleteAll(['request_id' => $modelRequest->id]);
+
                     if ($countRequestDelete > 0) {
                         $transaction->commit();
                     } else {
@@ -649,6 +652,9 @@ class RequestController extends Controller
                         // delete from request table.
                         // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
                         $countRequestDelete = $modelRequest->delete();
+
+                        // delete old records from profile_rrod table
+                        ProfileRROD::deleteAll(['request_id' => $modelRequest->id]);
 
                         if ($countRequestDelete > 0) {
                             $transaction->commit();
