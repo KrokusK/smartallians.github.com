@@ -2,6 +2,7 @@
 namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\Profile;
+use api\modules\v2\models\ProfileRROD;
 use api\modules\v2\models\Request;
 use api\modules\v2\models\RequestKindJob;
 use Yii;
@@ -248,11 +249,7 @@ class RequestController extends Controller
             }
 
             // Search record by id user in the profile table
-            if (in_array('admin', $userRole)) {
-                $queryProfile = Profile::find()->where(['user_id' => $userByToken->id]);  // get all records
-            } else {
-                $queryProfile = Profile::find()->where(['AND', ['user_id' => $userByToken->id], ['created_by'=> $userByToken->id]]);   // get records created by this user
-            }
+            $queryProfile = Profile::find()->where(['user_id' => $userByToken->id]);
             $modelProfile = $queryProfile->one();
 
             if (empty($modelProfile)) {
@@ -286,7 +283,6 @@ class RequestController extends Controller
                         }
                     }
 
-                    $flagProfileRROD = true;
                     if ($flagRequest && $flagRequestKindJob) {
                         // Save record into profile_rrod table
                         $modelRequest->link('profiles', $modelProfile);
@@ -412,6 +408,14 @@ class RequestController extends Controller
                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
             }
 
+            // Search record by id user in the profile table
+            $queryProfile = Profile::find()->where(['user_id' => $userByToken->id]);
+            $modelProfile = $queryProfile->one();
+
+            if (empty($modelProfile)) {
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Профиль по user_id'));
+            }
+
             if ($modelRequest->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
@@ -439,6 +443,11 @@ class RequestController extends Controller
                                     if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
                                 }
                             }
+
+                            // delete old records from profile_rrod table
+                            ProfileRROD::deleteAll(['request_id' => $modelRequest->id]);
+                            // Save record into profile_rrod table
+                            $modelRequest->link('profiles', $modelProfile);
                         }
                     }
 
