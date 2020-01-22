@@ -5,7 +5,7 @@ use Yii;
 use yii\base\Model;
 
 /**
- * Avatar
+ * Passport
  */
 class ProfilePassport extends Model
 {
@@ -50,7 +50,7 @@ class ProfilePassport extends Model
                     array_push($this->arrayWebFilename, "{$this->image_web_filename}");
                     // the path to save file, you can set an uploadPath
                     // in Yii::$app->params (as used in example below)
-                    Yii::$app->params['uploadPath'] = Yii::$app->basePath . '/web/uploads/avatar/';
+                    Yii::$app->params['uploadPath'] = Yii::$app->basePath . '/web/uploads/passport/';
                     $path = Yii::$app->params['uploadPath'] . $this->image_web_filename;
                     $image->saveAs($path);
                 } else {

@@ -54,7 +54,7 @@ class ProfilePassportController extends Controller
 
     /**
      * POST Method.
-     * Save avatar photo
+     * Save passport photo
      *
      * @return json
      */
@@ -112,7 +112,7 @@ class ProfilePassportController extends Controller
                 $PhotoResponse = array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Фото успешно сохранено(ы)', 'count' => count($modelPhoto->imageFiles));
                 $PhotoPath = [];
                 foreach ($modelPhoto->arrayWebFilename as $file) {
-                    array_push($PhotoPath, '/uploads/avatar/'.$file);
+                    array_push($PhotoPath, '/uploads/passport/'.$file);
                 }
                 array_push($PhotoResponse, ['photos' => $PhotoPath]);
 
