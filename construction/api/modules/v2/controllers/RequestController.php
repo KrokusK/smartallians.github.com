@@ -132,13 +132,14 @@ class RequestController extends Controller
                         if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
 
                         if ($nameRequestAssoc == 'description') {
-                            $query->andWhere(['ilike', 'request.'.$nameRequestAssoc, $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                            $query->andWhere(['ilike', $nameRequestAssoc, $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
                         } else {
-                            $query->andWhere(['request.'.$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                            $query->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
                         }
                     }
                 }
             }
+            /*
             $modelValidate = new KindJob();
             foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
                 if (array_key_exists($valueKindJobAssoc, $getParams)) {
@@ -150,6 +151,7 @@ class RequestController extends Controller
                     }
                 }
             }
+            */
 
             $modelRequest = $query->orderBy('created_at')
                 ->with('kindJob')
