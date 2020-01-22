@@ -115,7 +115,6 @@ class RequestController extends Controller
         if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
-            $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
@@ -138,19 +137,6 @@ class RequestController extends Controller
                     }
                 }
             }
-
-            $modelValidate = new RequestKindJob();
-            foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
-                if (array_key_exists($valueKindJobAssoc, $getParams)) {
-                    if ($modelValidate->hasAttribute($nameKindJobAssoc)) {
-                        $modelValidate->$nameKindJobAssoc = $getParams[$arrayKindJobAssoc[$nameKindJobAssoc]];
-                        if (!$modelValidate->validate($nameKindJobAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueKindJobAssoc));
-
-                        $query->andWhere(['request_kind_job.'.$nameKindJobAssoc => $getParams[$arrayKindJobAssoc[$nameKindJobAssoc]]]);
-                    }
-                }
-            }
-
 
             $modelRequest = $query->orderBy('created_at')
                 ->with('kindJob')
