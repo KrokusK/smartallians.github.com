@@ -274,14 +274,6 @@ class ProfileController extends Controller
                         if ($nameProfileAssoc != 'id' && $nameProfileAssoc != 'created_at' && $nameProfileAssoc != 'updated_at') {
                             $modelProfile->$nameProfileAssoc = $bodyRaw[$valueProfileAssoc];
 
-                            if () {
-                                $querySpecialization = Specialization::find()->where(['id' => $value]);
-                                $modelSpecialization = $querySpecialization->one();
-                                if (empty($modelSpecialization)) {
-                                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Специализация по id'));
-                                }
-                            }
-
                             if (!$modelProfile->validate($nameProfileAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueProfileAssoc));
 
                             $modelProfile->created_by = $userByToken->id;
@@ -298,7 +290,7 @@ class ProfileController extends Controller
             foreach ($arrayContractorAssoc as $nameContractorAssoc => $valueContractorAssoc) {
                 if (array_key_exists($valueContractorAssoc, $bodyRaw)) {
                     if ($modelContractor->hasAttribute($nameContractorAssoc)) {
-                        if ($nameContractorAssoc != 'id') {
+                        if ($nameContractorAssoc != 'id' && $nameContractorAssoc != 'profile_id') {
                             $modelContractor->$nameContractorAssoc = $bodyRaw[$valueContractorAssoc];
 
                             if (!$modelContractor->validate($nameContractorAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueContractorAssoc));
@@ -350,48 +342,37 @@ class ProfileController extends Controller
             if ($modelProfile->validate() && $modelContractor->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flagProfile = $modelRequest->save(false); // insert into request table
+                    $flagProfile = $modelProfile->save(false); // insert into profile table
 
-                    $flagRequestKindJob = true;
-                    if ($flagRequest) {
+                    if ($flagProfile) {
 
-                        // Save records into request_kind_job table
-                        if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
-                            foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
-                                $modelRequestKindJob = new RequestKindJob();
+                        $modelContractor->profile_id;
+                        $flagContractor = $modelContractor->save(false); // insert into contractor table
 
-                                // fill in the properties in the KindJob object
-                                if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
-                                    $modelRequestKindJob->kind_job_id = $value;
-                                }
+                        // Save records into profile_city table
+                        if ($flagContractor) {
+                            foreach ($arrayModelCity as $model) {
+                                $modelProfile->link('cities', $model);
+                            }
 
-                                if ($modelRequestKindJob->validate('kind_job_id')) {
-                                    $modelRequestKindJob->request_id = $modelRequest->id;
-
-                                    if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
-                                }
+                            foreach ($arrayModelSpecialization as $model) {
+                                $modelProfile->link('specializations', $model);
                             }
                         }
                     }
 
-                    if ($flagRequest && $flagRequestKindJob) {
-                        // Save record into profile_rrod table
-                        $modelRequest->link('profiles', $modelProfile);
-                    }
-
-                    if ($flagRequest == true && $flagRequestKindJob == true) {
+                    if ($flagProfile && $flagContractor) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Профиль не может быть сохранен'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена'));
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Профиль не может быть сохранен'));
                 }
 
-                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRequest))));
-                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена'));
+                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Профиль успешно сохранен'));
             } else {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
