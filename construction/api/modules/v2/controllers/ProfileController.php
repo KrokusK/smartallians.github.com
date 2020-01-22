@@ -155,7 +155,7 @@ class ProfileController extends Controller
                 }
             }
 
-            $modelProfile = $query->orderBy('created_at')
+            $modelProfile = $query->orderBy('profile.created_at')
                 ->joinWith('contractors')
                 ->asArray()
                 ->all();
