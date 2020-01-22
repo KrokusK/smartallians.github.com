@@ -124,9 +124,9 @@ class ProfileController extends Controller
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
-                $query = Profile::find()->joinWith('contractors');  // get all records
+                $query = Profile::find();  // get all records
             } else {
-                $query = Profile::find()->joinWith('contractors')->Where(['created_by' => $userByToken->id]);  // get records created by this user
+                $query = Profile::find()->Where(['created_by' => $userByToken->id]);  // get records created by this user
             }
             $modelValidate = new Profile();
             foreach ($arrayProfileAssoc as $nameProfileAssoc => $valueProfileAssoc) {
@@ -156,6 +156,7 @@ class ProfileController extends Controller
             }
 
             $modelProfile = $query->orderBy('created_at')
+                ->With('contractors')
                 ->asArray()
                 ->all();
 
