@@ -349,6 +349,8 @@ class ProfileController extends Controller
                         $modelContractor->profile_id;
                         if ($modelContractor->validate()) {
                             $flagContractor = $modelContractor->save(false); // insert into contractor table
+                        } else {
+                            $flagContractor = false;
                         }
 
                         // Save records into profile_city table
