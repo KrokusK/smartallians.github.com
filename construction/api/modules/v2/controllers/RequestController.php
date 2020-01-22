@@ -1,7 +1,7 @@
 <?php
 namespace api\modules\v2\controllers;
 
-use api\modules\v2\models\Profile;
+use api\modules\v2\models\ProfileCity;
 use api\modules\v2\models\ProfileRROD;
 use api\modules\v2\models\Request;
 use api\modules\v2\models\RequestKindJob;
@@ -115,12 +115,13 @@ class RequestController extends Controller
         if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayRequestKindJobAssoc = array ('kind_job_id' => 'kind_job_id');
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
-                $query = Request::find();  // get all records
+                $query = Request::find()->leftJoin('request_kind_job','request_kind_job.request_id = request.id');  // get all records
             } else {
-                $query = Request::find()->Where(['created_by' => $userByToken->id]);  // get records created by this user
+                $query = Request::find()->leftJoin('request_kind_job','request_kind_job.request_id = request.id')->Where(['created_by' => $userByToken->id]);  // get records created by this user
             }
             $modelValidate = new Request();
             foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
@@ -134,6 +135,17 @@ class RequestController extends Controller
                         } else {
                             $query->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
                         }
+                    }
+                }
+            }
+            $modelValidate = new RequestKindJob();
+            foreach ($arrayRequestKindJobAssoc as $nameRequestKindJobAssoc => $valueRequestKindJobAssoc) {
+                if (array_key_exists($valueRequestKindJobAssoc, $getParams)) {
+                    if ($modelValidate->hasAttribute($nameRequestKindJobAssoc)) {
+                        $modelValidate->$nameRequestKindJobAssoc = $getParams[$arrayRequestKindJobAssoc[$nameRequestKindJobAssoc]];
+                        if (!$modelValidate->validate($nameRequestKindJobAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestKindJobAssoc));
+
+                        $query->andWhere(['request_kind_job.'.$nameRequestKindJobAssoc => $getParams[$arrayRequestKindJobAssoc[$nameRequestKindJobAssoc]]]);
                     }
                 }
             }
