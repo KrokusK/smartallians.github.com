@@ -149,7 +149,7 @@ class ProfileController extends Controller
                         $modelValidate->$nameContractorAssoc = $getParams[$arrayContractorAssoc[$nameContractorAssoc]];
                         if (!$modelValidate->validate($nameContractorAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueContractorAssoc));
 
-                        $query->andWhere(['contractors'.$nameContractorAssoc => $getParams[$arrayContractorAssoc[$nameContractorAssoc]]]);
+                        $query->andWhere(['contractors.'.$nameContractorAssoc => $getParams[$arrayContractorAssoc[$nameContractorAssoc]]]);
                     }
                 }
             }
