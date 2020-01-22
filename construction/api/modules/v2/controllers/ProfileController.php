@@ -339,7 +339,7 @@ class ProfileController extends Controller
                 }
             }
 
-            if ($modelProfile->validate() && $modelContractor->validate()) {
+            if ($modelProfile->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     $flagProfile = $modelProfile->save(false); // insert into profile table
@@ -347,7 +347,9 @@ class ProfileController extends Controller
                     if ($flagProfile) {
 
                         $modelContractor->profile_id;
-                        $flagContractor = $modelContractor->save(false); // insert into contractor table
+                        if ($modelContractor->validate()) {
+                            $flagContractor = $modelContractor->save(false); // insert into contractor table
+                        }
 
                         // Save records into profile_city table
                         if ($flagContractor) {
