@@ -162,13 +162,13 @@ class ProfileController extends Controller
                         $modelValidate->$nameCityAssoc = $getParams[$arrayCityAssoc[$nameCityAssoc]];
                         if (!$modelValidate->validate($nameCityAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueCityAssoc));
 
-                        $query->andWhere(['cities.'.$nameCityAssoc => $getParams[$arrayCityAssoc[$nameCityAssoc]]]);
+                        $query->andWhere(['city.'.$nameCityAssoc => $getParams[$arrayCityAssoc[$nameCityAssoc]]]);
                     }
                 }
             }
 
             $modelProfile = $query->orderBy('created_at')
-                ->with('contractors','cities')
+                ->with('contractors','cities','specialization')
                 ->asArray()
                 ->all();
 
