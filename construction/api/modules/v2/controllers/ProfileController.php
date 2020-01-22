@@ -119,6 +119,7 @@ class ProfileController extends Controller
         if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayProfileAssoc = array ('id' => 'id', 'user_id' => 'user_id', 'kind_user_id' => 'kind_user_id', 'type_job_id' => 'type_job_id', 'fio' => 'fio', 'firm_name' => 'firm_name', 'inn' => 'inn', 'site' => 'site', 'avatar' => 'avatar');
+            $arrayContractorAssoc = array ('experience' => 'experience', 'cost' => 'cost');
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
@@ -140,7 +141,17 @@ class ProfileController extends Controller
                         }
                     }
                 }
+            }
+            $modelValidate = new Contractor();
+            foreach ($arrayContractorAssoc as $nameContractorAssoc => $valueContractorAssoc) {
+                if (array_key_exists($valueContractoreAssoc, $getParams)) {
+                    if ($modelValidate->hasAttribute($nameContractorAssoc)) {
+                        $modelValidate->$nameContractorAssoc = $getParams[$arrayContractorAssoc[$nameContractorAssoc]];
+                        if (!$modelValidate->validate($nameContractorAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueContractorAssoc));
 
+                        $query->andWhere(['contractors'.$nameContractorAssoc => $getParams[$arrayContractorAssoc[$nameContractorAssoc]]]);
+                    }
+                }
             }
 
             $modelProfile = $query->orderBy('created_at')
