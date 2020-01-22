@@ -125,9 +125,9 @@ class ProfileController extends Controller
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
-                $query = Profile::find()->leftJoin('contractor','contractor.profile_id = profile.id')->leftJoin('profile_city','profile_city.profile_id = profile.id');  // get all records
+                $query = Profile::find()->leftJoin('contractor','contractor.profile_id = profile.id')->leftJoin('profile_city','profile_city.profile_id = profile.id')->leftJoin('profile_specialization','profile_specialization.profile_id = profile.id');  // get all records
             } else {
-                $query = Profile::find()->leftJoin('contractor','contractor.profile_id = profile.id')->leftJoin('profile_city','profile_city.profile_id = profile.id')->Where(['profile.created_by' => $userByToken->id]);  // get records created by this user
+                $query = Profile::find()->leftJoin('contractor','contractor.profile_id = profile.id')->leftJoin('profile_city','profile_city.profile_id = profile.id')->leftJoin('profile_specialization','profile_specialization.profile_id = profile.id')->Where(['profile.created_by' => $userByToken->id]);  // get records created by this user
             }
             $modelValidate = new Profile();
             foreach ($arrayProfileAssoc as $nameProfileAssoc => $valueProfileAssoc) {
@@ -163,6 +163,17 @@ class ProfileController extends Controller
                         if (!$modelValidate->validate($nameProfileCityAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueProfileCityAssoc));
 
                         $query->andWhere(['profile_city.'.$nameProfileCityAssoc => $getParams[$arrayProfileCityAssoc[$nameProfileCityAssoc]]]);
+                    }
+                }
+            }
+            $modelValidate = new ProfileSpecialization();
+            foreach ($arrayProfileSpecializationAssoc as $nameProfileSpecializationAssoc => $valueProfileSpecializationAssoc) {
+                if (array_key_exists($valueProfileSpecializationAssoc, $getParams)) {
+                    if ($modelValidate->hasAttribute($nameProfileSpecializationAssoc)) {
+                        $modelValidate->$nameProfileSpecializationAssoc = $getParams[$arrayProfileSpecializationAssoc[$nameProfileSpecializationAssoc]];
+                        if (!$modelValidate->validate($nameProfileSpecializationAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueProfileSpecializationAssoc));
+
+                        $query->andWhere(['profile_specialization.'.$nameProfileSpecializationAssoc => $getParams[$arrayProfileSpecializationAssoc[$nameProfileSpecializationAssoc]]]);
                     }
                 }
             }
