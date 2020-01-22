@@ -108,6 +108,15 @@ class Profile extends \yii\db\ActiveRecord
 
     /**
      *
+     * Link to table Contractor
+     */
+    public function getContractors()
+    {
+        return $this->hasOne(Contractor::className(), ['profile_id' => 'id']);
+    }
+
+    /**
+     *
      * Link to table city
      */
     public function getCities()
