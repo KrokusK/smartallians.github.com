@@ -295,7 +295,7 @@ class ProfileController extends Controller
 
                             if (!$modelContractor->validate($nameContractorAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueContractorAssoc));
 
-                            $modelProfile->created_by = $userByToken->id;
+                            $modelContractor->created_by = $userByToken->id;
                         }
                     }
                 }
