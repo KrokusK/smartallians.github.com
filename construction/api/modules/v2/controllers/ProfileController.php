@@ -121,7 +121,6 @@ class ProfileController extends Controller
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayProfileAssoc = array ('id' => 'id', 'user_id' => 'user_id', 'kind_user_id' => 'kind_user_id', 'type_job_id' => 'type_job_id', 'fio' => 'fio', 'firm_name' => 'firm_name', 'inn' => 'inn', 'site' => 'site', 'avatar' => 'avatar');
             $arrayContractorAssoc = array ('experience' => 'experience', 'cost' => 'cost');
-            $arrayCityAssoc = array ('id' => 'city_id', 'name' => 'city_name');
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
@@ -137,9 +136,9 @@ class ProfileController extends Controller
                         if (!$modelValidate->validate($nameProfileAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueProfileAssoc));
 
                         if ($nameProfileAssoc == 'fio' || $nameProfileAssoc == 'firm_name' || $nameProfileAssoc == 'inn') {
-                            $query->andWhere(['ilike', 'profile.'.$nameProfileAssoc, $getParams[$arrayProfileAssoc[$nameProfileAssoc]]]);
+                            $query->andWhere(['ilike', $nameProfileAssoc, $getParams[$arrayProfileAssoc[$nameProfileAssoc]]]);
                         } else {
-                            $query->andWhere(['profile.'.$nameProfileAssoc => $getParams[$arrayProfileAssoc[$nameProfileAssoc]]]);
+                            $query->andWhere([$nameProfileAssoc => $getParams[$arrayProfileAssoc[$nameProfileAssoc]]]);
                         }
                     }
                 }
@@ -152,17 +151,6 @@ class ProfileController extends Controller
                         if (!$modelValidate->validate($nameContractorAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueContractorAssoc));
 
                         $query->andWhere(['contractors.'.$nameContractorAssoc => $getParams[$arrayContractorAssoc[$nameContractorAssoc]]]);
-                    }
-                }
-            }
-            $modelValidate = new City();
-            foreach ($arrayCityAssoc as $nameCityAssoc => $valueCityAssoc) {
-                if (array_key_exists($valueCityAssoc, $getParams)) {
-                    if ($modelValidate->hasAttribute($nameCityAssoc)) {
-                        $modelValidate->$nameCityAssoc = $getParams[$arrayCityAssoc[$nameCityAssoc]];
-                        if (!$modelValidate->validate($nameCityAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueCityAssoc));
-
-                        $query->andWhere(['city.'.$nameCityAssoc => $getParams[$arrayCityAssoc[$nameCityAssoc]]]);
                     }
                 }
             }
