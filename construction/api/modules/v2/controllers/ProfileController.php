@@ -137,9 +137,9 @@ class ProfileController extends Controller
                         if (!$modelValidate->validate($nameProfileAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueProfileAssoc));
 
                         if ($nameProfileAssoc == 'fio' || $nameProfileAssoc == 'firm_name' || $nameProfileAssoc == 'inn') {
-                            $query->andWhere(['ilike', $nameProfileAssoc, $getParams[$arrayProfileAssoc[$nameProfileAssoc]]]);
+                            $query->andWhere(['ilike', 'profile.'.$nameProfileAssoc, $getParams[$arrayProfileAssoc[$nameProfileAssoc]]]);
                         } else {
-                            $query->andWhere([$nameProfileAssoc => $getParams[$arrayProfileAssoc[$nameProfileAssoc]]]);
+                            $query->andWhere(['profile.'.$nameProfileAssoc => $getParams[$arrayProfileAssoc[$nameProfileAssoc]]]);
                         }
                     }
                 }
