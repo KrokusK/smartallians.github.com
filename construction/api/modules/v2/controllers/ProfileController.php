@@ -121,7 +121,7 @@ class ProfileController extends Controller
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayProfileAssoc = array ('id' => 'id', 'user_id' => 'user_id', 'kind_user_id' => 'kind_user_id', 'type_job_id' => 'type_job_id', 'fio' => 'fio', 'firm_name' => 'firm_name', 'inn' => 'inn', 'site' => 'site', 'avatar' => 'avatar');
             $arrayContractorAssoc = array ('experience' => 'experience', 'cost' => 'cost');
-            $arrayCityrAssoc = array ('id' => 'city_id', 'name' => 'city_name');
+            $arrayCityAssoc = array ('id' => 'city_id', 'name' => 'city_name');
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
