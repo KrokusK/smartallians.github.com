@@ -114,7 +114,7 @@ class Profile extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Contractor::className(), ['profile_id' => 'id']);
     }
-
+    
     /**
      *
      * Link to table city
