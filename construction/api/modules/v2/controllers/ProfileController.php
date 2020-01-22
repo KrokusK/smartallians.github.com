@@ -145,7 +145,7 @@ class ProfileController extends Controller
             }
             $modelValidate = new Contractor();
             foreach ($arrayContractorAssoc as $nameContractorAssoc => $valueContractorAssoc) {
-                if (array_key_exists($valueContractoreAssoc, $getParams)) {
+                if (array_key_exists($valueContractorAssoc, $getParams)) {
                     if ($modelValidate->hasAttribute($nameContractorAssoc)) {
                         $modelValidate->$nameContractorAssoc = $getParams[$arrayContractorAssoc[$nameContractorAssoc]];
                         if (!$modelValidate->validate($nameContractorAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueContractorAssoc));
