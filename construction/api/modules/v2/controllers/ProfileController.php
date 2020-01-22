@@ -2,6 +2,7 @@
 namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\Profile;
+use api\modules\v2\models\Contractor;
 use api\modules\v2\models\KindUser;
 use api\modules\v2\models\TypeJob;
 use api\modules\v2\models\User;
