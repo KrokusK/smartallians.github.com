@@ -121,6 +121,7 @@ class ProfileController extends Controller
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayProfileAssoc = array ('id' => 'id', 'user_id' => 'user_id', 'kind_user_id' => 'kind_user_id', 'type_job_id' => 'type_job_id', 'fio' => 'fio', 'firm_name' => 'firm_name', 'inn' => 'inn', 'site' => 'site', 'avatar' => 'avatar');
             $arrayContractorAssoc = array ('experience' => 'experience', 'cost' => 'cost');
+            $arrayProfileCityAssoc = array ('city_id' => 'city_id');
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
@@ -151,6 +152,17 @@ class ProfileController extends Controller
                         if (!$modelValidate->validate($nameContractorAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueContractorAssoc));
 
                         $query->andWhere(['contractor.'.$nameContractorAssoc => $getParams[$arrayContractorAssoc[$nameContractorAssoc]]]);
+                    }
+                }
+            }
+            $modelValidate = new ProfileCity();
+            foreach ($arrayProfileCityAssoc as $nameProfileCityAssoc => $valueProfileCityAssoc) {
+                if (array_key_exists($valueProfileCityAssoc, $getParams)) {
+                    if ($modelValidate->hasAttribute($nameProfileCityAssoc)) {
+                        $modelValidate->$nameProfileCityAssoc = $getParams[$arrayProfileCityAssoc[$nameProfileCityAssoc]];
+                        if (!$modelValidate->validate($nameProfileCityAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueProfileCityAssoc));
+
+                        $query->andWhere(['profile_city.'.$nameProfileCityAssoc => $getParams[$arrayProfileCityAssoc[$nameProfileCityAssoc]]]);
                     }
                 }
             }
