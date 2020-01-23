@@ -132,6 +132,12 @@ class RequestController extends Controller
 
                         if ($nameRequestAssoc == 'description') {
                             $query->andWhere(['ilike', $nameRequestAssoc, $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                        } elseif ($nameRequestAssoc == 'budjet') {
+                            if (is_array($getParams['budjet'])) {
+                                $query->andWhere(['between', $nameRequestAssoc, $getParams['budjet'][0],$getParams['budjet'][1]])
+                            } else {
+                                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре budjet ожидается массив'));
+                            }
                         } else {
                             $query->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
                         }
