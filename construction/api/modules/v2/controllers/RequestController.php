@@ -135,10 +135,10 @@ class RequestController extends Controller
                         } elseif ($nameRequestAssoc == 'budjet') {
                             if (is_array($getParams[$arrayRequestAssoc[$nameRequestAssoc]])) {
                                 $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]][0][0];
-                                if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $getParams[$arrayRequestAssoc[$nameRequestAssoc]][0][0].'Ошибка валидации: параметр '.$valueRequestAssoc));
+                                if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $getParams[$arrayRequestAssoc[$nameRequestAssoc]][0].' - '.$getParams[$arrayRequestAssoc[$nameRequestAssoc]][1].' - '.'Ошибка валидации: параметр '.$valueRequestAssoc));
 
                                 $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]][0][1];
-                                if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $getParams[$arrayRequestAssoc[$nameRequestAssoc]][0][1].'Ошибка валидации: параметр '.$valueRequestAssoc));
+                                if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $getParams[$arrayRequestAssoc[$nameRequestAssoc]][1].'Ошибка валидации: параметр '.$valueRequestAssoc));
 
                                 $query->andWhere(['between', $nameRequestAssoc, $getParams[$arrayRequestAssoc[$nameRequestAssoc]][0][0],$getParams[$arrayRequestAssoc[$nameRequestAssoc]][0][1]]);
                             } else {
