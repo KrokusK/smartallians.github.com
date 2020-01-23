@@ -145,7 +145,7 @@ class RequestController extends Controller
                             $pos_begin = strpos($value, ',') + 1;
                             $pos_end = strpos($value, ']');
                             $value_end = substr($value, $pos_begin, $pos_end-$pos_begin);
-                            $value_start = (int) str_replace(' ', '', $value_end);
+                            $value_end = (int) str_replace(' ', '', $value_end);
                             $modelValidate->$nameRequestAssoc = $value_end;
                             if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc.' значение '.$value_end));
 
