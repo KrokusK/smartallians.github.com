@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\User;
 use frontend\modules\v2\models\Profile;
 use Yii;
 use yii\base\InvalidArgumentException;
@@ -145,6 +146,14 @@ class SiteController extends Controller
 
             if ($modelLoginForm->validate()) {
 
+                // Проверка логина пароля
+                $user = $modelLoginForm->getUser();
+                if (!$user) {
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Введен неверный логин'));
+                } elseif (!$user->validatePassword($modelLoginForm->password)) {
+                    return Json::encode(array('method' => 'POST', 'status' => 2, 'type' => 'error', 'message' => 'Введен неверный пароль'));
+                }
+
                 if ($modelLoginForm->login()) {
                     //return $this->goBack();
 
@@ -163,9 +172,7 @@ class SiteController extends Controller
 
                     return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
 
-
                     //return $this->render('login');
-
                 }
             } else {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Введен неверный логин или пароль'));
