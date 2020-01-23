@@ -539,6 +539,9 @@ class ProfileController extends Controller
 
                     if ($flagProfile) {
 
+                        // delete old records from contractor table
+                        Contractor::deleteAll(['profile_id' => $modelProfile->id]);
+
                         $modelContractor->profile_id = $modelProfile->id;
                         if ($modelContractor->validate()) {
                             $flagContractor = $modelContractor->save(false); // update into contractor table
