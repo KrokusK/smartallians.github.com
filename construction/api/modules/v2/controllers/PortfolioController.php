@@ -1,7 +1,7 @@
 <?php
 namespace api\modules\v2\controllers;
 
-use api\modules\v2\models\City;
+use api\modules\v2\models\Portfolio;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -13,9 +13,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * API City controller
+ * API Portfolio controller
  */
-class CityController extends Controller
+class PortfolioController extends Controller
 {
     /**
      * Constants
@@ -64,7 +64,7 @@ class CityController extends Controller
 
 
     /**
-     * GET Method. City table.
+     * GET Method. Portfolio table.
      * Get records by parameters
      *
      * @return json
@@ -93,62 +93,63 @@ class CityController extends Controller
         //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
         // Check rights
-        // If user have create right that his allowed to other actions to the City table
-        /*if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
+        // If user have create right that his allowed to other actions to the Portfolio table
+        if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
         }
-        */
+        /*
         $flagRights = false;
-        foreach(array('admin') as $value) {
+        foreach(array('admin', 'customer', 'contractor', 'mediator') as $value) {
             if (in_array($value, $userRole)) {
                 $flagRights = true;
             }
         }
         if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
-
+        */
+        
         unset($getParams['token']);
 
         if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name', 'region_id' => 'region_id');
+            $arrayPortfolioAssoc = array ('id' => 'id', 'contractor_id' => 'contractor_id', 'name' => 'name');
 
-            $query = City::find();
-            $modelValidate = new City();
-            foreach ($arrayCityAssoc as $nameCityAssoc => $valueCityAssoc) {
-                if (array_key_exists($valueCityAssoc, $getParams)) {
-                    if ($modelValidate->hasAttribute($nameCityAssoc)) {
-                        $modelValidate->$nameCityAssoc = $getParams[$arrayCityAssoc[$nameCityAssoc]];
-                        if (!$modelValidate->validate($nameCityAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueCityAssoc));
+            $query = Portfolio::find();
+            $modelValidate = new Portfolio();
+            foreach ($arrayPortfolioAssoc as $namePortfolioAssoc => $valuePortfolioAssoc) {
+                if (array_key_exists($valuePortfolioAssoc, $getParams)) {
+                    if ($modelValidate->hasAttribute($namePortfolioAssoc)) {
+                        $modelValidate->$namePortfolioAssoc = $getParams[$arrayPortfolioAssoc[$namePortfolioAssoc]];
+                        if (!$modelValidate->validate($namePortfolioAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valuePortfolioAssoc));
 
-                        $query->andWhere([$nameCityAssoc => $getParams[$arrayCityAssoc[$nameCityAssoc]]]);
+                        $query->andWhere([$namePortfolioAssoc => $getParams[$arrayPortfolioAssoc[$namePortfolioAssoc]]]);
                     }
                 }
             }
 
-            $modelCity = $query->orderBy('id')
+            $modelPortfolio = $query->orderBy('id')
                 ->asArray()
                 ->with('regions')
                 ->all();
 
-            // get properties from City object
+            // get properties from Portfolio object
             $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelCity));
+            array_push($RequestResponse, ArrayHelper::toArray($modelPortfolio));
             //array_push($RequestResponse, var_dump($modelRequest));
 
             return Json::encode($RequestResponse);
 
         } else {
             // Search all records in the database
-            $query = City::find();
+            $query = Portfolio::find();
 
-            $modelCity = $query->orderBy('id')
+            $modelPortfolio = $query->orderBy('id')
                 ->asArray()
                 ->with('regions')
                 ->all();
 
-            // get properties from City object
+            // get properties from Portfolio object
             $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelCity));
+            array_push($RequestResponse, ArrayHelper::toArray($modelPortfolio));
 
             return Json::encode($RequestResponse);
         }
@@ -156,7 +157,7 @@ class CityController extends Controller
 
 
     /**
-     * POST Method. City table.
+     * POST Method. Portfolio table.
      * Insert records
      *
      * @return json
@@ -186,55 +187,55 @@ class CityController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
             }
-            */
+            /*
             $flagRights = false;
-            foreach(array('admin') as $value) {
+            foreach(array('admin', 'customer', 'contractor') as $value) {
                 if (in_array($value, $userRole)) {
                     $flagRights = true;
                 }
             }
             if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
+            */
+            
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name', 'region_id' => 'region_id');
+            $arrayPortfolioAssoc = array ('id' => 'id', 'contractor_id' => 'contractor_id', 'name' => 'name');
 
-            $modelCity = new City();
+            $modelPortfolio = new Portfolio();
 
-            // fill in the properties in the City object
-            foreach ($arrayCityAssoc as $nameCityAssoc => $valueCityAssoc) {
-                if (array_key_exists($valueCityAssoc, $bodyRaw)) {
-                    if ($modelCity->hasAttribute($nameCityAssoc)) {
-                        if ($nameCityAssoc != 'id') {
-                            $modelCity->$nameCityAssoc = $bodyRaw[$valueCityAssoc];
+            // fill in the properties in the Portfolio object
+            foreach ($arrayPortfolioAssoc as $namePortfolioAssoc => $valuePortfolioAssoc) {
+                if (array_key_exists($valuePortfolioAssoc, $bodyRaw)) {
+                    if ($modelPortfolio->hasAttribute($namePortfolioAssoc)) {
+                        if ($namePortfolioAssoc != 'id') {
+                            $modelPortfolio->$namePortfolioAssoc = $bodyRaw[$valuePortfolioAssoc];
 
-                            if (!$modelCity->validate($nameCityAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueCityAssoc));
+                            if (!$modelPortfolio->validate($namePortfolioAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valuePortfolioAssoc));
                         }
                     }
                 }
             }
 
-            if ($modelCity->validate()) {
+            if ($modelPortfolio->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flagCity = $modelCity->save(false); // insert into City table
+                    $flagPortfolio = $modelPortfolio->save(false); // insert into Portfolio table
 
-                    if ($flagCity == true) {
+                    if ($flagPortfolio == true) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен'));
+                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть сохранено'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Город не может быть сохранен'));
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть сохранено'));
                 }
 
-                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Город успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelCity))));
-                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Город успешно сохранен'));
+                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Портфолио успешно сохранено', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelPortfolio))));
+                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Портфолио успешно сохранено'));
             } else {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
@@ -245,7 +246,7 @@ class CityController extends Controller
 
 
     /**
-     * PUT, PATCH Method. City table.
+     * PUT, PATCH Method. Portfolio table.
      * Update record by id parameter
      *
      * @return json
@@ -276,67 +277,67 @@ class CityController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
+            // If user have create right that his allowed to other actions to the Portfolio table
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
                 return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию обновления'));
             }
-            */
+            /*
             $flagRights = false;
-            foreach(array('admin') as $value) {
+            foreach(array('admin', 'customer', 'contractor') as $value) {
                 if (in_array($value, $userRole)) {
                     $flagRights = true;
                 }
             }
             if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
+            */
+            
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name', 'region_id' => 'region_id');
+            $arrayPortfolioAssoc = array ('id' => 'id', 'contractor_id' => 'contractor_id', 'name' => 'name');
 
-            if (array_key_exists($arrayCityAssoc['id'], $bodyRaw)) {
+            if (array_key_exists($arrayPortfolioAssoc['id'], $bodyRaw)) {
                 // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayCityAssoc['id']])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayPortfolioAssoc['id']])) {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $queryCity = City::find()->where(['id' => $bodyRaw[$arrayCityAssoc['id']]]);
-                $modelCity = $queryCity->one();
+                $queryPortfolio = Portfolio::find()->where(['id' => $bodyRaw[$arrayPortfolioAssoc['id']]]);
+                $modelPortfolio = $queryPortfolio->one();
 
-                if (empty($modelCity)) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Город по id'));
+                if (empty($modelPortfolio)) {
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдено Портфолио по id'));
                 }
 
-                foreach ($arrayCityAssoc as $nameCityAssoc => $valueCityAssoc) {
-                    if (array_key_exists($valueCityAssoc, $bodyRaw)) {
-                        if ($modelCity->hasAttribute($nameCityAssoc)) {
-                            $modelCity->$nameCityAssoc = $bodyRaw[$arrayCityAssoc[$nameCityAssoc]];
-                            if (!$modelCity->validate($nameCityAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+                foreach ($arrayPortfolioAssoc as $namePortfolioAssoc => $valuePortfolioAssoc) {
+                    if (array_key_exists($valuePortfolioAssoc, $bodyRaw)) {
+                        if ($modelPortfolio->hasAttribute($namePortfolioAssoc)) {
+                            $modelPortfolio->$namePortfolioAssoc = $bodyRaw[$arrayPortfolioAssoc[$namePortfolioAssoc]];
+                            if (!$modelPortfolio->validate($namePortfolioAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
                         }
                     }
                 }
 
-                // Save City object
-                if ($modelCity->validate()) {
+                // Save Portfolio object
+                if ($modelPortfolio->validate()) {
                     $transaction = \Yii::$app->db->beginTransaction();
                     try {
-                        $flagCity = $modelCity->save(false); // update City table
+                        $flagPortfolio = $modelPortfolio->save(false); // update Portfolio table
 
-                        if ($flagCity) {
+                        if ($flagPortfolio) {
                             $transaction->commit();
                         } else {
                             $transaction->rollBack();
-                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Город не может быть обновлен'));
+                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть обновлено'));
                         }
                     } catch (Exception $ex) {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Город не может быть обновлен'));
+                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть обновлено'));
                     }
                 } else {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
                 }
 
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Город успешно сохранен'));
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Портфолио успешно сохранено'));
             } else {
                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id параметр в запросе'));
             }
@@ -347,7 +348,7 @@ class CityController extends Controller
 
 
     /**
-     * DELETE Method. City table.
+     * DELETE Method. Portfolio table.
      * Delete records by id parameter
      * or by another parameters
      *
@@ -379,61 +380,61 @@ class CityController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
+            // If user have create right that his allowed to other actions to the Portfolio table
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
-            */
+            /*
             $flagRights = false;
-            foreach(array('admin') as $value) {
+            foreach(array('admin', 'customer', 'contractor') as $value) {
                 if (in_array($value, $userRole)) {
                     $flagRights = true;
                 }
             }
-            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
+            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            */
+            
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name', 'region_id' => 'region_id');
+            $arrayPortfolioAssoc = array ('id' => 'id', 'contractor_id' => 'contractor_id', 'name' => 'name');
 
-            if (array_key_exists($arrayCityAssoc['id'], $bodyRaw)) {
+            if (array_key_exists($arrayPortfolioAssoc['id'], $bodyRaw)) {
                 // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayCityAssoc['id']])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayPortfolioAssoc['id']])) {
                     return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                $queryCity = City::find()->where(['id' => $bodyRaw[$arrayCityAssoc['id']]]);
-                $modelCity = $queryCity->one();
+                $queryPortfolio = Portfolio::find()->where(['id' => $bodyRaw[$arrayPortfolioAssoc['id']]]);
+                $modelPortfolio = $queryPortfolio->one();
 
-                if (empty($modelCity)) {
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Город по id'));
+                if (empty($modelPortfolio)) {
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдено Портфолио по id'));
                 }
             } else {
                 //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id материала'));
                 return $this->actionDeleteByParam();
             }
 
-            if (!empty($modelCity)) {
+            if (!empty($modelPortfolio)) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    // delete from City table
-                    $countCityDelete = $modelCity->delete($modelCity->id);
+                    // delete from Portfolio table
+                    $countPortfolioDelete = $modelPortfolio->delete($modelPortfolio->id);
 
-                    if ($countCityDelete > 0) {
+                    if ($countPortfolioDelete > 0) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть удалено'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть удалено'));
                 }
 
-                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Город успешно удален'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Портфолио успешно удалено'));
             } else {
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть удалено'));
             }
         } else {
             return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
@@ -442,7 +443,7 @@ class CityController extends Controller
     }
 
     /**
-     * DELETE Method. City table.
+     * DELETE Method. Portfolio table.
      * Delete records by another parameters
      *
      * @return json
@@ -472,59 +473,59 @@ class CityController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
+            // If user have create right that his allowed to other actions to the Portfolio table
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
-            */
+            /*
             $flagRights = false;
-            foreach(array('admin') as $value) {
+            foreach(array('admin', 'customer', 'contractor') as $value) {
                 if (in_array($value, $userRole)) {
                     $flagRights = true;
                 }
             }
-            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
+            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
+            */
+            
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayCityAssoc = array ('id' => 'id', 'name' => 'name', 'region_id' => 'region_id');
+            $arrayPortfolioAssoc = array ('id' => 'id', 'contractor_id' => 'contractor_id', 'name' => 'name');
 
             // Search record by id in the database
-            $queryCity = City::find();
-            $modelValidate = new City();
-            foreach ($arrayCityAssoc as $nameCityAssoc => $valueCityAssoc) {
-                if (array_key_exists($valueCityAssoc, $bodyRaw)) {
-                    if ($modelValidate->hasAttribute($nameCityAssoc)) {
-                        $modelValidate->$nameCityAssoc = $bodyRaw[$arrayCityAssoc[$nameCityAssoc]];
-                        if (!$modelValidate->validate($nameCityAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueCityAssoc));
+            $queryPortfolio = Portfolio::find();
+            $modelValidate = new Portfolio();
+            foreach ($arrayPortfolioAssoc as $namePortfolioAssoc => $valuePortfolioAssoc) {
+                if (array_key_exists($valuePortfolioAssoc, $bodyRaw)) {
+                    if ($modelValidate->hasAttribute($namePortfolioAssoc)) {
+                        $modelValidate->$namePortfolioAssoc = $bodyRaw[$arrayPortfolioAssoc[$namePortfolioAssoc]];
+                        if (!$modelValidate->validate($namePortfolioAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valuePortfolioAssoc));
 
-                        $queryCity->andWhere([$nameCityAssoc => $bodyRaw[$arrayCityAssoc[$nameCityAssoc]]]);
+                        $queryPortfolio->andWhere([$namePortfolioAssoc => $bodyRaw[$arrayPortfolioAssoc[$namePortfolioAssoc]]]);
                     }
                 }
 
             }
-            $modelsCity = $queryCity->all();
+            $modelsPortfolio = $queryPortfolio->all();
 
-            if (!empty($modelsCity) && !empty($modelValidate)) {
-                foreach ($modelsCity as $modelCity) {
+            if (!empty($modelsPortfolio) && !empty($modelValidate)) {
+                foreach ($modelsPortfolio as $modelPortfolio) {
                     $transaction = \Yii::$app->db->beginTransaction();
                     try {
-                        // delete from City table.
-                         $countCityDelete = $modelCity->delete();
+                        // delete from Portfolio table.
+                         $countPortfolioDelete = $modelPortfolio->delete();
 
-                        if ($countCityDelete > 0) {
+                        if ($countPortfolioDelete > 0) {
                             $transaction->commit();
                         } else {
                             $transaction->rollBack();
-                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть удалено'));
                         }
                     } catch (Exception $ex) {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Город не может быть удален'));
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Портфолио не может быть удалено'));
                     }
                 }
 
-                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Город успешно удален'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Портфолио успешно удалено'));
             }
         }
     }
