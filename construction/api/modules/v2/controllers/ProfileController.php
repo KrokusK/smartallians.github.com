@@ -702,7 +702,7 @@ class ProfileController extends Controller
                         $modelValidate->$nameProfileAssoc = $bodyRaw[$arrayProfileAssoc[$nameProfileAssoc]];
                         if (!$modelValidate->validate($nameProfileAssoc)) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueProfileAssoc));
 
-                        $query->andWhere([$nameProfileAssoc => $bodyRaw[$arrayProfileAssoc[$nameProfileAssoc]]]);
+                        $queryProfile->andWhere([$nameProfileAssoc => $bodyRaw[$arrayProfileAssoc[$nameProfileAssoc]]]);
                     }
                 }
             }
