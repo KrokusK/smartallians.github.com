@@ -128,7 +128,6 @@ class PortfolioController extends Controller
 
             $modelPortfolio = $query->orderBy('id')
                 ->asArray()
-                ->with('regions')
                 ->all();
 
             // get properties from Portfolio object
@@ -144,7 +143,6 @@ class PortfolioController extends Controller
 
             $modelPortfolio = $query->orderBy('id')
                 ->asArray()
-                ->with('regions')
                 ->all();
 
             // get properties from Portfolio object
