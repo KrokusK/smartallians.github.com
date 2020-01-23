@@ -213,6 +213,8 @@ class PortfolioController extends Controller
                             $modelPortfolio->$namePortfolioAssoc = $bodyRaw[$valuePortfolioAssoc];
 
                             if (!$modelPortfolio->validate($namePortfolioAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valuePortfolioAssoc));
+
+                            $modelProfile->created_by = $userByToken->id;
                         }
                     }
                 }
@@ -313,6 +315,8 @@ class PortfolioController extends Controller
                         if ($modelPortfolio->hasAttribute($namePortfolioAssoc)) {
                             $modelPortfolio->$namePortfolioAssoc = $bodyRaw[$arrayPortfolioAssoc[$namePortfolioAssoc]];
                             if (!$modelPortfolio->validate($namePortfolioAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+
+                            $modelProfile->created_by = $userByToken->id;
                         }
                     }
                 }
