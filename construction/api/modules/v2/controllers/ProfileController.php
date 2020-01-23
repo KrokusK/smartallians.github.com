@@ -618,11 +618,8 @@ class ProfileController extends Controller
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     // delete from profile table.
-                    // Because the foreign keys with cascade delete that if a record in the parent table (profile table) is deleted, then the corresponding records in the child table will automatically be deleted (contractor, profile_city, profile_specialization).
+                    // Because the foreign keys with cascade delete that if a record in the parent table (profile table) is deleted, then the corresponding records in the child table will automatically be deleted (contractor, profile_city, profile_specialization, profile_rrod).
                     $countProfileDelete = $modelProfile->delete($modelProfile->id);
-
-                    // delete old records from profile_rrod table
-                    ProfileRROD::deleteAll(['profile_id' => $modelProfile->id]);
 
                     if ($countProfileDelete > 0) {
                         $transaction->commit();
@@ -716,11 +713,8 @@ class ProfileController extends Controller
                     $transaction = \Yii::$app->db->beginTransaction();
                     try {
                         // delete from profile table.
-                        // Because the foreign keys with cascade delete that if a record in the parent table (profile table) is deleted, then the corresponding records in the child table will automatically be deleted (contractor, profile_city, profile_specialization).
+                        // Because the foreign keys with cascade delete that if a record in the parent table (profile table) is deleted, then the corresponding records in the child table will automatically be deleted (contractor, profile_city, profile_specialization, profile_rrod).
                         $countProfileDelete = $modelProfile->delete();
-
-                        // delete old records from profile_rrod table
-                        ProfileRROD::deleteAll(['profile_id' => $modelProfile->id]);
 
                         if ($countProfileDelete > 0) {
                             $transaction->commit();
