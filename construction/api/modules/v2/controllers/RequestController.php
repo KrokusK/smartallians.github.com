@@ -133,7 +133,7 @@ class RequestController extends Controller
 
                             $query->andWhere(['ilike', $nameRequestAssoc, $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
                         } elseif ($nameRequestAssoc == 'budjet') {
-                            if (is_array($getParams['budjet'])) {
+                            if (is_array($getParams[$arrayRequestAssoc[$nameRequestAssoc]])) {
                                 $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]][0];
                                 if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
 
