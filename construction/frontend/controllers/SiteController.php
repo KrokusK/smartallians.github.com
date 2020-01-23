@@ -147,12 +147,14 @@ class SiteController extends Controller
             if ($modelLoginForm->validate()) {
 
                 // Проверка логина пароля
+                /*
                 $user = $modelLoginForm->getUser();
                 if (!$user) {
                     return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Введен неверный логин'));
                 } elseif (!$user->validatePassword($modelLoginForm->password)) {
                     return Json::encode(array('method' => 'POST', 'status' => 2, 'type' => 'error', 'message' => 'Введен неверный пароль'));
                 }
+                */
 
                 if ($modelLoginForm->login()) {
                     //return $this->goBack();
