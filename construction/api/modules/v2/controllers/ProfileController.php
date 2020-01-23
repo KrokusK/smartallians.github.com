@@ -575,7 +575,7 @@ class ProfileController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            // If user have create right that his allowed to other actions to the Request table
+            // If user have create right that his allowed to other actions to the Profile table
             if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
                 return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
@@ -675,7 +675,7 @@ class ProfileController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            // If user have create right that his allowed to other actions to the Request table
+            // If user have create right that his allowed to other actions to the Profile table
             if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
                 return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
@@ -715,7 +715,7 @@ class ProfileController extends Controller
                 foreach ($modelsProfile as $modelProfile) {
                     $transaction = \Yii::$app->db->beginTransaction();
                     try {
-                        // delete from request table.
+                        // delete from profile table.
                         // Because the foreign keys with cascade delete that if a record in the parent table (profile table) is deleted, then the corresponding records in the child table will automatically be deleted (contractor, profile_city, profile_specialization).
                         $countProfileDelete = $modelProfile->delete();
 
