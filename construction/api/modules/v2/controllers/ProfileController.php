@@ -697,12 +697,12 @@ class ProfileController extends Controller
             }
             $modelValidate = new Profile();
             foreach ($arrayProfileAssoc as $nameProfileAssoc => $valueProfileAssoc) {
-                if (array_key_exists($valueProfileAssoc, $getParams)) {
+                if (array_key_exists($valueProfileAssoc, $bodyRaw)) {
                     if ($modelValidate->hasAttribute($nameProfileAssoc)) {
-                        $modelValidate->$nameProfileAssoc = $getParams[$arrayProfileAssoc[$nameProfileAssoc]];
+                        $modelValidate->$nameProfileAssoc = $bodyRaw[$arrayProfileAssoc[$nameProfileAssoc]];
                         if (!$modelValidate->validate($nameProfileAssoc)) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueProfileAssoc));
 
-                        $query->andWhere([$nameProfileAssoc => $getParams[$arrayProfileAssoc[$nameProfileAssoc]]]);
+                        $query->andWhere([$nameProfileAssoc => $bodyRaw[$arrayProfileAssoc[$nameProfileAssoc]]]);
                     }
                 }
             }
