@@ -133,6 +133,23 @@ class RequestController extends Controller
 
                             $query->andWhere(['ilike', $nameRequestAssoc, $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
                         } elseif ($nameRequestAssoc == 'budjet') {
+                            $value = $getParams[$arrayRequestAssoc[$nameRequestAssoc]];
+
+                            $pos_begin = strpos($value, '[') + 1;
+                            $pos_end = strpos($value, ',');
+                            $value_start = (int) substr($value, $pos_begin, $pos_end-$pos_begin)
+                            $modelValidate->$nameRequestAssoc = $value_start;
+                            if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc.' значение '.$value_start));
+
+                            $pos_begin = strpos($value, ',') + 1;
+                            $pos_end = strpos($value, ']');
+                            $value_end = (int) substr($value, $pos_begin, $pos_end-$pos_begin)
+                            $modelValidate->$nameRequestAssoc = $value_end;
+                            if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc.' значение '.$value_end));
+
+                            $query->andWhere(['between', $nameRequestAssoc, $value_start, $value_end]);
+
+                            /*
                             if (is_array($getParams[$arrayRequestAssoc[$nameRequestAssoc]])) {
                                 $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]][0][0];
                                 if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => var_dump(ArrayHelper::toArray($getParams[$arrayRequestAssoc[$nameRequestAssoc]][0])).' - '.' - '.'Ошибка валидации: параметр '.$valueRequestAssoc));
@@ -144,6 +161,7 @@ class RequestController extends Controller
                             } else {
                                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре budjet ожидается массив [start,end]'));
                             }
+                            */
                         } else {
                             $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]];
                             if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
