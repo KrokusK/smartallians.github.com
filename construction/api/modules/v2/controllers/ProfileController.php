@@ -600,9 +600,9 @@ class ProfileController extends Controller
 
                 // Search record by id in the database
                 if (in_array('admin', $userRole)) {
-                    $queryProfile = Request::find()->where(['id' => $bodyRaw[$arrayProfileAssoc['id']]]);  // get all records
+                    $queryProfile = Profile::find()->where(['id' => $bodyRaw[$arrayProfileAssoc['id']]]);  // get all records
                 } else {
-                    $queryProfile = Request::find()->where(['AND', ['id' => $bodyRaw[$arrayProfileAssoc['id']]], ['created_by'=> $userByToken->id]]);  // get records created by this user
+                    $queryProfile = Profile::find()->where(['AND', ['id' => $bodyRaw[$arrayProfileAssoc['id']]], ['created_by'=> $userByToken->id]]);  // get records created by this user
                 }
                 $modelProfile = $queryProfile->one();
 
