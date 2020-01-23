@@ -544,7 +544,7 @@ class ProfileController extends Controller
 
 
     /**
-     * DELETE Method. Request table.
+     * DELETE Method. Profile table.
      * Delete records by id parameter
      * or by another parameters
      *
@@ -576,7 +576,7 @@ class ProfileController extends Controller
 
             // Check rights
             // If user have create right that his allowed to other actions to the Request table
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer')) {
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
                 return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
             /*
@@ -590,57 +590,54 @@ class ProfileController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayProfileAssoc = array ('id' => 'id', 'user_id' => 'user_id', 'kind_user_id' => 'kind_user_id', 'type_job_id' => 'type_job_id', 'fio' => 'fio', 'firm_name' => 'firm_name', 'inn' => 'inn', 'site' => 'site', 'avatar' => 'avatar', 'about' => 'about');
 
-            if (array_key_exists($arrayRequestAssoc['id'], $bodyRaw)) {
+            if (array_key_exists($arrayProfileAssoc['id'], $bodyRaw)) {
                 // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayRequestAssoc['id']])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayProfileAssoc['id']])) {
                     return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
                 if (in_array('admin', $userRole)) {
-                    $queryRequest = Request::find()->where(['id' => $bodyRaw[$arrayRequestAssoc['id']]]);  // get all records
+                    $queryProfile = Request::find()->where(['id' => $bodyRaw[$arrayProfileAssoc['id']]]);  // get all records
                 } else {
-                    $queryRequest = Request::find()->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);  // get records created by this user
+                    $queryProfile = Request::find()->where(['AND', ['id' => $bodyRaw[$arrayProfileAssoc['id']]], ['created_by'=> $userByToken->id]]);  // get records created by this user
                 }
-                $modelRequest = $queryRequest->orderBy('created_at')->one();
+                $modelProfile = $queryProfile->one();
 
-                if (empty($modelRequest)) {
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
+                if (empty($modelProfile)) {
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Профиль по id'));
                 }
             } else {
                 //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
                 return $this->actionDeleteByParam();
             }
 
-            if (!empty($modelRequest)) {
+            if (!empty($modelProfile)) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    // delete old records from request_kind_job table
-                    //RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
-
-                    // delete from request table.
-                    // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
-                    $countRequestDelete = $modelRequest->delete($modelRequest->id);
+                    // delete from profile table.
+                    // Because the foreign keys with cascade delete that if a record in the parent table (profile table) is deleted, then the corresponding records in the child table will automatically be deleted (contractor, profile_city, profile_specialization).
+                    $countProfileDelete = $modelProfile->delete($modelProfile->id);
 
                     // delete old records from profile_rrod table
-                    ProfileRROD::deleteAll(['request_id' => $modelRequest->id]);
+                    ProfileRROD::deleteAll(['profile_id' => $modelProfile->id]);
 
-                    if ($countRequestDelete > 0) {
+                    if ($countProfileDelete > 0) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Профиль не может быть удален'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Профиль не может быть удален'));
                 }
 
-                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно удалена'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Профиль успешно удален'));
             } else {
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть удалена'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Профиль не может быть удален'));
             }
         } else {
             return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
@@ -648,7 +645,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * DELETE Method. Request table.
+     * DELETE Method. Profile table.
      * Delete records by another parameters
      *
      * @return json
@@ -679,7 +676,7 @@ class ProfileController extends Controller
 
             // Check rights
             // If user have create right that his allowed to other actions to the Request table
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer')) {
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
                 return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
             /*
@@ -693,55 +690,51 @@ class ProfileController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
+            $arrayProfileAssoc = array ('id' => 'id', 'user_id' => 'user_id', 'kind_user_id' => 'kind_user_id', 'type_job_id' => 'type_job_id', 'fio' => 'fio', 'firm_name' => 'firm_name', 'inn' => 'inn', 'site' => 'site', 'avatar' => 'avatar', 'about' => 'about');
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
-                $queryRequest = Request::find();  // get all records
+                $queryProfile = Profile::find();  // get all records
             } else {
-                $queryRequest = Request::find()->where(['created_by'=> $userByToken->id]);  // get records created by this user
+                $queryProfile = Profile::find()->where(['created_by'=> $userByToken->id]);  // get records created by this user
             }
-            $modelValidate = new Request();
-            foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
-                    if ($modelValidate->hasAttribute($nameRequestAssoc)) {
-                        $modelValidate->$nameRequestAssoc = $bodyRaw[$arrayRequestAssoc[$nameRequestAssoc]];
-                        if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueRequestAssoc));
+            $modelValidate = new Profile();
+            foreach ($arrayProfileAssoc as $nameProfileAssoc => $valueProfileAssoc) {
+                if (array_key_exists($valueProfileAssoc, $getParams)) {
+                    if ($modelValidate->hasAttribute($nameProfileAssoc)) {
+                        $modelValidate->$nameProfileAssoc = $getParams[$arrayProfileAssoc[$nameProfileAssoc]];
+                        if (!$modelValidate->validate($nameProfileAssoc)) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueProfileAssoc));
 
-                        $queryRequest->andWhere([$nameRequestAssoc => $bodyRaw[$arrayRequestAssoc[$nameRequestAssoc]]]);
+                        $query->andWhere([$nameProfileAssoc => $getParams[$arrayProfileAssoc[$nameProfileAssoc]]]);
                     }
                 }
-
             }
-            $modelsRequest = $queryRequest->all();
+            $modelsProfile = $queryProfile->all();
 
-            if (!empty($modelsRequest) && !empty($modelValidate)) {
-                foreach ($modelsRequest as $modelRequest) {
+            if (!empty($modelsProfile) && !empty($modelValidate)) {
+                foreach ($modelsProfile as $modelProfile) {
                     $transaction = \Yii::$app->db->beginTransaction();
                     try {
-                        // delete old records from request_kind_job table
-                        //RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
-
                         // delete from request table.
-                        // Because the foreign keys with cascade delete that if a record in the parent table (request table) is deleted, then the corresponding records in the child table will automatically be deleted.
-                        $countRequestDelete = $modelRequest->delete();
+                        // Because the foreign keys with cascade delete that if a record in the parent table (profile table) is deleted, then the corresponding records in the child table will automatically be deleted (contractor, profile_city, profile_specialization).
+                        $countProfileDelete = $modelProfile->delete();
 
                         // delete old records from profile_rrod table
-                        ProfileRROD::deleteAll(['request_id' => $modelRequest->id]);
+                        ProfileRROD::deleteAll(['profile_id' => $modelProfile->id]);
 
-                        if ($countRequestDelete > 0) {
+                        if ($countProfileDelete > 0) {
                             $transaction->commit();
                         } else {
                             $transaction->rollBack();
-                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявки не могут быть удалены'));
+                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Профиль не может быть удален'));
                         }
                     } catch (Exception $ex) {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявки не могут быть удалены'));
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Профиль не может быть удален'));
                     }
                 }
 
-                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заявки успешно удалены'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Профиль успешно удален'));
             }
         }
     }
