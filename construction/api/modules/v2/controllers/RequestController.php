@@ -127,18 +127,27 @@ class RequestController extends Controller
             foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
                 if (array_key_exists($valueRequestAssoc, $getParams)) {
                     if ($modelValidate->hasAttribute($nameRequestAssoc)) {
-                        $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]];
-                        if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
-
                         if ($nameRequestAssoc == 'description') {
+                            $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]];
+                            if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+
                             $query->andWhere(['ilike', $nameRequestAssoc, $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
                         } elseif ($nameRequestAssoc == 'budjet') {
                             if (is_array($getParams['budjet'])) {
-                                $query->andWhere(['between', $nameRequestAssoc, $getParams['budjet'][0],$getParams['budjet'][1]]);
+                                $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]][0];
+                                if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+
+                                $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]][1];
+                                if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+
+                                $query->andWhere(['between', $nameRequestAssoc, $getParams[$arrayRequestAssoc[$nameRequestAssoc]][0],$getParams[$arrayRequestAssoc[$nameRequestAssoc]][1]]);
                             } else {
                                 return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре budjet ожидается массив [start,end]'));
                             }
                         } else {
+                            $modelValidate->$nameRequestAssoc = $getParams[$arrayRequestAssoc[$nameRequestAssoc]];
+                            if (!$modelValidate->validate($nameRequestAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+
                             $query->andWhere([$nameRequestAssoc => $getParams[$arrayRequestAssoc[$nameRequestAssoc]]]);
                         }
                     }
