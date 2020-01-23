@@ -4,6 +4,7 @@ namespace api\modules\v2\controllers;
 use api\modules\v2\models\Profile;
 use api\modules\v2\models\Contractor;
 use api\modules\v2\models\KindUser;
+use api\modules\v2\models\ProfileRROD;
 use api\modules\v2\models\TypeJob;
 use api\modules\v2\models\User;
 use api\modules\v2\models\City;
@@ -384,7 +385,7 @@ class ProfileController extends Controller
 
 
     /**
-     * PUT, PATCH Method. Request table.
+     * PUT, PATCH Method. Profile table.
      * Update records by id parameter
      *
      * @return json
@@ -416,8 +417,8 @@ class ProfileController extends Controller
 
             // Check rights
             // If user have create right that his allowed to other actions to the Request table
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
+                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию обновления'));
             }
             /*
             $flagRights = false;
@@ -430,112 +431,150 @@ class ProfileController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRequestAssoc = array ('id' => 'id', 'status_request_id' => 'status_request_id', 'city_id' => 'city_id', 'address' => 'address', 'name' => 'name', 'description' => 'description', 'task' => 'task', 'budjet' => 'budjet', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
-            $arrayKindJobAssoc = array ('kind_job_id' => 'work_type');
+            $arrayProfileAssoc = array ('id' => 'id', 'user_id' => 'user_id', 'kind_user_id' => 'kind_user_id', 'type_job_id' => 'type_job_id', 'fio' => 'fio', 'firm_name' => 'firm_name', 'inn' => 'inn', 'site' => 'site', 'avatar' => 'avatar', 'about' => 'about');
+            $arrayContractorAssoc = array ('experience' => 'experience', 'cost' => 'cost', 'passport' => 'passport');
 
-            if (array_key_exists($arrayRequestAssoc['id'], $bodyRaw)) {
+            if (array_key_exists($arrayProfileAssoc['id'], $bodyRaw)) {
                 // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayRequestAssoc['id']])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayProfileAssoc['id']])) {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
                 if (in_array('admin', $userRole)) {
-                    $queryRequest = Request::find()->where(['id' => $bodyRaw[$arrayRequestAssoc['id']]]);  // get all records
+                    $queryProfile = Profile::find()->where(['id' => $bodyRaw[$arrayProfileAssoc['id']]]);  // get all records
                 } else {
-                    $queryRequest = Request::find()->where(['AND', ['id' => $bodyRaw[$arrayRequestAssoc['id']]], ['created_by'=> $userByToken->id]]);   // get records created by this user
+                    $queryProfile = Profile::find()->where(['AND', ['id' => $bodyRaw[$arrayProfileAssoc['id']]], ['created_by'=> $userByToken->id]]);  // get records created by this user
                 }
-                $modelRequest = $queryRequest->orderBy('created_at')->one();
+                $modelProfile = $queryProfile->one();
 
-                if (empty($modelRequest)) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
+                if (empty($modelProfile)) {
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Профиль по id'));
                 }
 
-                if (!empty($modelRequest)) {
-                    // fill in the properties in the Request object
-                    foreach ($arrayRequestAssoc as $nameRequestAssoc => $valueRequestAssoc) {
-                        if (array_key_exists($valueRequestAssoc, $bodyRaw)) {
-                            if ($modelRequest->hasAttribute($nameRequestAssoc)) {
-                                if ($nameRequestAssoc != 'id' && $nameRequestAssoc != 'created_at' && $nameRequestAssoc != 'updated_at') {
-                                    $modelRequest->$nameRequestAssoc = $bodyRaw[$valueRequestAssoc];
+                if (!empty($modelProfile)) {
+                    // fill in the properties in the Profile object
+                    foreach ($arrayProfileAssoc as $nameProfileAssoc => $valueProfileAssoc) {
+                        if (array_key_exists($valueProfileAssoc, $bodyRaw)) {
+                            if ($modelProfile->hasAttribute($nameProfileAssoc)) {
+                                if ($nameProfileAssoc != 'id' && $nameProfileAssoc != 'created_at' && $nameProfileAssoc != 'updated_at') {
+                                    $modelProfile->$nameProfileAssoc = $bodyRaw[$valueProfileAssoc];
 
-                                    if (!$modelRequest->validate($nameRequestAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+                                    if (!$modelProfile->validate($nameProfileAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueProfileAssoc));
 
-                                    $modelRequest->created_by = $userByToken->id;
-                                    $modelRequest->updated_at = time();
+                                    $modelProfile->created_by = $userByToken->id;
+                                    $modelProfile->created_at = time();
+                                    $modelProfile->updated_at = time();
                                 }
                             }
                         }
                     }
 
-                    // check parametr for the KindJob object
-                    foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
-                        if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
-                            if ($nameKindJobAssoc == 'kind_job_id' && !is_array($bodyRaw[$valueKindJobAssoc])) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре work_type ожидается массив'));
+                    $modelContractor = new Contractor();
+
+                    // fill in the properties in the Contractor object
+                    foreach ($arrayContractorAssoc as $nameContractorAssoc => $valueContractorAssoc) {
+                        if (array_key_exists($valueContractorAssoc, $bodyRaw)) {
+                            if ($modelContractor->hasAttribute($nameContractorAssoc)) {
+                                if ($nameContractorAssoc != 'id' && $nameContractorAssoc != 'profile_id') {
+                                    $modelContractor->$nameContractorAssoc = $bodyRaw[$valueContractorAssoc];
+
+                                    if (!$modelContractor->validate($nameContractorAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueContractorAssoc));
+
+                                    $modelContractor->created_by = $userByToken->id;
+                                }
+                            }
+                        }
+                    }
+
+                    // check parametr for the Specialization object
+                    $arrayModelSpecialization = [];
+                    if (array_key_exists('specializations', $bodyRaw)) {
+                        if (!is_array($bodyRaw['specializations'])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре specializations ожидается массив'));
+
+                        foreach ($bodyRaw['specializations'] as $key => $value) {
+                            if (!preg_match("/^[0-9]*$/", $value)) {
+                                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: specializations'));
+                            }
+
+                            $querySpecialization = Specialization::find()->where(['id' => $value]);
+                            $modelSpecialization = $querySpecialization->one();
+                            if (empty($modelSpecialization)) {
+                                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Специализация по id'));
+                            }
+                            array_push($arrayModelSpecialization, $modelSpecialization);
+                        }
+                    }
+
+                    // check parametr for the City object
+                    $arrayModelCity = [];
+                    if (array_key_exists('cities', $bodyRaw)) {
+                        if (!is_array($bodyRaw['cities'])) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В параметре cities ожидается массив'));
+
+                        foreach ($bodyRaw['cities'] as $key => $value) {
+                            if (!preg_match("/^[0-9]*$/", $value)) {
+                                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: cities'));
+                            }
+
+                            $queryCity = City::find()->where(['id' => $value]);
+                            $modelCity = $queryCity->one();
+                            if (empty($modelCity)) {
+                                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Город по id'));
+                            }
+                            array_push($arrayModelCity, $modelCity);
                         }
                     }
                 } else {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Завка по id'));
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Профиль по id'));
                 }
             } else {
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id заявки'));
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id Профиля'));
             }
 
-            // Search record by id user in the profile table
-            $queryProfile = Profile::find()->where(['user_id' => $userByToken->id]);
-            $modelProfile = $queryProfile->one();
-
-            if (empty($modelProfile)) {
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Профиль по user_id'));
-            }
-
-            if ($modelRequest->validate()) {
+            // Update in the database
+            if ($modelProfile->validate() ) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flagRequest = $modelRequest->save(false); // insert into request table
+                    $flagProfile = $modelProfile->save(false); // update into profile table
 
-                    $flagRequestKindJob = true;
-                    if ($flagRequest) {
+                    if ($flagProfile) {
 
-                        // Save records into request_kind_job table
-                        if (array_key_exists($arrayKindJobAssoc['kind_job_id'], $bodyRaw)) {
-                            // delete old records from request_kind_job table
-                            RequestKindJob::deleteAll(['request_id' => $modelRequest->id]);
+                        $modelContractor->profile_id = $modelProfile->id;
+                        if ($modelContractor->validate()) {
+                            $flagContractor = $modelContractor->save(false); // update into contractor table
+                        } else {
+                            $flagContractor = false;
+                        }
 
-                            foreach ($bodyRaw[$arrayKindJobAssoc['kind_job_id']] as $name => $value) {
-                                $modelRequestKindJob = new RequestKindJob();
+                        // Save records into profile_city, profile_specialization tables
+                        if ($flagContractor) {
+                            // delete old records from profile_city table
+                            ProfileCity::deleteAll(['profile_id' => $modelProfile->id]);
+                            // delete old records from profile_specialization table
+                            ProfileSpecialization::deleteAll(['profile_id' => $modelProfile->id]);
 
-                                // fill in the properties in the KindJob object
-                                if ($modelRequestKindJob->hasAttribute('kind_job_id')) {
-                                    $modelRequestKindJob->kind_job_id = $value;
-                                }
-
-                                if ($modelRequestKindJob->validate('kind_job_id')) {
-                                    $modelRequestKindJob->request_id = $modelRequest->id;
-
-                                    if (!$modelRequestKindJob->save(false)) $flagRequestKindJob = false; // insert into request_kind_job table
-                                }
+                            foreach ($arrayModelCity as $model) {
+                                $modelProfile->link('cities', $model);
                             }
 
-                            // delete old records from profile_rrod table
-                            ProfileRROD::deleteAll(['request_id' => $modelRequest->id]);
-                            // Save record into profile_rrod table
-                            $modelRequest->link('profiles', $modelProfile);
+                            foreach ($arrayModelSpecialization as $model) {
+                                $modelProfile->link('specializations', $model);
+                            }
                         }
                     }
 
-                    if ($flagRequest == true && $flagRequestKindJob == true) {
+                    if ($flagProfile && $flagContractor) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Профиль не может быть сохранен (обновлен)'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заявка не может быть сохранена (обновлена)'));
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Профиль не может быть сохранен (обновлен)'));
                 }
 
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Заявка успешно сохранена (обновлена)'));
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Профиль успешно сохранен (обновлен)'));
             }
         } else {
             return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));

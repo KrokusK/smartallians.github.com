@@ -355,7 +355,7 @@ class RequestController extends Controller
             // Check rights
             // If user have create right that his allowed to other actions to the Request table
             if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию обновления'));
             }
             /*
             $flagRights = false;
