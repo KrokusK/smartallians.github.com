@@ -157,7 +157,8 @@ class m191210_000005_create_contractor_tables extends Migration
             '{{%portfolio}}',
             'contractor_id',
             '{{%contractor}}',
-            'id'
+            'id',
+            'CASCADE'
         );
 
         // add foreign key for table position
@@ -166,7 +167,8 @@ class m191210_000005_create_contractor_tables extends Migration
             '{{%position}}',
             'portfolio_id',
             '{{%portfolio}}',
-            'id'
+            'id',
+            'CASCADE'
         );
     }
 
