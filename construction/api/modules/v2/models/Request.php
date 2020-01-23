@@ -60,7 +60,8 @@ class Request extends \yii\db\ActiveRecord
             [['task'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
             [['budjet'], 'integer', 'message' => 'Значение должно быть целыи числом числом'],
             [['period'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
-            [['date_begin'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
+            [['date_begin'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer']
+            [['date_end'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['updated_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
             [['created_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
 

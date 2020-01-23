@@ -113,7 +113,7 @@ class ResponseController extends Controller
 
         if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayResponseAssoc = array ('id' => 'id', 'status_response_id' => 'status_response_id', 'request_id' => 'request_id', 'description' => 'description', 'cost' => 'cost', 'period' => 'period');
+            $arrayResponseAssoc = array ('id' => 'id', 'status_response_id' => 'status_response_id', 'request_id' => 'request_id', 'description' => 'description', 'cost' => 'cost', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
             if (in_array('admin', $userRole)) {
                 $query = Response::find();  // get all records
@@ -209,7 +209,7 @@ class ResponseController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayResponseAssoc = array ('id' => 'id', 'status_response_id' => 'status_response_id', 'request_id' => 'request_id', 'description' => 'description', 'cost' => 'cost', 'period' => 'period');
+            $arrayResponseAssoc = array ('id' => 'id', 'status_response_id' => 'status_response_id', 'request_id' => 'request_id', 'description' => 'description', 'cost' => 'cost', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
             $modelResponse = new Response();
 
@@ -313,7 +313,7 @@ class ResponseController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayResponseAssoc = array ('id' => 'id', 'status_response_id' => 'status_response_id', 'request_id' => 'request_id', 'description' => 'description', 'cost' => 'cost', 'period' => 'period');
+            $arrayResponseAssoc = array ('id' => 'id', 'status_response_id' => 'status_response_id', 'request_id' => 'request_id', 'description' => 'description', 'cost' => 'cost', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
             if (array_key_exists($arrayResponseAssoc['id'], $bodyRaw)) {
                 // check id parametr
@@ -432,7 +432,7 @@ class ResponseController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayResponseAssoc = array ('id' => 'id', 'status_response_id' => 'status_response_id', 'request_id' => 'request_id', 'description' => 'description', 'cost' => 'cost', 'period' => 'period');
+            $arrayResponseAssoc = array ('id' => 'id', 'status_response_id' => 'status_response_id', 'request_id' => 'request_id', 'description' => 'description', 'cost' => 'cost', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
             if (array_key_exists($arrayResponseAssoc['id'], $bodyRaw)) {
                 // check id parametr
@@ -532,7 +532,7 @@ class ResponseController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayResponseAssoc = array ('id' => 'id', 'status_response_id' => 'status_response_id', 'request_id' => 'request_id', 'description' => 'description', 'cost' => 'cost', 'period' => 'period');
+            $arrayResponseAssoc = array ('id' => 'id', 'status_response_id' => 'status_response_id', 'request_id' => 'request_id', 'description' => 'description', 'cost' => 'cost', 'period' => 'period', 'date_begin' => 'date_begin', 'date_end' => 'date_end');
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
