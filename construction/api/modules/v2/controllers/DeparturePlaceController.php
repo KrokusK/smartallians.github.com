@@ -111,7 +111,7 @@ class DeparturePlaceController extends Controller
 
         if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayDeparturePlaceAssoc = array ('city_id' => 'city_id', 'name' => 'name');
+            $arrayDeparturePlaceAssoc = array ('id' => 'id', 'city_id' => 'city_id', 'name' => 'name');
 
             if (in_array('admin', $userRole)) {
                 $query = DeparturePlace::find();  // get all records
@@ -207,7 +207,7 @@ class DeparturePlaceController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayDeparturePlaceAssoc = array ('city_id' => 'city_id', 'name' => 'name');
+            $arrayDeparturePlaceAssoc = array ('id' => 'id', 'city_id' => 'city_id', 'name' => 'name');
 
             $modelDeparturePlace = new DeparturePlace();
 
@@ -300,7 +300,7 @@ class DeparturePlaceController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayDeparturePlaceAssoc = array ('city_id' => 'city_id', 'name' => 'name');
+            $arrayDeparturePlaceAssoc = array ('id' => 'id', 'city_id' => 'city_id', 'name' => 'name');
 
             if (array_key_exists($arrayDeparturePlaceAssoc['id'], $bodyRaw)) {
                 // check id parametr
@@ -409,7 +409,7 @@ class DeparturePlaceController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayDeparturePlaceAssoc = array ('city_id' => 'city_id', 'name' => 'name');
+            $arrayDeparturePlaceAssoc = array ('id' => 'id', 'city_id' => 'city_id', 'name' => 'name');
 
             if (array_key_exists($arrayDeparturePlaceAssoc['id'], $bodyRaw)) {
                 // check id parametr
@@ -506,7 +506,7 @@ class DeparturePlaceController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayDeparturePlaceAssoc = array ('city_id' => 'city_id', 'name' => 'name');
+            $arrayDeparturePlaceAssoc = array ('id' => 'id', 'city_id' => 'city_id', 'name' => 'name');
 
             // Search record by id in the database
             if (in_array('admin', $userRole)) {

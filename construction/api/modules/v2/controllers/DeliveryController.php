@@ -111,7 +111,7 @@ class DeliveryController extends Controller
 
         if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayDeliveryAssoc = array ('departure_place_id' => 'departure_place_id', 'delivery_place_id' => 'delivery_place_id', 'status_delivery_id' => 'status_delivery_id', 'status_payment_id' => 'status_payment_id', 'cost' => 'cost');
+            $arrayDeliveryAssoc = array ('id' => 'id', 'departure_place_id' => 'departure_place_id', 'delivery_place_id' => 'delivery_place_id', 'status_delivery_id' => 'status_delivery_id', 'status_payment_id' => 'status_payment_id', 'cost' => 'cost');
 
             if (in_array('admin', $userRole)) {
                 $query = Delivery::find();  // get all records
@@ -207,7 +207,7 @@ class DeliveryController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayDeliveryAssoc = array ('departure_place_id' => 'departure_place_id', 'delivery_place_id' => 'delivery_place_id', 'status_delivery_id' => 'status_delivery_id', 'status_payment_id' => 'status_payment_id', 'cost' => 'cost');
+            $arrayDeliveryAssoc = array ('id' => 'id', 'departure_place_id' => 'departure_place_id', 'delivery_place_id' => 'delivery_place_id', 'status_delivery_id' => 'status_delivery_id', 'status_payment_id' => 'status_payment_id', 'cost' => 'cost');
             $modelDelivery = new Delivery();
 
             // fill in the properties in the Delivery object
@@ -301,7 +301,7 @@ class DeliveryController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayDeliveryAssoc = array ('departure_place_id' => 'departure_place_id', 'delivery_place_id' => 'delivery_place_id', 'status_delivery_id' => 'status_delivery_id', 'status_payment_id' => 'status_payment_id', 'cost' => 'cost');
+            $arrayDeliveryAssoc = array ('id' => 'id', 'departure_place_id' => 'departure_place_id', 'delivery_place_id' => 'delivery_place_id', 'status_delivery_id' => 'status_delivery_id', 'status_payment_id' => 'status_payment_id', 'cost' => 'cost');
             
             if (array_key_exists($arrayDeliveryAssoc['id'], $bodyRaw)) {
                 // check id parametr
@@ -411,7 +411,7 @@ class DeliveryController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayDeliveryAssoc = array ('departure_place_id' => 'departure_place_id', 'delivery_place_id' => 'delivery_place_id', 'status_delivery_id' => 'status_delivery_id', 'status_payment_id' => 'status_payment_id', 'cost' => 'cost');
+            $arrayDeliveryAssoc = array ('id' => 'id', 'departure_place_id' => 'departure_place_id', 'delivery_place_id' => 'delivery_place_id', 'status_delivery_id' => 'status_delivery_id', 'status_payment_id' => 'status_payment_id', 'cost' => 'cost');
             
             if (array_key_exists($arrayDeliveryAssoc['id'], $bodyRaw)) {
                 // check id parametr
@@ -508,7 +508,7 @@ class DeliveryController extends Controller
             */
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayDeliveryAssoc = array ('departure_place_id' => 'departure_place_id', 'delivery_place_id' => 'delivery_place_id', 'status_delivery_id' => 'status_delivery_id', 'status_payment_id' => 'status_payment_id', 'cost' => 'cost');
+            $arrayDeliveryAssoc = array ('id' => 'id', 'departure_place_id' => 'departure_place_id', 'delivery_place_id' => 'delivery_place_id', 'status_delivery_id' => 'status_delivery_id', 'status_payment_id' => 'status_payment_id', 'cost' => 'cost');
             
             // Search record by id in the database
             if (in_array('admin', $userRole)) {
