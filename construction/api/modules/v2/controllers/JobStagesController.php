@@ -1,7 +1,7 @@
 <?php
 namespace api\modules\v2\controllers;
 
-use api\modules\v2\models\Order;
+use api\modules\v2\models\JobStages;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -13,9 +13,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * API Order controller
+ * API JobStages controller
  */
-class OrderController extends Controller
+class JobStagesController extends Controller
 {
     /**
      * Constants
@@ -64,7 +64,7 @@ class OrderController extends Controller
 
 
     /**
-     * GET Method. Order table.
+     * GET Method. JobStages table.
      * Get records by parameters
      *
      * @return json
@@ -93,69 +93,61 @@ class OrderController extends Controller
         //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
         // Check rights
-        // If user have create right that his allowed to other actions to the Order table
+        // If user have create right that his allowed to other actions to the JobStages table
         if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createMediator')) {
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
         }
         /*
         $flagRights = false;
-        foreach(array('admin', 'customer', 'contractor', 'mediator') as $value) {
+        foreach(array('admin') as $value) {
             if (in_array($value, $userRole)) {
                 $flagRights = true;
             }
         }
-        if (!$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
+        if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
         */
-
+        
         unset($getParams['token']);
 
         if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayOrderAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'status_payment_id' => 'status_payment_id', 'status_completion_id' => 'status_completion_id', 'project_id' => 'project_id', 'feedback_id' => 'feedback_id');
+            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'period' => 'period');
 
-            if (in_array('admin', $userRole)) {
-                $query = Order::find();  // get all records
-            } else {
-                $query = Order::find()->Where(['created_by' => $userByToken->id]);  // get records created by this user
-            }
-            $modelValidate = new Order();
-            foreach ($arrayOrderAssoc as $nameOrderAssoc => $valueOrderAssoc) {
-                if (array_key_exists($valueOrderAssoc, $getParams)) {
-                    if ($modelValidate->hasAttribute($nameOrderAssoc)) {
-                        $modelValidate->$nameOrderAssoc = $getParams[$arrayOrderAssoc[$nameOrderAssoc]];
-                        if (!$modelValidate->validate($nameOrderAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+            $query = JobStages::find();
+            $modelValidate = new JobStages();
+            foreach ($arrayJobStagesAssoc as $nameJobStagesAssoc => $valueJobStagesAssoc) {
+                if (array_key_exists($valueJobStagesAssoc, $getParams)) {
+                    if ($modelValidate->hasAttribute($nameJobStagesAssoc)) {
+                        $modelValidate->$nameJobStagesAssoc = $getParams[$arrayJobStagesAssoc[$nameJobStagesAssoc]];
+                        if (!$modelValidate->validate($nameJobStagesAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
 
-                        $query->andWhere([$nameOrderAssoc => $getParams[$arrayOrderAssoc[$nameOrderAssoc]]]);
+                        $query->andWhere([$nameJobStagesAssoc => $getParams[$arrayJobStagesAssoc[$nameJobStagesAssoc]]]);
                     }
                 }
             }
 
-            $modelOrder = $query->orderBy('id')
+            $modelJobStages = $query->orderBy('id')
                 ->asArray()
                 ->all();
 
-            // get properties from Order object
+            // get properties from JobStages object
             $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelOrder));
+            array_push($RequestResponse, ArrayHelper::toArray($modelJobStages));
             //array_push($RequestResponse, var_dump($modelRequest));
 
             return Json::encode($RequestResponse);
 
         } else {
             // Search all records in the database
-            if (in_array('admin', $userRole)) {
-                $query = Order::find();  // get all records
-            } else {
-                $query = Order::find()->Where(['created_by' => $userByToken->id]);  // get records created by this user
-            }
+            $query = JobStages::find();
 
-            $modelOrder = $query->orderBy('id')
+            $modelJobStages = $query->orderBy('id')
                 ->asArray()
                 ->all();
 
-            // get properties from Order object
+            // get properties from JobStages object
             $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelOrder));
+            array_push($RequestResponse, ArrayHelper::toArray($modelJobStages));
 
             return Json::encode($RequestResponse);
         }
@@ -163,7 +155,7 @@ class OrderController extends Controller
 
 
     /**
-     * POST Method. Order table.
+     * POST Method. JobStages table.
      * Insert records
      *
      * @return json
@@ -198,54 +190,52 @@ class OrderController extends Controller
             }
             /*
             $flagRights = false;
-            foreach(array('admin', 'customer', 'contractor') as $value) {
+            foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
                     $flagRights = true;
                 }
             }
-            if (!$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
             */
-
+            
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayOrderAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'status_payment_id' => 'status_payment_id', 'status_completion_id' => 'status_completion_id', 'project_id' => 'project_id', 'feedback_id' => 'feedback_id');
+            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'period' => 'period');
 
-            $modelOrder = new Order();
+            $modelJobStages = new JobStages();
 
-            // fill in the properties in the Order object
-            foreach ($arrayOrderAssoc as $nameOrderAssoc => $valueOrderAssoc) {
-                if (array_key_exists($valueOrderAssoc, $bodyRaw)) {
-                    if ($modelOrder->hasAttribute($nameOrderAssoc)) {
-                        if ($nameOrderAssoc != 'id') {
-                            $modelOrder->$nameOrderAssoc = $bodyRaw[$valueOrderAssoc];
+            // fill in the properties in the JobStages object
+            foreach ($arrayJobStagesAssoc as $nameJobStagesAssoc => $valueJobStagesAssoc) {
+                if (array_key_exists($valueJobStagesAssoc, $bodyRaw)) {
+                    if ($modelJobStages->hasAttribute($nameJobStagesAssoc)) {
+                        if ($nameJobStagesAssoc != 'id') {
+                            $modelJobStages->$nameJobStagesAssoc = $bodyRaw[$valueJobStagesAssoc];
 
-                            if (!$modelOrder->validate($nameOrderAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueOrderAssoc));
+                            if (!$modelJobStages->validate($nameJobStagesAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueJobStagesAssoc));
 
-                            $modelOrder->created_by = $userByToken->id;
-                            $modelOrder->created_at = time();
-                            $modelOrder->updated_at = time();
+                            $modelJobStages->created_by = $userByToken->id;
                         }
                     }
                 }
             }
 
-            if ($modelOrder->validate()) {
+            if ($modelJobStages->validate()) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $flagOrder = $modelOrder->save(false); // insert into Order table
+                    $flagJobStages = $modelJobStages->save(false); // insert into JobStages table
 
-                    if ($flagOrder == true) {
+                    if ($flagJobStages == true) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заказ не может быть сохранен'));
+                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Этап работ не может быть сохранен'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заказ не может быть сохранен'));
+                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Этап работ не может быть сохранен'));
                 }
 
-                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заказ успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelOrder))));
-                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Заказ успешно сохранен'));
+                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Этап работ успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelJobStages))));
+                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Этап работ успешно сохранен'));
             } else {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
             }
@@ -256,7 +246,7 @@ class OrderController extends Controller
 
 
     /**
-     * PUT, PATCH Method. Order table.
+     * PUT, PATCH Method. JobStages table.
      * Update record by id parameter
      *
      * @return json
@@ -293,68 +283,63 @@ class OrderController extends Controller
             }
             /*
             $flagRights = false;
-            foreach(array('admin', 'customer', 'contractor') as $value) {
+            foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
                     $flagRights = true;
                 }
             }
-            if (!$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
             */
-
+            
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayOrderAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'status_payment_id' => 'status_payment_id', 'status_completion_id' => 'status_completion_id', 'project_id' => 'project_id', 'feedback_id' => 'feedback_id');
+            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'period' => 'period');
 
-            if (array_key_exists($arrayOrderAssoc['id'], $bodyRaw)) {
+            if (array_key_exists($arrayJobStagesAssoc['id'], $bodyRaw)) {
                 // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayOrderAssoc['id']])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayJobStagesAssoc['id']])) {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
-                // Search record by id in the database                
-                if (in_array('admin', $userRole)) {
-                    $queryOrder = Order::find()->where(['id' => $bodyRaw[$arrayOrderAssoc['id']]]);  // get all records
-                } else {
-                    $queryOrder = Order::find()->where(['AND', ['id' => $bodyRaw[$arrayOrderAssoc['id']]], ['created_by'=> $userByToken->id]]);   // get records created by this user
-                }
-                $modelOrder = $queryOrder->one();
+                // Search record by id in the database
+                $queryJobStages = JobStages::find()->where(['id' => $bodyRaw[$arrayJobStagesAssoc['id']]]);
+                $modelJobStages = $queryJobStages->one();
 
-                if (empty($modelOrder)) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Заказ по id'));
+                if (empty($modelJobStages)) {
+                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Этап работ по id'));
                 }
 
-                foreach ($arrayOrderAssoc as $nameOrderAssoc => $valueOrderAssoc) {
-                    if (array_key_exists($valueOrderAssoc, $bodyRaw)) {
-                        if ($modelOrder->hasAttribute($nameOrderAssoc)) {
-                            $modelOrder->$nameOrderAssoc = $bodyRaw[$arrayOrderAssoc[$nameOrderAssoc]];
-                            if (!$modelOrder->validate($nameOrderAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+                foreach ($arrayJobStagesAssoc as $nameJobStagesAssoc => $valueJobStagesAssoc) {
+                    if (array_key_exists($valueJobStagesAssoc, $bodyRaw)) {
+                        if ($modelJobStages->hasAttribute($nameJobStagesAssoc)) {
+                            $modelJobStages->$nameJobStagesAssoc = $bodyRaw[$arrayJobStagesAssoc[$nameJobStagesAssoc]];
+                            if (!$modelJobStages->validate($nameJobStagesAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
 
-                            $modelOrder->created_by = $userByToken->id;
-                            $modelOrder->updated_at = time();
+                            $modelJobStages->created_by = $userByToken->id;
                         }
                     }
                 }
 
-                // Save Order object
-                if ($modelOrder->validate()) {
+                // Save JobStages object
+                if ($modelJobStages->validate()) {
                     $transaction = \Yii::$app->db->beginTransaction();
                     try {
-                        $flagOrder = $modelOrder->save(false); // update Order table
+                        $flagJobStages = $modelJobStages->save(false); // update JobStages table
 
-                        if ($flagOrder) {
+                        if ($flagJobStages) {
                             $transaction->commit();
                         } else {
                             $transaction->rollBack();
-                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заказ не может быть обновлен'));
+                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Этап работ не может быть обновлен'));
                         }
                     } catch (Exception $ex) {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заказ не может быть обновлен'));
+                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Этап работ не может быть обновлен'));
                     }
                 } else {
                     return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
                 }
 
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Заказ успешно сохранен'));
+                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Этап работ успешно сохранен'));
             } else {
                 return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id параметр в запросе'));
             }
@@ -365,7 +350,7 @@ class OrderController extends Controller
 
 
     /**
-     * DELETE Method. Order table.
+     * DELETE Method. JobStages table.
      * Delete records by id parameter
      * or by another parameters
      *
@@ -403,59 +388,55 @@ class OrderController extends Controller
             }
             /*
             $flagRights = false;
-            foreach(array('admin', 'customer', 'contractor') as $value) {
+            foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
                     $flagRights = true;
                 }
             }
-            if (!$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
             */
-
+            
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayOrderAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'status_payment_id' => 'status_payment_id', 'status_completion_id' => 'status_completion_id', 'project_id' => 'project_id', 'feedback_id' => 'feedback_id');
+            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'period' => 'period');
 
-            if (array_key_exists($arrayOrderAssoc['id'], $bodyRaw)) {
+            if (array_key_exists($arrayJobStagesAssoc['id'], $bodyRaw)) {
                 // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayOrderAssoc['id']])) {
+                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayJobStagesAssoc['id']])) {
                     return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
                 }
 
                 // Search record by id in the database
-                if (in_array('admin', $userRole)) {
-                    $queryOrder = Order::find()->where(['id' => $bodyRaw[$arrayOrderAssoc['id']]]);  // get all records
-                } else {
-                    $queryOrder = Order::find()->where(['AND', ['id' => $bodyRaw[$arrayOrderAssoc['id']]], ['created_by'=> $userByToken->id]]);   // get records created by this user
-                }
-                $modelOrder = $queryOrder->one();
+                $queryJobStages = JobStages::find()->where(['id' => $bodyRaw[$arrayJobStagesAssoc['id']]]);
+                $modelJobStages = $queryJobStages->one();
 
-                if (empty($modelOrder)) {
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Заказ по id'));
+                if (empty($modelJobStages)) {
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Этап работ по id'));
                 }
             } else {
                 //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id материала'));
                 return $this->actionDeleteByParam();
             }
 
-            if (!empty($modelOrder)) {
+            if (!empty($modelJobStages)) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    // delete from Order table
-                    $countOrderDelete = $modelOrder->delete($modelOrder->id);
+                    // delete from JobStages table
+                    $countJobStagesDelete = $modelJobStages->delete($modelJobStages->id);
 
-                    if ($countOrderDelete > 0) {
+                    if ($countJobStagesDelete > 0) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заказ не может быть удален'));
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Этап работ не может быть удален'));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заказ не может быть удален'));
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Этап работ не может быть удален'));
                 }
 
-                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заказ успешно удален'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Этап работ успешно удален'));
             } else {
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заказ не может быть удален'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Этап работ не может быть удален'));
             }
         } else {
             return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
@@ -464,7 +445,7 @@ class OrderController extends Controller
     }
 
     /**
-     * DELETE Method. Order table.
+     * DELETE Method. JobStages table.
      * Delete records by another parameters
      *
      * @return json
@@ -494,63 +475,59 @@ class OrderController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            // If user have create right that his allowed to other actions to the Spacialization table
+            // If user have create right that his allowed to other actions to the Spacialization table            
             if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createMediator')) {
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
+                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
             }
             /*
             $flagRights = false;
-            foreach(array('admin', 'customer', 'contractor') as $value) {
+            foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
                     $flagRights = true;
                 }
             }
-            if (!$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
+            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
             */
-
+            
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayOrderAssoc = array ('id' => 'id', 'request_id' => 'request_id', 'response_id' => 'response_id', 'status_payment_id' => 'status_payment_id', 'status_completion_id' => 'status_completion_id', 'project_id' => 'project_id', 'feedback_id' => 'feedback_id');
+            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'period' => 'period');
 
             // Search record by id in the database
-            if (in_array('admin', $userRole)) {
-                $queryOrder = Order::find();  // get all records
-            } else {
-                $queryOrder = Order::find()->where(['created_by'=> $userByToken->id]);   // get records created by this user
-            }
-            $modelValidate = new Order();
-            foreach ($arrayOrderAssoc as $nameOrderAssoc => $valueOrderAssoc) {
-                if (array_key_exists($valueOrderAssoc, $bodyRaw)) {
-                    if ($modelValidate->hasAttribute($nameOrderAssoc)) {
-                        $modelValidate->$nameOrderAssoc = $bodyRaw[$arrayOrderAssoc[$nameOrderAssoc]];
-                        if (!$modelValidate->validate($nameOrderAssoc)) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueOrderAssoc));
+            $queryJobStages = JobStages::find();
+            $modelValidate = new JobStages();
+            foreach ($arrayJobStagesAssoc as $nameJobStagesAssoc => $valueJobStagesAssoc) {
+                if (array_key_exists($valueJobStagesAssoc, $bodyRaw)) {
+                    if ($modelValidate->hasAttribute($nameJobStagesAssoc)) {
+                        $modelValidate->$nameJobStagesAssoc = $bodyRaw[$arrayJobStagesAssoc[$nameJobStagesAssoc]];
+                        if (!$modelValidate->validate($nameJobStagesAssoc)) return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueJobStagesAssoc));
 
-                        $queryOrder->andWhere([$nameOrderAssoc => $bodyRaw[$arrayOrderAssoc[$nameOrderAssoc]]]);
+                        $queryJobStages->andWhere([$nameJobStagesAssoc => $bodyRaw[$arrayJobStagesAssoc[$nameJobStagesAssoc]]]);
                     }
                 }
 
             }
-            $modelsOrder = $queryOrder->all();
+            $modelsJobStages = $queryJobStages->all();
 
-            if (!empty($modelsOrder) && !empty($modelValidate)) {
-                foreach ($modelsOrder as $modelOrder) {
+            if (!empty($modelsJobStages) && !empty($modelValidate)) {
+                foreach ($modelsJobStages as $modelJobStages) {
                     $transaction = \Yii::$app->db->beginTransaction();
                     try {
-                        // delete from Order table.
-                         $countOrderDelete = $modelOrder->delete();
+                        // delete from JobStages table.
+                         $countJobStagesDelete = $modelJobStages->delete();
 
-                        if ($countOrderDelete > 0) {
+                        if ($countJobStagesDelete > 0) {
                             $transaction->commit();
                         } else {
                             $transaction->rollBack();
-                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заказ не может быть удален'));
+                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Этап работ не может быть удален'));
                         }
                     } catch (Exception $ex) {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Заказ не может быть удален'));
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Этап работ не может быть удален'));
                     }
                 }
 
-                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Заказ успешно удален'));
+                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Этап работ успешно удален'));
             }
         }
     }
