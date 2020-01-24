@@ -16,7 +16,7 @@ use yii\helpers\Html;
 /**
  * API ProjectFile controller
  */
-class ProjectFilesController extends Controller
+class ProjectFileController extends Controller
 {
     /**
      * Constants
