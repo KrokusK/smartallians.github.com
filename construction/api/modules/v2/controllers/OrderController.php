@@ -288,7 +288,7 @@ class OrderController extends Controller
 
             // Check rights
             // If user have create right that his allowed to other actions to the Spacialization table
-            if (static::CHECK_RIGHTS_RBAC !\Yii::$app->user->can('createMediator')) {
+            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createMediator')) {
                 return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию обновления'));
             }
             /*
