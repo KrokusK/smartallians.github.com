@@ -29,10 +29,10 @@ class m191220_000020_create_order_tables extends Migration
             'id' => $this->primaryKey(),
             'request_id' => $this->integer()->notNull(),
             'response_id' => $this->integer()->notNull(),
-            'status_payment_id' => $this->integer()->notNull(),
-            'status_completion_id' => $this->integer()->notNull(),
-            'project_id' => $this->integer()->notNull(),
-            'feedback_id' => $this->integer()->notNull(),
+            'status_payment_id' => $this->integer(),
+            'status_completion_id' => $this->integer(),
+            'project_id' => $this->integer(),
+            'feedback_id' => $this->integer(),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull()
         ]);
