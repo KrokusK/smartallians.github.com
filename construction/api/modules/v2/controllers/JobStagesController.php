@@ -111,7 +111,7 @@ class JobStagesController extends Controller
 
         if (count($getParams) > 0) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'period' => 'period');
+            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'cost' => 'cost');
 
             $query = JobStages::find();
             $modelValidate = new JobStages();
@@ -199,7 +199,7 @@ class JobStagesController extends Controller
             */
             
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'period' => 'period');
+            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'cost' => 'cost');
 
             $modelJobStages = new JobStages();
 
@@ -292,7 +292,7 @@ class JobStagesController extends Controller
             */
             
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'period' => 'period');
+            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'cost' => 'cost');
 
             if (array_key_exists($arrayJobStagesAssoc['id'], $bodyRaw)) {
                 // check id parametr
@@ -397,7 +397,7 @@ class JobStagesController extends Controller
             */
             
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'period' => 'period');
+            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'cost' => 'cost');
 
             if (array_key_exists($arrayJobStagesAssoc['id'], $bodyRaw)) {
                 // check id parametr
@@ -490,7 +490,7 @@ class JobStagesController extends Controller
             */
             
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'period' => 'period');
+            $arrayJobStagesAssoc = array ('id' => 'id', 'name' => 'name', 'period' => 'period', 'cost' => 'cost');
 
             // Search record by id in the database
             $queryJobStages = JobStages::find();
