@@ -73,7 +73,7 @@ class StatusDeliveryController extends Controller
     {
         $modelStatusDelivery = new StatusDelivery();
         $modelStatusDelivery->setMethodAndParams();
-        $getParams = getRequestParams();
+        $getParams =  $modelStatusDelivery->getRequestParams();
 
         try {
             $model = new VerifyEmailForm($token);
