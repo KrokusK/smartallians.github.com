@@ -65,7 +65,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
 
     public function setMethodAndParams()
     {
-        $this->method = Yii::$app->getRequest()->getMethod();
+        $this->method = strtolower(Yii::$app->getRequest()->getMethod());
         $this->params = $this->setParamsByMethod();
     }
 
@@ -77,16 +77,16 @@ class StatusDelivery extends \yii\db\ActiveRecord
     public function setParamsByMethod()
     {
         switch ($this->method) {
-            case 'GET':
+            case 'get':
                 $this->params = Yii::$app->getRequest()->get();
                 break;
-            case 'POST':
+            case 'post':
                 $this->params = Yii::$app->getRequest()->post();
                 break;
-            case 'PUT':
-            case 'PATCH':
-            case 'DELETE':
-                json_decode(Yii::$app->getRequest()->getRawBody(), true);
+            case 'put':
+            case 'patch':
+            case 'delete':
+                $this->params = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         }
 
     }
