@@ -131,7 +131,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
                 'type' => 'error',
                 'message' => 'Ошибка: Аутентификация не выполнена'
             ];
-            throw new BadRequestHttpException(ArrayHelper::htmlEncode($this->message));
+            throw new BadRequestHttpException('TEST-TEST-TEST');
         }
     }
 }
