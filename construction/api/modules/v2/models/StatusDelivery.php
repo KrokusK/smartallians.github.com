@@ -77,7 +77,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
     public function setParamsByMethod()
     {
         switch ($this->method) {
-            case 'get':
+            case "get":
                 $this->params = Yii::$app->getRequest()->get();
                 break;
             case 'post':
