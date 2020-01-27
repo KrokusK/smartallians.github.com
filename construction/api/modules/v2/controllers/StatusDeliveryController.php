@@ -97,7 +97,7 @@ class StatusDeliveryController extends Controller
 
         // Get array with user Roles
         $userRole =[];
-        $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
+        $userAssigned = Yii::$app->authManager->getAssignments($modelStatusDelivery->userByToken->id);
         foreach($userAssigned as $userAssign){
             array_push($userRole, $userAssign->roleName);
         }
