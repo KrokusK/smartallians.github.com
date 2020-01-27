@@ -74,8 +74,11 @@ class StatusDeliveryController extends Controller
         $modelStatusDelivery = new StatusDelivery();
 
         // get request params
-        $getParams = $modelStatusDelivery->getRequestParams();
-
+        try {
+            $getParams = $modelStatusDelivery->getRequestParams();
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
         //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => var_dump($modelStatusDelivery->method).var_dump($getParams)));
 
         /*
