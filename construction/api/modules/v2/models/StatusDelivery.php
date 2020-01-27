@@ -17,6 +17,15 @@ class StatusDelivery extends \yii\db\ActiveRecord
     public $method;
     protected $params;
 
+    public function init()
+    {
+
+
+        parent::init();
+
+        $this->setMethodAndParams();
+    }
+
     /**
      * {@inheritdoc}
      */
