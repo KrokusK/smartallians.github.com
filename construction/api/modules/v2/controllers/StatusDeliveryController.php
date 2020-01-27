@@ -75,11 +75,13 @@ class StatusDeliveryController extends Controller
         $modelStatusDelivery->setMethodAndParams();
         $getParams =  $modelStatusDelivery->getRequestParams();
 
+        /*
         try {
             $model = new VerifyEmailForm($token);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
+        */
 
         // check user is a guest
         if (array_key_exists('token', $getParams)) {
