@@ -119,11 +119,11 @@ class StatusDelivery extends \yii\db\ActiveRecord
         if (array_key_exists('token', $this->params)) {
             $this->userByToken = \Yii::$app->user->loginByAccessToken($this->params['token']);
             if (empty($this->userByToken)) {
-                setMessage(1, 'Ошибка: Аутентификация не выполнена');
+                $this->setMessage(1, 'Ошибка: Аутентификация не выполнена');
                 throw new BadRequestHttpException(Json::encode($this->message));
             }
         } else {
-            setMessage(1, 'Ошибка: Аутентификация не выполнена');
+            $this->setMessage(1, 'Ошибка: Аутентификация не выполнена');
             throw new BadRequestHttpException(Json::encode($this->message));
         }
     }
