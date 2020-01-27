@@ -17,13 +17,16 @@ class StatusDelivery extends \yii\db\ActiveRecord
     public $method;
     protected $params;
 
+    /**
+     * init
+     */
+
     public function init()
     {
-
-
         parent::init();
 
-        $this->setMethodAndParams();
+        // Set properties: method, params
+        $this->setProperties();
     }
 
     /**
@@ -72,7 +75,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
      * set params by values from request
      */
 
-    public function setMethodAndParams()
+    public function setProperties()
     {
         $this->method = strtolower(Yii::$app->getRequest()->getMethod());
         $this->setParamsByMethod();

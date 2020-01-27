@@ -72,7 +72,8 @@ class StatusDeliveryController extends Controller
     public function actionView()
     {
         $modelStatusDelivery = new StatusDelivery();
-        //$modelStatusDelivery->setMethodAndParams();
+
+        // get request params
         $getParams = $modelStatusDelivery->getRequestParams();
 
         return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => var_dump($modelStatusDelivery->method).var_dump($getParams)));
