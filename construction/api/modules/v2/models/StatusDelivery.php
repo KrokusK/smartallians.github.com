@@ -66,7 +66,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
     public function setMethodAndParams()
     {
         $this->method = Yii::$app->getRequest()->getMethod();
-        $this->params = setParamsByMethod();
+        $this->params = $this->setParamsByMethod();
     }
 
     /**
