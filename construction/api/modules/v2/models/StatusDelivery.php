@@ -14,8 +14,8 @@ class StatusDelivery extends \yii\db\ActiveRecord
     /**
      * properties
      */
-    public $method ;
-    public $params ;
+    public $method;
+    public $params;
 
     /**
      * {@inheritdoc}
@@ -66,7 +66,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
     public function setMethodAndParams()
     {
         $this->method = strtolower(Yii::$app->getRequest()->getMethod());
-        $this->params = $this->setParamsByMethod();
+        $this->setParamsByMethod();
     }
 
     /**
