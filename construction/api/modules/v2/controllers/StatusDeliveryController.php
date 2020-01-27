@@ -71,9 +71,11 @@ class StatusDeliveryController extends Controller
      */
     public function actionView()
     {
+        return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => Yii::$app->getRequest()->getMethod()));
+
         $modelStatusDelivery = new StatusDelivery();
         $modelStatusDelivery->setMethodAndParams();
-        $getParams =  $modelStatusDelivery->getRequestParams();
+        $getParams = $modelStatusDelivery->getRequestParams();
 
         /*
         try {
