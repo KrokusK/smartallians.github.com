@@ -4,6 +4,7 @@ namespace api\modules\v2\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\Json;
+use yii\web\BadRequestHttpException;
 
 /**
  * This is the model class for table "status_delivery".
@@ -14,8 +15,10 @@ class StatusDelivery extends \yii\db\ActiveRecord
     /**
      * properties
      */
+    public userByToken;
     public $method;
     protected $params;
+    protected $message;
 
     /**
      * init
@@ -99,6 +102,25 @@ class StatusDelivery extends \yii\db\ActiveRecord
             case 'patch':
             case 'delete':
                 $this->params = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        }
+    }
+
+    /**
+     * Authorization user by token in params
+     */
+    public function loginByParams()
+    {
+        if (array_key_exists('token', $this->params)) {
+            $this->userByToken = \Yii::$app->user->loginByAccessToken($this->params['token']);
+            if (empty($this->userByToken)) {
+                //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+                $this->message = array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена');
+                throw new BadRequestHttpException($this->message);
+            }
+        } else {
+            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+            $this->message = array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена');
+            throw new BadRequestHttpException($this->message);
         }
     }
 }

@@ -71,6 +71,7 @@ class StatusDeliveryController extends Controller
      */
     public function actionView()
     {
+        // init model
         $modelStatusDelivery = new StatusDelivery();
 
         // get request params
@@ -79,17 +80,10 @@ class StatusDeliveryController extends Controller
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => var_dump($modelStatusDelivery->method).var_dump($getParams)));
 
+        // authorization user by token in request params
+        $modelStatusDelivery->loginByParams();
         /*
-        try {
-            $model = new VerifyEmailForm($token);
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestHttpException($e->getMessage());
-        }
-        */
-
-        // check user is a guest
         if (array_key_exists('token', $getParams)) {
             $userByToken = \Yii::$app->user->loginByAccessToken($getParams['token']);
             if (empty($userByToken)) {
@@ -99,6 +93,7 @@ class StatusDeliveryController extends Controller
         } else {
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
+        */
 
         // Get array with user Roles
         $userRole =[];
