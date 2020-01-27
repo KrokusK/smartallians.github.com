@@ -76,7 +76,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
 
     public function setParamsByMethod()
     {
-        /*
         switch ($this->method) {
             case 'get':
                 $this->params = Yii::$app->getRequest()->get();
@@ -89,17 +88,5 @@ class StatusDelivery extends \yii\db\ActiveRecord
             case 'delete':
                 $this->params = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         }
-        */
-
-        $this->params = Yii::$app->getRequest()->get();
-        /*
-        if ($this->method == 'get') {
-            $this->params = Yii::$app->getRequest()->get();
-        } elseif ($this->method == 'post') {
-            $this->params = Yii::$app->getRequest()->post();
-        } else {
-            $this->params = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        }
-        */
     }
 }
