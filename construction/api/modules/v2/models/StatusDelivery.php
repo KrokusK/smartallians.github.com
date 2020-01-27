@@ -120,7 +120,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
                     'type' => 'error',
                     'message' => 'Ошибка: Аутентификация не выполнена'
                 ];
-                throw new BadRequestHttpException(implode(',', $this->message));
+                throw new BadRequestHttpException(Json::encode($this->message));
             }
         } else {
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
@@ -130,7 +130,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
                 'type' => 'error',
                 'message' => 'Ошибка: Аутентификация не выполнена'
             ];
-            throw new BadRequestHttpException(implode(',', $this->message));
+            throw new BadRequestHttpException(Json::encode($this->message));
         }
     }
 }
