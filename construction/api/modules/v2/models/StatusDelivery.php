@@ -15,7 +15,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
     /**
      * properties
      */
-    public userByToken;
+    public $userByToken;
     public $method;
     protected $params;
     protected $message;
