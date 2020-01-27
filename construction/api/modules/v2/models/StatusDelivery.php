@@ -15,7 +15,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
      * properties
      */
     public $method ;
-    protected $params ;
+    public $params ;
 
     /**
      * {@inheritdoc}
