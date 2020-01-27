@@ -3,6 +3,7 @@ namespace api\modules\v2\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "status_delivery".
@@ -10,6 +11,12 @@ use yii\db\ActiveRecord;
  */
 class StatusDelivery extends \yii\db\ActiveRecord
 {
+    /**
+     * properties
+     */
+    public $method ;
+    protected $params ;
+
     /**
      * {@inheritdoc}
      */
@@ -41,4 +48,46 @@ class StatusDelivery extends \yii\db\ActiveRecord
         return $this->hasOne(Delivery::className(), ['status_delivery_id' => 'id']);
     }
 
+    /**
+     * Get params from request
+     *
+     */
+
+    public function getRequestParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * Defining request method and
+     * set params by values from request
+     */
+
+    public function setMethodAndParams()
+    {
+        $this->method = Yii::$app->getMethod();
+        $this->params = setParamsByMethod();
+    }
+
+    /**
+     * Set params from request
+     *
+     */
+
+    public function setParamsByMethod()
+    {
+        switch ($this->method) {
+            case 'GET':
+                $this->params = Yii::$app->getRequest()->get();
+                break;
+            case 'POST':
+                $this->params = Yii::$app->getRequest()->post();
+                break;
+            case 'PUT':
+            case 'PATCH':
+            case 'DELETE':
+                json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        }
+
+    }
 }

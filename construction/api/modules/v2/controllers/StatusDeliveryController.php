@@ -71,7 +71,15 @@ class StatusDeliveryController extends Controller
      */
     public function actionView()
     {
-        $getParams = Yii::$app->getRequest()->get();
+        $modelStatusDelivery = new StatusDelivery();
+        $modelStatusDelivery->setMethodAndParams();
+        $getParams = getRequestParams();
+
+        try {
+            $model = new VerifyEmailForm($token);
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
 
         // check user is a guest
         if (array_key_exists('token', $getParams)) {
