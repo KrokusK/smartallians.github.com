@@ -114,13 +114,23 @@ class StatusDelivery extends \yii\db\ActiveRecord
             $this->userByToken = \Yii::$app->user->loginByAccessToken($this->params['token']);
             if (empty($this->userByToken)) {
                 //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-                $this->message = array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена');
-                throw new BadRequestHttpException($this->message);
+                $this->message = [
+                    'method' => $this->method,
+                    'status' => 1,
+                    'type' => 'error',
+                    'message' => 'Ошибка: Аутентификация не выполнена'
+                ];
+                throw new BadRequestHttpException(ArrayHelper::htmlEncode($this->message));
             }
         } else {
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            $this->message = array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена');
-            throw new BadRequestHttpException($this->message);
+            $this->message = [
+                'method' => $this->method,
+                'status' => 1,
+                'type' => 'error',
+                'message' => 'Ошибка: Аутентификация не выполнена'
+            ];
+            throw new BadRequestHttpException(ArrayHelper::htmlEncode($this->message));
         }
     }
 }
