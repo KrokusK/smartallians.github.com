@@ -91,6 +91,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
         }
         */
 
+        $this->params = Yii::$app->getRequest()->get();
         if ($this->method == 'get') {
             $this->params = Yii::$app->getRequest()->get();
         } elseif ($this->method == 'post') {
