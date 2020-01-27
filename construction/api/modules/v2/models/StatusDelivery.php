@@ -92,6 +92,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
         */
 
         $this->params = Yii::$app->getRequest()->get();
+        /*
         if ($this->method == 'get') {
             $this->params = Yii::$app->getRequest()->get();
         } elseif ($this->method == 'post') {
@@ -99,5 +100,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
         } else {
             $this->params = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         }
+        */
     }
 }
