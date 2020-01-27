@@ -48,7 +48,13 @@ class StatusDelivery extends \yii\db\ActiveRecord
 
         return [
             [['name'], 'required', 'message' => 'Поле должно быть заполнено'],
-            [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
+            [
+                ['id'],
+                'match',
+                'pattern' => '/^[0-9]*$/',
+                'message' => 'поле id  должно быть типа integer',
+                'skipOnEmpty' => true
+            ],
             [['name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
         ];
 
@@ -113,7 +119,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
         if (array_key_exists('token', $this->params)) {
             $this->userByToken = \Yii::$app->user->loginByAccessToken($this->params['token']);
             if (empty($this->userByToken)) {
-                //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
                 $this->message = [
                     'method' => $this->method,
                     'status' => 1,
@@ -123,7 +128,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
                 throw new BadRequestHttpException(Json::encode($this->message));
             }
         } else {
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
             $this->message = [
                 'method' => $this->method,
                 'status' => 1,
