@@ -76,8 +76,8 @@ class StatusDeliveryController extends Controller
         // get request params
         $getParams = $modelStatusDelivery->getRequestParams();
 
-        return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => var_dump($modelStatusDelivery->method).var_dump($getParams)));
-        
+        //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => var_dump($modelStatusDelivery->method).var_dump($getParams)));
+
         /*
         try {
             $model = new VerifyEmailForm($token);
