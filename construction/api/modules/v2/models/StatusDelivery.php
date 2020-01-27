@@ -5,7 +5,6 @@ use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "status_delivery".
@@ -121,7 +120,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
                     'type' => 'error',
                     'message' => 'Ошибка: Аутентификация не выполнена'
                 ];
-                throw new BadRequestHttpException(ArrayHelper::htmlEncode($this->message));
+                throw new BadRequestHttpException(implode(',', $this->message));
             }
         } else {
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
@@ -131,7 +130,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
                 'type' => 'error',
                 'message' => 'Ошибка: Аутентификация не выполнена'
             ];
-            throw new BadRequestHttpException('TEST-TEST-TEST');
+            throw new BadRequestHttpException(implode(',', $this->message));
         }
     }
 }
