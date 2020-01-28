@@ -7,9 +7,10 @@ use yii\helpers\Json;
 
 /**
  * This is the model class for processing request
- * and login user
+ * User login by token in request params. Model
+ * return messages of request processing status.
  */
-class UserRequest extends Model
+class UserRequestData extends Model
 {
     /**
      * properties

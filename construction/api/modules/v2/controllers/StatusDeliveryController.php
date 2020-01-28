@@ -2,7 +2,7 @@
 namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\StatusDelivery;
-use api\modules\v2\models\UserRequest;
+use api\modules\v2\models\UserRequestData;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -73,7 +73,7 @@ class StatusDeliveryController extends Controller
     public function actionView()
     {
         // init model
-        $modelStatusDelivery = new UserRequest();
+        $modelStatusDelivery = new UserRequestData();
 
         // get request params
         $getParams = $modelStatusDelivery->getRequestParams();
