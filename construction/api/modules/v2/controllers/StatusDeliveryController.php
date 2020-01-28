@@ -97,7 +97,7 @@ class StatusDeliveryController extends Controller
         }
 
         // Check rights
-        if (! $modelUserRequestData->checkUserRights(array('admin'))) {
+        if (! $modelUserRequestData->checkUserRightsByRole(array('admin'))) {
             $modelUserRequestData->saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
             return Json::encode($modelUserRequestData->getErrorMessage());
         }

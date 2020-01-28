@@ -117,7 +117,7 @@ class UserRequestData extends Model
     /**
      * Check user rights
      */
-    public function checkUserRights($rights = [])
+    public function checkUserRightsByRole($rights = [])
     {
         $flagRights = false;
         foreach($rights as $value) {
