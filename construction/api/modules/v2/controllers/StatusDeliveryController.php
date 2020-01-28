@@ -90,7 +90,7 @@ class StatusDeliveryController extends Controller
         }
 
         // Get array with user Roles
-        $userRoles = $modelUserRequestData->getUserRoles();
+        $userRole = $modelUserRequestData->getUserRoles();
         if (empty($userRoles)) {
             $modelUserRequestData->saveErrorMessage('Ошибка: Аутентификация не выполнена');
             return Json::encode($modelUserRequestData->getErrorMessage());
