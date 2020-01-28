@@ -78,13 +78,14 @@ class StatusDeliveryController extends Controller
         $getParams = $modelStatusDelivery->getRequestParams();
         if (empty($getParams)) {
             $modelStatusDelivery->setMessage(1, 'Ошибка: Запрос не содержит параметров');
-            return Json::encode($modelStatusDelivery->message);
+            return Json::encode($modelStatusDelivery->getMessage());
         }
 
         // authorization user by token in request params
         $userByToken = $modelStatusDelivery->loginByParams();
         if (empty($userByToken)) {
-            return Json::encode($modelStatusDelivery->message);
+            $modelStatusDelivery->setMessage(1, 'Ошибка: Аутентификация не выполнена');
+            return Json::encode($modelStatusDelivery->getMessage());
         }
 
         /*

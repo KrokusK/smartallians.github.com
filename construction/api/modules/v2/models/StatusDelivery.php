@@ -15,8 +15,8 @@ class StatusDelivery extends \yii\db\ActiveRecord
     /**
      * properties
      */
-    public $method;
-    public $message;
+    protected $method;
+    protected $message;
     protected $userByToken;
     protected $params;
 
@@ -114,7 +114,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
             }
         }
 
-        $this->setMessage(1, 'Ошибка: Аутентификация не выполнена');
         return null;
     }
 
@@ -139,6 +138,16 @@ class StatusDelivery extends \yii\db\ActiveRecord
                     'message' => $message
                 ];
         }
+    }
+
+    /**
+     * Get text message
+     *
+     */
+
+    public function getMessage()
+    {
+        return $this->message;
     }
 
     /**
