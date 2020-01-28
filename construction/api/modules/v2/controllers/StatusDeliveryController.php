@@ -73,20 +73,20 @@ class StatusDeliveryController extends Controller
     public function actionView()
     {
         // init model
-        $modelStatusDelivery = new UserRequestData();
+        $modelUserRequestData = new UserRequestData();
 
         // get request params
-        $getParams = $modelStatusDelivery->getRequestParams();
+        $getParams = $modelUserRequestData->getRequestParams();
         if (empty($getParams)) {
-            $modelStatusDelivery->setMessage(1, 'Ошибка: Запрос не содержит параметров');
-            return Json::encode($modelStatusDelivery->getMessage());
+            $modelUserRequestData->setMessage(1, 'Ошибка: Запрос не содержит параметров');
+            return Json::encode($modelUserRequestData->getMessage());
         }
 
         // authorization user by token in request params
-        $userByToken = $modelStatusDelivery->loginByParams();
+        $userByToken = $modelUserRequestData->loginByParams();
         if (empty($userByToken)) {
-            $modelStatusDelivery->setMessage(1, 'Ошибка: Аутентификация не выполнена');
-            return Json::encode($modelStatusDelivery->getMessage());
+            $modelUserRequestData->setMessage(1, 'Ошибка: Аутентификация не выполнена');
+            return Json::encode($modelUserRequestData->getMessage());
         }
 
         /*
