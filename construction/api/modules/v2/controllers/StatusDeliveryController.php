@@ -75,10 +75,10 @@ class StatusDeliveryController extends Controller
         $modelStatusDelivery = new StatusDelivery();
 
         // get request params
-        try {
-            $getParams = $modelStatusDelivery->getRequestParams();
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestHttpException($e->getMessage());
+        $getParams = $modelStatusDelivery->getRequestParams();
+        if (empty($getParams)) {
+            $modelStatusDelivery->setMessage(1, 'Ошибка: Запрос не содержит параметров');
+            return Json::encode($modelStatusDelivery->message);
         }
 
         // authorization user by token in request params
@@ -87,6 +87,13 @@ class StatusDeliveryController extends Controller
             return Json::encode($modelStatusDelivery->message);
         }
 
+        /*
+        try {
+            $getParams = $modelStatusDelivery->getRequestParams();
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+        */
 
         // Get array with user Roles
         $userRole =[];
