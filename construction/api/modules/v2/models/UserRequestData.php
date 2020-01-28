@@ -18,6 +18,7 @@ class UserRequestData extends Model
     protected $method;
     protected $message;
     protected $userByToken;
+    protected $userRole;
     protected $params;
 
     /**
@@ -90,6 +91,24 @@ class UserRequestData extends Model
     }
 
     /**
+     * Get user roles
+     */
+    public function getUserRoles()
+    {
+        if (!empty($this->userByToken)) {
+            $this->userRole = [];
+            $userAssigned = Yii::$app->authManager->getAssignments($this->userByToken->id);
+            foreach($userAssigned as $userAssign) {
+                array_push($this->userRole, $userAssign->roleName);
+            }
+
+            return $this->userRole;
+        }
+
+        return null;
+    }
+
+    /**
      * Set text message
      */
     public function setMessage($status = 1, $message = '') {
@@ -113,11 +132,28 @@ class UserRequestData extends Model
     }
 
     /**
+     * Set text error message
+     */
+    public function saveErrorMessage($message = '') {
+        $this->setMessage(1, $message);
+    }
+
+    /**
      * Get text message
      *
      */
 
     public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * Get text error message
+     *
+     */
+
+    public function getErrorMessage()
     {
         return $this->message;
     }

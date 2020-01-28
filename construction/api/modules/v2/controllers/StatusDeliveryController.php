@@ -78,30 +78,22 @@ class StatusDeliveryController extends Controller
         // get request params
         $getParams = $modelUserRequestData->getRequestParams();
         if (empty($getParams)) {
-            $modelUserRequestData->setMessage(1, 'Ошибка: Запрос не содержит параметров');
-            return Json::encode($modelUserRequestData->getMessage());
+            $modelUserRequestData->saveErrorMessage('Ошибка: Запрос не содержит параметров');
+            return Json::encode($modelUserRequestData->getErrorMessage());
         }
 
         // authorization user by token in request params
         $userByToken = $modelUserRequestData->loginByParams();
         if (empty($userByToken)) {
-            $modelUserRequestData->setMessage(1, 'Ошибка: Аутентификация не выполнена');
-            return Json::encode($modelUserRequestData->getMessage());
+            $modelUserRequestData->saveErrorMessage('Ошибка: Аутентификация не выполнена');
+            return Json::encode($modelUserRequestData->getErrorMessage());
         }
-
-        /*
-        try {
-            $getParams = $modelStatusDelivery->getRequestParams();
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestHttpException($e->getMessage());
-        }
-        */
 
         // Get array with user Roles
-        $userRole = [];
-        $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-        foreach($userAssigned as $userAssign) {
-            array_push($userRole, $userAssign->roleName);
+        $userRoles = $modelUserRequestData->getUserRoles();
+        if (empty($userRoles)) {
+            $modelUserRequestData->saveErrorMessage('Ошибка: Аутентификация не выполнена');
+            return Json::encode($modelUserRequestData->getErrorMessage());
         }
 
         // Check rights
