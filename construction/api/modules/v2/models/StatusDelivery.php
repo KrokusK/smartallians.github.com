@@ -15,24 +15,12 @@ class StatusDelivery extends \yii\db\ActiveRecord
     /**
      * properties
      */
-    public $userByToken;
     public $method;
+    protected $userByToken;
     protected $params;
     protected $message;
 
-    /**
-     * init
-     */
-
-    public function init()
-    {
-        parent::init();
-
-        // Set properties: method, params
-        $this->setProperties();
-    }
-
-    /**
+     /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -61,12 +49,15 @@ class StatusDelivery extends \yii\db\ActiveRecord
     }
 
     /**
-     *
-     * Link to table delivery
+     * init
      */
-    public function getDeliveries()
+
+    public function init()
     {
-        return $this->hasOne(Delivery::className(), ['status_delivery_id' => 'id']);
+        parent::init();
+
+        // Set properties: method, params
+        $this->setProperties();
     }
 
     /**
@@ -118,14 +109,13 @@ class StatusDelivery extends \yii\db\ActiveRecord
     {
         if (array_key_exists('token', $this->params)) {
             $this->userByToken = \Yii::$app->user->loginByAccessToken($this->params['token']);
-            if (empty($this->userByToken)) {
-                $this->setMessage(1, 'Ошибка: Аутентификация не выполнена');
-                throw new BadRequestHttpException(Json::encode($this->message));
+            if (!empty($this->userByToken)) {
+                return $this->userByToken;
             }
-        } else {
-            $this->setMessage(1, 'Ошибка: Аутентификация не выполнена');
-            throw new BadRequestHttpException(Json::encode($this->message));
         }
+
+        $this->setMessage(1, 'Ошибка: Аутентификация не выполнена');
+        return null;
     }
 
     /**
@@ -149,5 +139,14 @@ class StatusDelivery extends \yii\db\ActiveRecord
                     'message' => $message
                 ];
         }
+    }
+
+    /**
+     *
+     * Link to table delivery
+     */
+    public function getDeliveries()
+    {
+        return $this->hasOne(Delivery::className(), ['status_delivery_id' => 'id']);
     }
 }

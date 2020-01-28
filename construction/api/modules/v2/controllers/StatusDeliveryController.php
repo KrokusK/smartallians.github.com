@@ -82,22 +82,15 @@ class StatusDeliveryController extends Controller
         }
 
         // authorization user by token in request params
-        $modelStatusDelivery->loginByParams();
-        /*
-        if (array_key_exists('token', $getParams)) {
-            $userByToken = \Yii::$app->user->loginByAccessToken($getParams['token']);
-            if (empty($userByToken)) {
-                //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-        } else {
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
+        $userByToken = $modelStatusDelivery->loginByParams();
+        if (empty($userByToken)) {
+            return Json::encode($modelStatusDelivery->message);
         }
-        */
+
 
         // Get array with user Roles
         $userRole =[];
-        $userAssigned = Yii::$app->authManager->getAssignments($modelStatusDelivery->userByToken->id);
+        $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
         foreach($userAssigned as $userAssign){
             array_push($userRole, $userAssign->roleName);
         }
