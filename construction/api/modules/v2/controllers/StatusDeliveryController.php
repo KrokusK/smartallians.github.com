@@ -97,14 +97,11 @@ class StatusDeliveryController extends Controller
         }
 
         // Check rights
-        // If user have create right that his allowed to other actions to the StatusDelivery table
-        $flagRights = false;
-        foreach(array('admin') as $value) {
-            if (in_array($value, $userRole)) {
-                $flagRights = true;
-            }
+        if (!checkUserRights(array('admin'))) {
+            $modelUserRequestData->saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
+            return Json::encode($modelUserRequestData->getErrorMessage());
         }
-        if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
+            
 
         unset($getParams['token']);
 

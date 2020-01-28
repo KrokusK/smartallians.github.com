@@ -13,6 +13,12 @@ use yii\helpers\Json;
 class UserRequestData extends Model
 {
     /**
+     * Constants
+     */
+
+    const CHECK_RIGHTS_RBAC = false;  // Enable check rights by rbac model
+
+    /**
      * properties
      */
     protected $method;
@@ -106,6 +112,21 @@ class UserRequestData extends Model
         }
 
         return null;
+    }
+
+    /**
+     * Check user rights
+     */
+    public function checkUserRights($rights = [])
+    {
+        $flagRights = false;
+        foreach($rights as $value) {
+            if (in_array($value, $this->userRole)) {
+                $flagRights = true;
+            }
+        }
+        if (static::CHECK_RIGHTS_RBAC) return $flagRights;
+        else return true;
     }
 
     /**
