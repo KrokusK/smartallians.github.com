@@ -2,6 +2,7 @@
 namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\StatusDelivery;
+use api\modules\v2\models\UserRequest;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -72,7 +73,7 @@ class StatusDeliveryController extends Controller
     public function actionView()
     {
         // init model
-        $modelStatusDelivery = new StatusDelivery();
+        $modelStatusDelivery = new UserRequest();
 
         // get request params
         $getParams = $modelStatusDelivery->getRequestParams();
@@ -97,19 +98,14 @@ class StatusDeliveryController extends Controller
         */
 
         // Get array with user Roles
-        $userRole =[];
+        $userRole = [];
         $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-        foreach($userAssigned as $userAssign){
+        foreach($userAssigned as $userAssign) {
             array_push($userRole, $userAssign->roleName);
         }
-        //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
         // Check rights
         // If user have create right that his allowed to other actions to the StatusDelivery table
-        /*if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
-        }
-        */
         $flagRights = false;
         foreach(array('admin') as $value) {
             if (in_array($value, $userRole)) {
