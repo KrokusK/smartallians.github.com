@@ -97,15 +97,29 @@ class StatusDeliveryController extends Controller
         }
 
         // Check rights
-        if (! $modelUserRequestData->checkUserRightsByRole(array('admin'))) {
+        if (!$modelUserRequestData->checkUserRightsByRole(array('admin'))) {
             $modelUserRequestData->saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
             return Json::encode($modelUserRequestData->getErrorMessage());
         }
 
+        // Because the field names may match within a single query,
+        // the parameter names may not match the table field names.
+        // To solve this problem let's create an associative array
+        $assocStatusDelivery = array ('id' => 'id', 'name' => 'name');
 
-        unset($getParams['token']);
+        // Get properties from StatusDelivery object by request params
+        $modelStatusDelivery = new StatusDelivery();
+        $dataStatusDelivery = $modelStatusDelivery->getStatusDeliveryData($getParams, $assocStatusDelivery);
+        if (!empty($dataStatusDelivery)) {
+            $modelUserRequestData->saveDataMessage($dataStatusDelivery);
+            //array_push($RequestResponse, ArrayHelper::toArray($modelStatusDelivery));
+        } else {
+            $modelUserRequestData->saveErrorMessage('Ошибка: Записи не найдены');
+            return Json::encode($modelUserRequestData->getErrorMessage());
+        }
 
-        if (count($getParams) > 0) {
+        /*
+        if (count($getParams) > 1) {
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayStatusDeliveryAssoc = array ('id' => 'id', 'name' => 'name');
 
@@ -147,6 +161,7 @@ class StatusDeliveryController extends Controller
 
             return Json::encode($RequestResponse);
         }
+        */
     }
 
 

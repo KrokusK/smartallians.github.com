@@ -153,6 +153,13 @@ class UserRequestData extends Model
     }
 
     /**
+     * Set text message with data
+     */
+    public function saveDataMessage($message = '') {
+        $this->setMessage(0, $message);
+    }
+
+    /**
      * Set text error message
      */
     public function saveErrorMessage($message = '') {
@@ -160,11 +167,10 @@ class UserRequestData extends Model
     }
 
     /**
-     * Get text message
+     * Get text message with data
      *
      */
-
-    public function getMessage()
+    public function getDataMessage()
     {
         return $this->message;
     }

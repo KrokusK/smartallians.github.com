@@ -46,4 +46,30 @@ class StatusDelivery extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Delivery::className(), ['status_delivery_id' => 'id']);
     }
+
+    /**
+     *
+     * Get records from status_delivery table
+     */
+    public function getStatusDeliveryData($params = [], $assoc = [])
+    {
+        $query = StatusDelivery::find();
+        $modelValidate = new StatusDelivery();
+        foreach ($assoc as $name => $value) {
+            if (array_key_exists($value, $params)) {
+                if ($modelValidate->hasAttribute($name)) {
+                    $modelValidate->$name = $params[$assoc[$name]];
+                    if (!$modelValidate->validate($name)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
+
+                    $query->andWhere([$name => $params[$assoc[$name]]]);
+                }
+            }
+        }
+
+        $modelStatusDelivery = $query->orderBy('id')
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::toArray($modelStatusDelivery);
+    }
 }
