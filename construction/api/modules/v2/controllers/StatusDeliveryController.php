@@ -92,7 +92,7 @@ class StatusDeliveryController extends Controller
         // Get array with user Roles
         $userRole = $modelUserRequestData->getUserRoles();
         if (empty($userRole)) {
-            $modelUserRequestData->saveErrorMessage('Ошибка: Аутентификация не выполнена');
+            $modelUserRequestData->saveErrorMessage('Ошибка: У пользователя отсутствуют роли');
             return Json::encode($modelUserRequestData->getErrorMessage());
         }
 
@@ -112,57 +112,11 @@ class StatusDeliveryController extends Controller
         $dataStatusDelivery = $modelStatusDelivery->getStatusDeliveryData($getParams, $assocStatusDelivery);
         if (!empty($dataStatusDelivery)) {
             $modelUserRequestData->saveDataMessage($dataStatusDelivery);
-            //array_push($RequestResponse, ArrayHelper::toArray($modelStatusDelivery));
             return Json::encode($modelUserRequestData->getDataMessage());
         } else {
             $modelUserRequestData->saveErrorMessage('Ошибка: Записи не найдены');
             return Json::encode($modelUserRequestData->getErrorMessage());
         }
-
-        /*
-        if (count($getParams) > 1) {
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayStatusDeliveryAssoc = array ('id' => 'id', 'name' => 'name');
-
-            $query = StatusDelivery::find();
-            $modelValidate = new StatusDelivery();
-            foreach ($arrayStatusDeliveryAssoc as $nameStatusDeliveryAssoc => $valueStatusDeliveryAssoc) {
-                if (array_key_exists($valueStatusDeliveryAssoc, $getParams)) {
-                    if ($modelValidate->hasAttribute($nameStatusDeliveryAssoc)) {
-                        $modelValidate->$nameStatusDeliveryAssoc = $getParams[$arrayStatusDeliveryAssoc[$nameStatusDeliveryAssoc]];
-                        if (!$modelValidate->validate($nameStatusDeliveryAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
-
-                        $query->andWhere([$nameStatusDeliveryAssoc => $getParams[$arrayStatusDeliveryAssoc[$nameStatusDeliveryAssoc]]]);
-                    }
-                }
-            }
-
-            $modelStatusDelivery = $query->orderBy('id')
-                ->asArray()
-                ->all();
-
-            // get properties from StatusDelivery object
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelStatusDelivery));
-            //array_push($RequestResponse, var_dump($modelRequest));
-
-            return Json::encode($RequestResponse);
-
-        } else {
-            // Search all records in the database
-            $query = StatusDelivery::find();
-
-            $modelStatusDelivery = $query->orderBy('id')
-                ->asArray()
-                ->all();
-
-            // get properties from StatusDelivery object
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelStatusDelivery));
-
-            return Json::encode($RequestResponse);
-        }
-        */
     }
 
 
