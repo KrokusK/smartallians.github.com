@@ -55,7 +55,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
     public function getStatusDeliveryData($params = [], $assoc = [])
     {
         $query = StatusDelivery::find();
-        //$modelValidate = new StatusDelivery();
         foreach ($assoc as $name => $value) {
             if (array_key_exists($value, $params)) {
                 if ($this->hasAttribute($name)) {

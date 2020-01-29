@@ -3,6 +3,7 @@ namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\StatusDelivery;
 use api\modules\v2\models\UserRequestData;
+use api\modules\v2\models\ResponseMessage;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -72,34 +73,34 @@ class StatusDeliveryController extends Controller
      */
     public function actionView()
     {
-        // init model
+        // init models
         $modelUserRequestData = new UserRequestData();
 
         // get request params
         $getParams = $modelUserRequestData->getRequestParams();
         if (empty($getParams)) {
-            $modelUserRequestData->saveErrorMessage('Ошибка: Запрос не содержит параметров');
-            return Json::encode($modelUserRequestData->getErrorMessage());
+            ResponseMessage::saveErrorMessage('Ошибка: Запрос не содержит параметров');
+            return Json::encode(ResponseMessage::getErrorMessage());
         }
 
         // authorization user by token in request params
         $userByToken = $modelUserRequestData->loginByParams();
         if (empty($userByToken)) {
-            $modelUserRequestData->saveErrorMessage('Ошибка: Аутентификация не выполнена');
-            return Json::encode($modelUserRequestData->getErrorMessage());
+            ResponseMessage::saveErrorMessage('Ошибка: Аутентификация не выполнена');
+            return Json::encode(ResponseMessage::getErrorMessage());
         }
 
         // Get array with user Roles
         $userRole = $modelUserRequestData->getUserRoles();
         if (empty($userRole)) {
-            $modelUserRequestData->saveErrorMessage('Ошибка: У пользователя отсутствуют роли');
-            return Json::encode($modelUserRequestData->getErrorMessage());
+            ResponseMessage::saveErrorMessage('Ошибка: У пользователя отсутствуют роли');
+            return Json::encode(ResponseMessage::getErrorMessage());
         }
 
         // Check rights
         if (!$modelUserRequestData->checkUserRightsByRole(array('admin'))) {
-            $modelUserRequestData->saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
-            return Json::encode($modelUserRequestData->getErrorMessage());
+            ResponseMessage::saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
+            return Json::encode(ResponseMessage::getErrorMessage());
         }
 
         // Because the field names may match within a single query,
@@ -111,11 +112,11 @@ class StatusDeliveryController extends Controller
         $modelStatusDelivery = new StatusDelivery();
         $dataStatusDelivery = $modelStatusDelivery->getStatusDeliveryData($getParams, $assocStatusDelivery);
         if (!empty($dataStatusDelivery)) {
-            $modelUserRequestData->saveDataMessage($dataStatusDelivery);
-            return Json::encode($modelUserRequestData->getDataMessage());
+            ResponseMessage::saveDataMessage($dataStatusDelivery);
+            return Json::encode(ResponseMessage::getDataMessage());
         } else {
-            $modelUserRequestData->saveErrorMessage('Ошибка: Записи не найдены');
-            return Json::encode($modelUserRequestData->getErrorMessage());
+            ResponseMessage::saveErrorMessage('Ошибка: Записи не найдены');
+            return Json::encode(ResponseMessage::getErrorMessage());
         }
     }
 
