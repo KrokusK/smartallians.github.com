@@ -110,10 +110,26 @@ class StatusDeliveryController extends Controller
         $assocStatusDelivery = array ('id' => 'id', 'name' => 'name');
 
         // Get properties from StatusDelivery object by request params
-        $modelStatusDelivery = new StatusDelivery();
-        $dataStatusDelivery = $modelStatusDelivery->getStatusDeliveryData($getParams, $assocStatusDelivery);
-        if (!empty($dataStatusDelivery)) {
-            $modelResponseMessage->saveDataMessage($dataStatusDelivery);
+        $modelValidate = new StatusDelivery();
+        $query = StatusDelivery::find();
+        foreach ($assocStatusDelivery as $name => $value) {
+            if (array_key_exists($value, $getParams) && $modelValidate->hasAttribute($name)) {
+                $modelValidate->$name = $getParams[$value];
+                if (!$modelValidate->validate($name)) {
+                    $modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
+                    return Json::encode($modelResponseMessage->getErrorMessage());
+                }
+
+                $query->andWhere([$name => $getParams[$value]]);
+            }
+        }
+        $modelStatusDelivery = $query->orderBy('id')
+            ->asArray()
+            ->all();
+
+        // send json response with data
+        if (!empty($modelStatusDelivery)) {
+            $modelResponseMessage->saveDataMessage(ArrayHelper::toArray($modelStatusDelivery));
             return Json::encode($modelResponseMessage->getDataMessage());
         } else {
             $modelResponseMessage->saveErrorMessage('Ошибка: Записи не найдены');

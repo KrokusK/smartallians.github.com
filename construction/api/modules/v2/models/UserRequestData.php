@@ -21,11 +21,8 @@ class UserRequestData extends Model
     /**
      * properties
      */
-    protected $method;
-    protected $message;
     protected $userByToken;
     protected $userRole;
-    protected $params;
 
     /**
      * init
@@ -127,61 +124,5 @@ class UserRequestData extends Model
         }
         if (static::CHECK_RIGHTS_RBAC) return $flagRights;
         else return true;
-    }
-
-    /**
-     * Set text message
-     */
-    public function setMessage($status = 1, $message = '') {
-        switch ($status) {
-            case 0:
-                $this->message = [
-                    'method' => $this->method,
-                    'status' => $status,
-                    'type' => 'success',
-                    'message' => $message
-                ];
-                break;
-            case 1:
-                $this->message = [
-                    'method' => $this->method,
-                    'status' => $status,
-                    'type' => 'error',
-                    'message' => $message
-                ];
-        }
-    }
-
-    /**
-     * Set text message with data
-     */
-    public function saveDataMessage($message = '') {
-        $this->setMessage(0, $message);
-    }
-
-    /**
-     * Set text error message
-     */
-    public function saveErrorMessage($message = '') {
-        $this->setMessage(1, $message);
-    }
-
-    /**
-     * Get text message with data
-     *
-     */
-    public function getDataMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * Get text error message
-     *
-     */
-
-    public function getErrorMessage()
-    {
-        return $this->message;
     }
 }
