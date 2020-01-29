@@ -75,7 +75,7 @@ class StatusDeliveryController extends Controller
     {
         // init models
         $modelUserRequestData = new UserRequestData();
-        $modelResponseMessage = new UserResponseMessage();
+        $modelResponseMessage = new ResponseMessage();
 
         // get request params
         $getParams = $modelUserRequestData->getRequestParams();
