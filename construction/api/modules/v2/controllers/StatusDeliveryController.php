@@ -113,6 +113,7 @@ class StatusDeliveryController extends Controller
         if (!empty($dataStatusDelivery)) {
             $modelUserRequestData->saveDataMessage($dataStatusDelivery);
             //array_push($RequestResponse, ArrayHelper::toArray($modelStatusDelivery));
+            return Json::encode($modelUserRequestData->getDataMessage());
         } else {
             $modelUserRequestData->saveErrorMessage('Ошибка: Записи не найдены');
             return Json::encode($modelUserRequestData->getErrorMessage());
