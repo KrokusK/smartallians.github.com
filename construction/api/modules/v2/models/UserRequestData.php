@@ -29,7 +29,6 @@ class UserRequestData extends Model
     /**
      * init
      */
-
     public function init()
     {
         parent::init();
@@ -42,7 +41,6 @@ class UserRequestData extends Model
      * Get params from request
      *
      */
-
     public function getRequestParams()
     {
         return $this->params;
@@ -52,7 +50,6 @@ class UserRequestData extends Model
      * Defining request method and
      * set params by values from request
      */
-
     public function setProperties()
     {
         $this->method = strtolower(Yii::$app->getRequest()->getMethod());
@@ -63,7 +60,6 @@ class UserRequestData extends Model
      * Set params from request
      *
      */
-
     public function setParamsByMethod()
     {
         switch ($this->method) {
