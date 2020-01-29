@@ -110,6 +110,7 @@ class StatusDeliveryController extends Controller
         $assocStatusDelivery = array ('id' => 'id', 'name' => 'name');
 
         // Get properties from StatusDelivery object by request params
+        $modelStatusDelivery = new StatusDelivery();
         $dataStatusDelivery = $modelStatusDelivery->getStatusDeliveryData($getParams, $assocStatusDelivery);
         if (!empty($dataStatusDelivery)) {
             $modelResponseMessage->saveDataMessage($dataStatusDelivery);
