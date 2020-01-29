@@ -21,6 +21,7 @@ class UserRequestData extends Model
     /**
      * properties
      */
+    protected method;
     protected $userByToken;
     protected $userRole;
 
