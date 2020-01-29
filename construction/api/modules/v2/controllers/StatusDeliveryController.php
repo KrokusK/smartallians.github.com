@@ -75,32 +75,33 @@ class StatusDeliveryController extends Controller
     {
         // init models
         $modelUserRequestData = new UserRequestData();
+        $modelResponseMessage = new UserResponseMessage();
 
         // get request params
         $getParams = $modelUserRequestData->getRequestParams();
         if (empty($getParams)) {
-            ResponseMessage::saveErrorMessage('Ошибка: Запрос не содержит параметров');
-            return Json::encode(ResponseMessage::getErrorMessage());
+            $modelResponseMessage->saveErrorMessage('Ошибка: Запрос не содержит параметров');
+            return Json::encode($modelResponseMessage->getErrorMessage());
         }
 
         // authorization user by token in request params
         $userByToken = $modelUserRequestData->loginByParams();
         if (empty($userByToken)) {
-            ResponseMessage::saveErrorMessage('Ошибка: Аутентификация не выполнена');
-            return Json::encode(ResponseMessage::getErrorMessage());
+            $modelResponseMessage->saveErrorMessage('Ошибка: Аутентификация не выполнена');
+            return Json::encode($modelResponseMessage->getErrorMessage());
         }
 
         // Get array with user Roles
         $userRole = $modelUserRequestData->getUserRoles();
         if (empty($userRole)) {
-            ResponseMessage::saveErrorMessage('Ошибка: У пользователя отсутствуют роли');
-            return Json::encode(ResponseMessage::getErrorMessage());
+            $modelResponseMessage->saveErrorMessage('Ошибка: У пользователя отсутствуют роли');
+            return Json::encode($modelResponseMessage->getErrorMessage());
         }
 
         // Check rights
         if (!$modelUserRequestData->checkUserRightsByRole(array('admin'))) {
-            ResponseMessage::saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
-            return Json::encode(ResponseMessage::getErrorMessage());
+            $modelResponseMessage->saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
+            return Json::encode($modelResponseMessage->getErrorMessage());
         }
 
         // Because the field names may match within a single query,
@@ -112,11 +113,11 @@ class StatusDeliveryController extends Controller
         $modelStatusDelivery = new StatusDelivery();
         $dataStatusDelivery = $modelStatusDelivery->getStatusDeliveryData($getParams, $assocStatusDelivery);
         if (!empty($dataStatusDelivery)) {
-            ResponseMessage::saveDataMessage($dataStatusDelivery);
-            return Json::encode(ResponseMessage::getDataMessage());
+            $modelResponseMessage->saveDataMessage($dataStatusDelivery);
+            return Json::encode($modelResponseMessage->getDataMessage());
         } else {
-            ResponseMessage::saveErrorMessage('Ошибка: Записи не найдены');
-            return Json::encode(ResponseMessage::getErrorMessage());
+            $modelResponseMessage->saveErrorMessage('Ошибка: Записи не найдены');
+            return Json::encode($modelResponseMessage->getErrorMessage());
         }
     }
 

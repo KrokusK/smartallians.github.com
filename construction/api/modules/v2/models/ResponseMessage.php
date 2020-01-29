@@ -49,7 +49,7 @@ class ResponseMessage extends Model
     /**
      * Set text error message
      */
-    public static function saveErrorMessage($message = '') {
+    public function saveErrorMessage($message = '') {
         $this->setMessage(1, $message);
     }
 
@@ -57,7 +57,7 @@ class ResponseMessage extends Model
      * Get text message with data
      *
      */
-    public static function getDataMessage()
+    public function getDataMessage()
     {
         return $this->message;
     }
