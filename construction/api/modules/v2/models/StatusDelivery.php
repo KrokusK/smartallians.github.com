@@ -56,23 +56,11 @@ class StatusDelivery extends \yii\db\ActiveRecord
     {
         $query = StatusDelivery::find();
         foreach ($assoc as $name => $value) {
-            if (array_key_exists($value, $params)) {
-                if ($this->hasAttribute($name)) {
-                    $this->$name = $params[$assoc[$name]];
-                    if (!$this->validate($name))
-                        return Json::encode(
-                            [
-                                'method' => 'GET',
-                                'status' => 1,
-                                'type' => 'error',
-                                'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc
-                            ]);
-
-                    $query->andWhere([$name => $params[$assoc[$name]]]);
-                }
+            if ($this->hasAttribute($name) && array_key_exists($value, $params)) {
+                $this->$name = $params[$assoc[$name]];
+                if ($this->validate($name)) $query->andWhere([$name => $params[$assoc[$name]]]);
             }
         }
-
         $modelStatusDelivery = $query->orderBy('id')
             ->asArray()
             ->all();
