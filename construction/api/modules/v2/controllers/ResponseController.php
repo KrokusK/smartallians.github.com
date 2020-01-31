@@ -63,7 +63,7 @@ class ResponseController extends Controller
                     // Allow credentials (cookies, authorization headers, etc.) to be exposed to the browser
                     'Access-Control-Allow-Credentials' => true,
                     //
-                    //'Access-Control-Allow-Headers' => ['authorization', 'DNT', 'User-Agent', 'Keep-Alive', 'Content-Type', 'accept,orig'],
+                    'Access-Control-Allow-Headers' => ['authorization', 'DNT', 'User-Agent', 'Keep-Alive', 'Content-Type', 'accept,orig'],
                     // Allow OPTIONS caching
                     //'Access-Control-Max-Age' => 3600,
                     // Allow the X-Pagination-Current-Page header to be exposed to the browser.
