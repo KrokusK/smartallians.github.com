@@ -9,6 +9,7 @@ use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
+use yii\filters\Cors;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
@@ -55,19 +56,19 @@ class ResponseController extends Controller
                     // restrict access to
                     'Origin' => ['*'],
                     // Allow only POST and PUT methods
-                    'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+                    'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                     // Allow only headers 'X-Wsse'
                     //'Access-Control-Request-Headers' => ['X-Wsse'],
-                    'Access-Control-Request-Headers' => ['*'],
+                    //'Access-Control-Request-Headers' => ['*'],
                     // Allow credentials (cookies, authorization headers, etc.) to be exposed to the browser
                     'Access-Control-Allow-Credentials' => true,
                     //
-                    'Access-Control-Allow-Headers' => ['authorization', 'DNT', 'User-Agent', 'Keep-Alive', 'Content-Type', 'accept,orig'],
+                    //'Access-Control-Allow-Headers' => ['authorization', 'DNT', 'User-Agent', 'Keep-Alive', 'Content-Type', 'accept,orig'],
                     // Allow OPTIONS caching
                     //'Access-Control-Max-Age' => 3600,
                     // Allow the X-Pagination-Current-Page header to be exposed to the browser.
                     //'Access-Control-Expose-Headers' => ['X-Pagination-Current-Page'],
-                    'Access-Control-Expose-Headers' => [],
+                    //'Access-Control-Expose-Headers' => [],
                 ],
             ],
         ];
@@ -81,6 +82,9 @@ class ResponseController extends Controller
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
+            ],
+            'options' => [
+                'class' => 'yii\rest\OptionsAction',
             ],
         ];
     }
