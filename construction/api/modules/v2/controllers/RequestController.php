@@ -1,7 +1,7 @@
 <?php
 namespace api\modules\v2\controllers;
 
-use api\modules\v2\models\ProfileCity;
+use api\modules\v2\models\Profile;
 use api\modules\v2\models\ProfileRROD;
 use api\modules\v2\models\Request;
 use api\modules\v2\models\RequestKindJob;
