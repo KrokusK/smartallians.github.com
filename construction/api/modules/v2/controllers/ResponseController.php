@@ -210,7 +210,7 @@ class ResponseController extends Controller
                 'cost' => $modelResponse[0]['cost'],
                 'period' => $modelResponse[0]['period'],
                 //'profile_id' => $modelResponse[0]['profiles']['id'],
-                'fio' => $modelResponse[0]['profiles']['fio'],
+                'fio' => $modelResponse[0]['profiles'][0],
                 //'firm_name' => $modelResponse[0]['profiles']['firm_name'],
                 //'avatar' => $modelResponse[0]['profiles']['avatar']
             );
