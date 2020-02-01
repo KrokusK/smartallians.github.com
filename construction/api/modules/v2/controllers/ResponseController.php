@@ -189,7 +189,7 @@ class ResponseController extends Controller
                 'method' => 'GET',
                 'status' => 0,
                 'type' => 'success',
-                'status_response' => $modelResponse['statusResponse'][0]);
+                'status_response' => var_dump($modelResponse));
 
             array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
 
