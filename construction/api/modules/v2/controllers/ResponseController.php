@@ -159,6 +159,7 @@ class ResponseController extends Controller
 
             $modelResponse = $query->orderBy('id')
                 ->with('profiles')
+                ->with('statusResponse')
                 ->asArray()
                 ->all();
 
@@ -179,11 +180,17 @@ class ResponseController extends Controller
 
             $modelResponse = $query->orderBy('id')
                 ->with('profiles')
+                ->with('statusResponse')
                 ->asArray()
                 ->all();
 
             // get properties from Response object
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
+            $RequestResponse = array(
+                'method' => 'GET',
+                'status' => 0,
+                'type' => 'success',
+                'status_response' => $modelResponse['statusResponse'][0]);
+
             array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
 
             return Json::encode($RequestResponse);
