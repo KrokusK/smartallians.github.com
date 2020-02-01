@@ -158,6 +158,7 @@ class ResponseController extends Controller
             }
 
             $modelResponse = $query->orderBy('id')
+                ->with('profiles')
                 ->asArray()
                 ->all();
 
@@ -177,6 +178,7 @@ class ResponseController extends Controller
             }
 
             $modelResponse = $query->orderBy('id')
+                ->with('profiles')
                 ->asArray()
                 ->all();
 
