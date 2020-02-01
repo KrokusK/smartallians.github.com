@@ -164,8 +164,23 @@ class ResponseController extends Controller
                 ->all();
 
             // get properties from Response object
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
+            $RequestResponse = array(
+                'method' => 'GET',
+                'status' => 0,
+                'type' => 'success',
+                'id' => $modelResponse[0]['id'],
+                'status_response' => $modelResponse[0]['statusResponse']['name'],
+                'request_id' => $modelResponse[0]['request_id'],
+                'description' => $modelResponse[0]['description'],
+                'cost' => $modelResponse[0]['cost'],
+                'period' => $modelResponse[0]['period'],
+                'period' => $modelResponse[0]['period'],
+                'profile_id' => $modelResponse[0]['profiles']['id'],
+                'fio' => $modelResponse[0]['profiles']['fio'],
+                'firm_name' => $modelResponse[0]['profiles']['firm_name'],
+                'avatar' => $modelResponse[0]['profiles']['avatar']
+            );
+            //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
             //array_push($RequestResponse, var_dump($modelRequest));
 
             return Json::encode($RequestResponse);
@@ -189,9 +204,19 @@ class ResponseController extends Controller
                 'method' => 'GET',
                 'status' => 0,
                 'type' => 'success',
-                'status_response' => $modelResponse[0]['statusResponse']['name']);
-
-            array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
+                'id' => $modelResponse[0]['id'],
+                'status_response' => $modelResponse[0]['statusResponse']['name'],
+                'request_id' => $modelResponse[0]['request_id'],
+                'description' => $modelResponse[0]['description'],
+                'cost' => $modelResponse[0]['cost'],
+                'period' => $modelResponse[0]['period'],
+                'period' => $modelResponse[0]['period'],
+                'profile_id' => $modelResponse[0]['profiles']['id'],
+                'fio' => $modelResponse[0]['profiles']['fio'],
+                'firm_name' => $modelResponse[0]['profiles']['firm_name'],
+                'avatar' => $modelResponse[0]['profiles']['avatar']
+            );
+            //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
 
             return Json::encode($RequestResponse);
         }
