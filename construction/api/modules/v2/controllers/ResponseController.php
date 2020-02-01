@@ -63,7 +63,7 @@ class ResponseController extends Controller
                     //'Access-Control-Request-Headers' => ['X-Wsse'],
                     //'Access-Control-Request-Headers' => ['*'],
                     // Allow credentials (cookies, authorization headers, etc.) to be exposed to the browser
-                    'Access-Control-Allow-Credentials' => true,
+                    'Access-Control-Allow-Credentials' => false,
                     //
                     'Access-Control-Allow-Headers' => ['authorization', 'DNT', 'User-Agent', 'Keep-Alive', 'Content-Type', 'accept, origin', 'X-Requested-With'],
                     // Allow OPTIONS caching
