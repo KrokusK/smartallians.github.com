@@ -56,14 +56,16 @@ class ResponseController extends Controller
                     // restrict access to
                     'Origin' => ['*'],
                     // Allow only POST and PUT methods
-                    'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                    'Access-Control-Allow-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                    //
+                    //Access-Control-Allow-Origin
                     // Allow only headers 'X-Wsse'
                     //'Access-Control-Request-Headers' => ['X-Wsse'],
                     //'Access-Control-Request-Headers' => ['*'],
                     // Allow credentials (cookies, authorization headers, etc.) to be exposed to the browser
                     'Access-Control-Allow-Credentials' => true,
                     //
-                    'Access-Control-Allow-Headers' => ['authorization', 'DNT', 'User-Agent', 'Keep-Alive', 'Content-Type', 'accept,orig'],
+                    'Access-Control-Allow-Headers' => ['authorization', 'DNT', 'User-Agent', 'Keep-Alive', 'Content-Type', 'accept, origin', 'X-Requested-With'],
                     // Allow OPTIONS caching
                     //'Access-Control-Max-Age' => 3600,
                     // Allow the X-Pagination-Current-Page header to be exposed to the browser.

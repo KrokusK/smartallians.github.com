@@ -51,7 +51,6 @@ class RequestController extends Controller
                     'delete-by-param' => ['delete'],
                 ],
             ],
-            /*
             'corsFilter' => [
                 'class' => \yii\filters\Cors::className(),
                 'cors' => [
@@ -73,7 +72,6 @@ class RequestController extends Controller
                     //'Access-Control-Expose-Headers' => [],
                 ],
             ],
-            */
         ];
     }
 
