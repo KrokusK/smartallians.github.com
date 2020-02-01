@@ -50,12 +50,12 @@ class ResponseController extends Controller
                     'delete-by-param' => ['delete'],
                 ],
             ],
-
+            /*
             'corsFilter' => [
                 'class' => \yii\filters\Cors::className(),
                 'cors' => [
                     // restrict access to
-                    'Origin' => ['*'],
+                    //'Origin' => ['*'],
                     // Allow only POST and PUT methods
                     //'Access-Control-Allow-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                     //
@@ -74,7 +74,7 @@ class ResponseController extends Controller
                     //'Access-Control-Expose-Headers' => [],
                 ],
             ],
-
+            */
         ];
     }
 
