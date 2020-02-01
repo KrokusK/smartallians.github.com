@@ -187,7 +187,8 @@ class ResponseController extends Controller
                     'method' => 'GET',
                     'status' => 1,
                     'type' => 'error',
-                    'message' => 'Записи не найдены',
+                    'message' => 'Записи не найдены'
+                );
             }
 
             return Json::encode($RequestResponse);
@@ -230,7 +231,8 @@ class ResponseController extends Controller
                     'method' => 'GET',
                     'status' => 1,
                     'type' => 'error',
-                    'message' => 'Записи не найдены',
+                    'message' => 'Записи не найдены'
+                );
             }
 
             return Json::encode($RequestResponse);
