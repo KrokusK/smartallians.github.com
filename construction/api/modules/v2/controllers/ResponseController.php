@@ -164,23 +164,31 @@ class ResponseController extends Controller
                 ->all();
 
             // get properties from Response object
-            $RequestResponse = array(
-                'method' => 'GET',
-                'status' => 0,
-                'type' => 'success',
-                'id' => $modelResponse[0]['id'],
-                'status_response' => $modelResponse[0]['statusResponse']['name'],
-                'request_id' => $modelResponse[0]['request_id'],
-                'description' => $modelResponse[0]['description'],
-                'cost' => $modelResponse[0]['cost'],
-                'period' => $modelResponse[0]['period'],
-                'profile_id' => $modelResponse[0]['profiles'][0]['id'],
-                'fio' => $modelResponse[0]['profiles'][0]['fio'],
-                'firm_name' => $modelResponse[0]['profiles'][0]['firm_name'],
-                'avatar' => $modelResponse[0]['profiles'][0]['avatar']
-            );
-            //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
-            //array_push($RequestResponse, var_dump($modelRequest));
+            if (!empty($modelResponse)) {
+                $RequestResponse = array(
+                    'method' => 'GET',
+                    'status' => 0,
+                    'type' => 'success',
+                    'id' => $modelResponse[0]['id'],
+                    'status_response' => $modelResponse[0]['statusResponse']['name'],
+                    'request_id' => $modelResponse[0]['request_id'],
+                    'description' => $modelResponse[0]['description'],
+                    'cost' => $modelResponse[0]['cost'],
+                    'period' => $modelResponse[0]['period'],
+                    'profile_id' => $modelResponse[0]['profiles'][0]['id'],
+                    'fio' => $modelResponse[0]['profiles'][0]['fio'],
+                    'firm_name' => $modelResponse[0]['profiles'][0]['firm_name'],
+                    'avatar' => $modelResponse[0]['profiles'][0]['avatar']
+                );
+                //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
+                //array_push($RequestResponse, var_dump($modelRequest));
+            } else {
+                $RequestResponse = array(
+                    'method' => 'GET',
+                    'status' => 1,
+                    'type' => 'error',
+                    'message' => 'Записи не найдены',
+            }
 
             return Json::encode($RequestResponse);
 
@@ -199,22 +207,31 @@ class ResponseController extends Controller
                 ->all();
 
             // get properties from Response object
-            $RequestResponse = array(
-                'method' => 'GET',
-                'status' => 0,
-                'type' => 'success',
-                'id' => $modelResponse[0]['id'],
-                'status_response' => $modelResponse[0]['statusResponse']['name'],
-                'request_id' => $modelResponse[0]['request_id'],
-                'description' => $modelResponse[0]['description'],
-                'cost' => $modelResponse[0]['cost'],
-                'period' => $modelResponse[0]['period'],
-                'profile_id' => $modelResponse[0]['profiles'][0]['id'],
-                'fio' => $modelResponse[0]['profiles'][0]['fio'],
-                'firm_name' => $modelResponse[0]['profiles'][0]['firm_name'],
-                'avatar' => $modelResponse[0]['profiles'][0]['avatar']
-            );
-            //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
+            if (!empty($modelResponse)) {
+                $RequestResponse = array(
+                    'method' => 'GET',
+                    'status' => 0,
+                    'type' => 'success',
+                    'id' => $modelResponse[0]['id'],
+                    'status_response' => $modelResponse[0]['statusResponse']['name'],
+                    'request_id' => $modelResponse[0]['request_id'],
+                    'description' => $modelResponse[0]['description'],
+                    'cost' => $modelResponse[0]['cost'],
+                    'period' => $modelResponse[0]['period'],
+                    'profile_id' => $modelResponse[0]['profiles'][0]['id'],
+                    'fio' => $modelResponse[0]['profiles'][0]['fio'],
+                    'firm_name' => $modelResponse[0]['profiles'][0]['firm_name'],
+                    'avatar' => $modelResponse[0]['profiles'][0]['avatar']
+                );
+                //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
+                //array_push($RequestResponse, var_dump($modelRequest));
+            } else {
+                $RequestResponse = array(
+                    'method' => 'GET',
+                    'status' => 1,
+                    'type' => 'error',
+                    'message' => 'Записи не найдены',
+            }
 
             return Json::encode($RequestResponse);
         }
