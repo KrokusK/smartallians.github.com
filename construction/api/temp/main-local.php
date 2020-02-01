@@ -20,8 +20,6 @@ $config = [
                 // Route OPTIONS request
                 'OPTIONS /<module:\w+>/<controller:\w*>' => '<module>/site/options',
                 'OPTIONS /<module:\w+>/<controller:\w+>/<action:\w*>' => '<module>/site/options',
-                'OPTIONS /<controller:\w*>' => 'site/options',
-                'OPTIONS /<controller:\w+>/<action:\w*>' => 'site/options',
 
                 // API photo
                 // Not working: 'PUT,PATCH /<module:\w+>/<controller:(photo)>>' => '<module>/<controller>/update',
