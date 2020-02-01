@@ -211,10 +211,10 @@ class ResponseController extends Controller
                 'period' => $modelResponse[0]['period'],
                 'profile_id' => $modelResponse[0]['profiles'][0]['id'],
                 'fio' => $modelResponse[0]['profiles'][0]['fio'],
-                'firm_name' => $modelResponse[0]['profiles']['firm_name'],
+                //'firm_name' => $modelResponse[0]['profiles']['firm_name'],
                 'avatar' => $modelResponse[0]['profiles'][0]['avatar']
             );
-            //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
+            array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
 
             return Json::encode($RequestResponse);
         }
