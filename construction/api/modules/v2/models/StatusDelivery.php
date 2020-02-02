@@ -100,7 +100,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if data not found or parameters is not validated
      */
-    public function getDataStatusDelivery($params = [], $limitRec = 10, $offsetRec = 0)
+    public function getDataStatusDelivery($params = [])
     {
         // Search data
         $query = StatusDelivery::find();
