@@ -3,7 +3,6 @@ namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\StatusDelivery;
 use api\modules\v2\models\UserRequestData;
-use api\modules\v2\models\ResponseMessage;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -88,17 +87,21 @@ class StatusDeliveryController extends Controller
         }
 
 
-        $modelResponseMessage = new ResponseMessage();
+        //$modelResponseMessage = new ResponseMessage();
 
         // get request params
         $getParams = $modelUserRequestData->getRequestParams();
-
-        // Because the field names may match within a single query,
-        // the parameter names may not match the table field names.
-        // To solve this problem let's create an associative array
-        $assocStatusDelivery = array ('id' => 'id', 'name' => 'name');
+        // init model StatusDelivery
+        $modelStatusDelivery = new StatusDelivery();
+        // Search data
+        try {
+            return $modelStatusDelivery->getDataStatusDelivery($getParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
 
         // Get properties from StatusDelivery object by request params
+        /*
         $modelValidate = new StatusDelivery();
         $query = StatusDelivery::find();
         foreach ($assocStatusDelivery as $name => $value) {
@@ -116,6 +119,8 @@ class StatusDeliveryController extends Controller
             ->asArray()
             ->all();
 
+
+
         // send json response with data
         if (!empty($modelStatusDelivery)) {
             $modelResponseMessage->saveDataMessage(ArrayHelper::toArray($modelStatusDelivery));
@@ -124,6 +129,7 @@ class StatusDeliveryController extends Controller
             $modelResponseMessage->saveErrorMessage('Ошибка: Записи не найдены');
             return Json::encode($modelResponseMessage->getErrorMessage());
         }
+        */
     }
 
 
