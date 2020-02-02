@@ -223,18 +223,14 @@ class StatusDelivery extends \yii\db\ActiveRecord
     }
 
     /**
-     * Set StatusDelivery properties and
-     * update object into the Db by id
+     * Get StatusDelivery object by id
      *
      * @params parameters with properties
      *
      * @throws InvalidArgumentException if returned error
      */
-    public static function getDataStatusDeliveryById($params = [])
+    public function getDataStatusDeliveryById($params = [])
     {
-        // Set property
-        $this->modelResponseMessage = new ResponseMessage();
-
         if (array_key_exists($this->assocStatusDelivery['id'], $params)) {
             // check id parametr
             if (!preg_match("/^[0-9]*$/", $params[$this->assocStatusDelivery['id']])) {

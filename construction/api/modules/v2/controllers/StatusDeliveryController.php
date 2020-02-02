@@ -139,10 +139,11 @@ class StatusDeliveryController extends Controller
         // get request params
         $putParams = $modelUserRequestData->getRequestParams();
         // Get model StatusDelivery by id
-        $modelStatusDelivery = StatusDelivery::getDataStatusDeliveryById();
+        $modelStatusDelivery = new StatusDelivery();
+        $modelStatusDeliveryById = $modelStatusDelivery->getDataStatusDeliveryById();
         // Update object by id
         try {
-            return $modelStatusDelivery->updateDataStatusDelivery($putParams);
+            return $modelStatusDeliveryById->updateDataStatusDelivery($putParams);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
