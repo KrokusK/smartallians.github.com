@@ -91,9 +91,9 @@ class StatusDelivery extends \yii\db\ActiveRecord
         // Search data
         $query = StatusDelivery::find();
         // Add data filter
-        $query = setDataFilter($query, $params);
+        $this->setDataFilter($query, $params);
         // Add pagination params
-        $query = setPaginationParams($params);
+        $this->setPaginationParams($params);
         // get data
         $dataStatusDelivery = $query->orderBy('id')
             ->limit($this->limitRec)
