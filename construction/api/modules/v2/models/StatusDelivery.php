@@ -111,10 +111,9 @@ class StatusDelivery extends \yii\db\ActiveRecord
                     $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
                     throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
                 }
-                if ($name != 'limitRec' && $name != 'offsetRec') {
                     $query->andWhere([$name => $params[$value]]);
-                }
-            } elseif ($name == 'limitRec' || $name == 'offsetRec') {
+
+            } elseif (array_key_exists($value, $params) && $this->hasProperty($name)) {
                 $this->modelResponseMessage->saveErrorMessage('TEST ' . $value);
                 throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
             }
