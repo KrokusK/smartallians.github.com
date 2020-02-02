@@ -155,7 +155,7 @@ class UserRequestData extends Model
     {
         $flagRights = false;
         foreach($rights as $value) {
-            if (\Yii::$app->user->can($value))) {
+            if (\Yii::$app->user->can($value)) {
                 $flagRights = true;
             }
         }
