@@ -226,10 +226,11 @@ class StatusDelivery extends \yii\db\ActiveRecord
      * Get StatusDelivery object by id
      *
      * @params parameters with properties
+     * @notEmpty check on empty
      *
      * @throws InvalidArgumentException if returned error
      */
-    public function getDataStatusDeliveryById($params = [])
+    public function getDataStatusDeliveryById($params = [], $idNotEmpty = true)
     {
         if (array_key_exists($this->assocStatusDelivery['id'], $params)) {
             // check id parametr
@@ -247,9 +248,11 @@ class StatusDelivery extends \yii\db\ActiveRecord
             }
 
             return $modelStatusDelivery;
-        } else {
+        } elseif ($idNotEmpty) {
             $this->modelResponseMessage->saveErrorMessage('Отсутствет id параметр в запросе');
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        } else {
+            return null;
         }
     }
 
@@ -309,5 +312,17 @@ class StatusDelivery extends \yii\db\ActiveRecord
             $this->modelResponseMessage->saveErrorMessage('Ошибка валидации');
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
+    }
+
+    /**
+     * Delete StatusDelivery object into the Db by id
+     *
+     * @params parameters with properties
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    public function deleteDataStatusDelivery($params = [])
+    {
+
     }
 }
