@@ -75,11 +75,13 @@ class StatusDeliveryController extends Controller
      */
     public function actionView()
     {
+        /*
         try {
             throw new Exception('Test error message!!!');
         } catch (Exception $ex) {
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $ex->getMessage()));
         }
+        */
 
         // init models
         $modelUserRequestData = new UserRequestData();
