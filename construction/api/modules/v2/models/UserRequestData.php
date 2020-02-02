@@ -18,7 +18,7 @@ class UserRequestData extends Model
      * Constants
      */
 
-    const CHECK_RIGHTS_RBAC = true;  // Enable check rights by rbac model
+    const CHECK_RIGHTS_RBAC = false;  // Enable check rights by rbac model
 
     /**
      * properties
