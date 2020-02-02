@@ -77,7 +77,7 @@ class StatusDeliveryController extends Controller
         try {
             throw new InvalidArgumentException('Test error message!!!');
         } catch (InvalidArgumentException $ex) {
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => var_dump($ex)));
+            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $ex->getMessage()));
         }
 
         // init models
