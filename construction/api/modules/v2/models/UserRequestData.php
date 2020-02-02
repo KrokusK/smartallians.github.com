@@ -1,12 +1,11 @@
 <?php
 namespace api\modules\v2\models;
 
-use api\modules\v2\models\ResponseMessage;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Json;
 use yii\base\InvalidArgumentException;
-use yii\base\UserException;
+use yii\base\Exception;
 
 /**
  * This is the model class for processing request
@@ -161,7 +160,7 @@ class UserRequestData extends Model
         }
         if (static::CHECK_RIGHTS_RBAC && !$flagRights) {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
-            throw new UserException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+            throw new Exception(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
     }
 }

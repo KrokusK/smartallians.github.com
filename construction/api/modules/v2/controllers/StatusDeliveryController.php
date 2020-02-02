@@ -83,7 +83,7 @@ class StatusDeliveryController extends Controller
         // Check rights
         try {
             $modelUserRequestData->checkUserRightsByRole(array('admin'));
-        } catch (UserException $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
 
