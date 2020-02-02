@@ -79,8 +79,18 @@ class StatusDelivery extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if data not found or parameters is not validated
      */
-    public function getDataStatusDelivery($params = [], $limitRec = 10, $offsetRec = 10)
+    public function getDataStatusDelivery($params = [], $limitRec = 10, $offsetRec = 0)
     {
+        // check $limitRec and $offsetRec
+        if (!preg_match("/^[0-9]*$/",$limitRec)) {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр limitRec');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+        if (!preg_match("/^[0-9]*$/",$offsetRec)) {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр offsetRec');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+
         // Search data
         $query = StatusDelivery::find();
         foreach ($this->assocStatusDelivery as $name => $value) {
