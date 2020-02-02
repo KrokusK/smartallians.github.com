@@ -1,7 +1,7 @@
 <?php
 namespace api\modules\v2\models;
 
-use common\models\User;
+use api\modules\v2\models\ResponseMessage;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Json;
@@ -26,6 +26,7 @@ class UserRequestData extends Model
     protected $userByToken;
     protected $userRole;
     protected $params;
+    protected $modelResponseMessage;
 
     //private $_user;
 
@@ -52,18 +53,9 @@ class UserRequestData extends Model
     */
 
     /**
-     * init
+     * Creates a model with user request params.
+     *
      */
-    /*
-    public function init()
-    {
-        parent::init();
-
-        // Set properties: method, params
-        $this->setProperties();
-    }
-    */
-
     public function __construct()
     {
         // Set properties: method, params
@@ -85,6 +77,7 @@ class UserRequestData extends Model
      */
     public function setProperties()
     {
+        $this->modelResponseMessage = new ResponseMessage();
         $this->method = strtolower(Yii::$app->getRequest()->getMethod());
         $this->setParamsByMethod();
     }
@@ -92,6 +85,7 @@ class UserRequestData extends Model
     /**
      * Set params from request
      *
+     * @throws InvalidArgumentException if request params is empty
      */
     public function setParamsByMethod()
     {
@@ -106,6 +100,11 @@ class UserRequestData extends Model
             case 'patch':
             case 'delete':
                 $this->params = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        }
+
+        if (empty($this->params)) {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Запрос не содержит параметров');
+            throw new InvalidArgumentException($this->modelResponseMessage->getErrorMessage());
         }
     }
 

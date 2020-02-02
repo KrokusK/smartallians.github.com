@@ -84,7 +84,11 @@ class StatusDeliveryController extends Controller
         */
 
         // init models
-        $modelUserRequestData = new UserRequestData();
+        try {
+            $modelUserRequestData = new UserRequestData();
+        } catch (InvalidArgumentException $e) {
+            return Json::encode($e->getMessage());
+        }
         $modelResponseMessage = new ResponseMessage();
 
         // get request params
