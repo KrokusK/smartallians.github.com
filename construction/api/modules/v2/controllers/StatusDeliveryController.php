@@ -86,9 +86,6 @@ class StatusDeliveryController extends Controller
             return $e->getMessage();
         }
 
-
-        //$modelResponseMessage = new ResponseMessage();
-
         // get request params
         $getParams = $modelUserRequestData->getRequestParams();
         // init model StatusDelivery
@@ -99,37 +96,6 @@ class StatusDeliveryController extends Controller
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
-
-        // Get properties from StatusDelivery object by request params
-        /*
-        $modelValidate = new StatusDelivery();
-        $query = StatusDelivery::find();
-        foreach ($assocStatusDelivery as $name => $value) {
-            if (array_key_exists($value, $getParams) && $modelValidate->hasAttribute($name)) {
-                $modelValidate->$name = $getParams[$value];
-                if (!$modelValidate->validate($name)) {
-                    $modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
-                    return Json::encode($modelResponseMessage->getErrorMessage());
-                }
-
-                $query->andWhere([$name => $getParams[$value]]);
-            }
-        }
-        $modelStatusDelivery = $query->orderBy('id')
-            ->asArray()
-            ->all();
-
-
-
-        // send json response with data
-        if (!empty($modelStatusDelivery)) {
-            $modelResponseMessage->saveDataMessage(ArrayHelper::toArray($modelStatusDelivery));
-            return Json::encode($modelResponseMessage->getDataMessage());
-        } else {
-            $modelResponseMessage->saveErrorMessage('Ошибка: Записи не найдены');
-            return Json::encode($modelResponseMessage->getErrorMessage());
-        }
-        */
     }
 
 
