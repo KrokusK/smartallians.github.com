@@ -97,26 +97,17 @@ class StatusDeliveryController extends Controller
      */
     public function actionCreate()
     {
-        // init model with user and request params
+
         try {
+            // init model with user and request params
             $modelUserRequestData = new UserRequestData();
-        } catch (InvalidArgumentException $e) {
-            return $e->getMessage();
-        }
-
-        // Check rights
-        try {
+            // Check rights
             $modelUserRequestData->checkUserRightsByRole(array('admin'));
-        } catch (InvalidArgumentException $e) {
-            return $e->getMessage();
-        }
-
-        // get request params
-        $postParams = $modelUserRequestData->getRequestParams();
-        // init model StatusDelivery
-        $modelStatusDelivery = new StatusDelivery();
-        // Save object by params
-        try {
+            // get request params
+            $postParams = $modelUserRequestData->getRequestParams();
+            // init model StatusDelivery
+            $modelStatusDelivery = new StatusDelivery();
+            // Save object by params
             return $modelStatusDelivery->addDataStatusDelivery($postParams);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
@@ -148,7 +139,7 @@ class StatusDeliveryController extends Controller
         // get request params
         $putParams = $modelUserRequestData->getRequestParams();
         // Get model StatusDelivery by id
-        $modelStatusDelivery = new StatusDelivery();
+        $modelStatusDelivery = StatusDelivery::getStatusDelivery();
         // Update object by id
         try {
             return $modelStatusDelivery->updateDataStatusDelivery($putParams);

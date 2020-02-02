@@ -230,7 +230,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if returned error
      */
-    public function getDataStatusDeliveryById($params = [])
+    public static function getDataStatusDeliveryById($params = [])
     {
         // Set property
         $this->modelResponseMessage = new ResponseMessage();
