@@ -255,51 +255,29 @@ class StatusDelivery extends \yii\db\ActiveRecord
             $this->modelResponseMessage->saveErrorMessage('Отсутствет id параметр в запросе');
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
+    }
 
-        /**
-         * Set StatusDelivery properties and
-         * update object into the Db by id
-         *
-         * @params parameters with properties
-         *
-         * @throws InvalidArgumentException if returned error
-         */
-        public function updateDataStatusDelivery($params = [])
+    /**
+     * Set StatusDelivery properties and
+     * update object into the Db by id
+     *
+     * @params parameters with properties
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    public function updateDataStatusDelivery($params = [])
     {
-        // Set property
-        $this->modelResponseMessage = new ResponseMessage();
-
-
-        if (array_key_exists($this->assocStatusDelivery['id'], $params)) {
-            // check id parametr
-            if (!preg_match("/^[0-9]*$/", $params[$this->assocStatusDelivery['id']])) {
-                $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: id');
-                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
-            }
-
-            // Search record by id in the database
-            $queryStatusDelivery = StatusDelivery::find()->where(['id' => $params[$this->assocStatusDelivery['id']]]);
-            $modelStatusDelivery = $queryStatusDelivery->one();
-            if (empty($modelStatusDelivery)) {
-                $this->modelResponseMessage->saveErrorMessage('Ошибка: В БД не найден Статус поставки по id');
-                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
-            }
-
-            // fill in the properties in the StatusDelivery object
-            foreach ($this->assocStatusDelivery as $name => $value) {
-                if (array_key_exists($value, $params) && $this->hasAttribute($name) && $name != 'id') {
-                    $modelStatusDelivery->$name = $params[$value];
-                    if (!$this->validate($name)) {
-                        $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
-                        throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
-                    }
+        // fill in the properties in the StatusDelivery object
+        foreach ($this->assocStatusDelivery as $name => $value) {
+            if (array_key_exists($value, $params) && $this->hasAttribute($name) && $name != 'id') {
+                $modelStatusDelivery->$name = $params[$value];
+                if (!$this->validate($name)) {
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
                 }
             }
-
-            return $this->saveDataObject();
-        } else {
-            $this->modelResponseMessage->saveErrorMessage('Отсутствет id параметр в запросе');
-            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
+
+        return $this->saveDataObject();
     }
 }
