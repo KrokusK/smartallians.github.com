@@ -160,7 +160,7 @@ class UserRequestData extends Model
         }
         if (static::CHECK_RIGHTS_RBAC && !$flagRights) {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
-            throw new Exception(Json::encode($this->modelResponseMessage->getErrorMessage()));
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
     }
 }
