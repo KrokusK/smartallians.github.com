@@ -145,4 +145,25 @@ class UserRequestData extends Model
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
     }
+
+    /**
+     * Check user rights
+     *
+     * @throws InvalidArgumentException if user hasn't rights
+     */
+    public function checkUserRightsByPermission($rights = [])
+    {
+        $flagRights = false;
+        foreach($rights as $value) {
+            if (\Yii::$app->user->can($value))) {
+                $flagRights = true;
+            }
+        }
+        if (static::CHECK_RIGHTS_RBAC && !$flagRights) {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Не хватает прав на текущую операцию');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+    }
+
+
 }

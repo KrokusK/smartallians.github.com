@@ -107,6 +107,34 @@ class StatusDeliveryController extends Controller
      */
     public function actionCreate()
     {
+        // init model with user and request params
+        try {
+            $modelUserRequestData = new UserRequestData();
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+
+        // Check rights
+        try {
+            $modelUserRequestData->checkUserRightsByRole(array('admin'));
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+
+        // get request params
+        $postParams = $modelUserRequestData->addRequestParams();
+        // init model StatusDelivery
+        $modelStatusDelivery = new StatusDelivery();
+        // Save object by params
+        try {
+            return $modelStatusDelivery->addDataStatusDelivery($postParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+    }
+    /*
+    public function actionCreate()
+    {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
 
         if (is_array($bodyRaw)) {
@@ -129,12 +157,7 @@ class StatusDeliveryController extends Controller
             }
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
-            // Check rights
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-            }
-            */
+
             $flagRights = false;
             foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
@@ -186,6 +209,7 @@ class StatusDeliveryController extends Controller
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
     }
+    */
 
 
     /**
