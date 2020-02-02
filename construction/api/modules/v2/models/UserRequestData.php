@@ -44,7 +44,6 @@ class UserRequestData extends Model
 
     /**
      * Get params from request
-     *
      */
     public function getRequestParams()
     {
@@ -90,6 +89,8 @@ class UserRequestData extends Model
 
     /**
      * Authorization user by token in params
+     *
+     * @throws InvalidArgumentException if user not found
      */
     public function loginByParams()
     {
@@ -105,6 +106,8 @@ class UserRequestData extends Model
 
     /**
      * Get user roles
+     *
+     * @throws InvalidArgumentException if user hasn't roles
      */
     public function getUserRoles()
     {
@@ -124,6 +127,10 @@ class UserRequestData extends Model
 
     /**
      * Check user rights
+     *
+     * @rights array of roles, which can run this operation
+     *
+     * @throws InvalidArgumentException if user hasn't rights
      */
     public function checkUserRightsByRole($rights = [])
     {
@@ -134,7 +141,7 @@ class UserRequestData extends Model
             }
         }
         if (static::CHECK_RIGHTS_RBAC && !$flagRights) {
-            $this->modelResponseMessage->saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Не хватает прав на текущую операцию');
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
     }
