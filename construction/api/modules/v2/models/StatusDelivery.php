@@ -93,11 +93,9 @@ class StatusDelivery extends \yii\db\ActiveRecord
         // Add data filter
         $this->setDataFilter($query, $params);
         // Add pagination params
-        $this->setPaginationParams($params);
+        $this->setPaginationParams($query, $params);
         // get data
         $dataStatusDelivery = $query->orderBy('id')
-            ->limit($this->limitRec)
-            ->offset($this->offsetRec)
             ->asArray()
             ->all();
 
@@ -111,6 +109,14 @@ class StatusDelivery extends \yii\db\ActiveRecord
         }
     }
 
+    /**
+     * Set data filter
+     *
+     * @params parameters for filtering
+     * @query object with data filter
+     *
+     * @throws InvalidArgumentException if data not found or parameters is not validated
+     */
     private function setDataFilter($query, $params = [])
     {
         foreach ($this->assocStatusDelivery as $name => $value) {
@@ -125,24 +131,28 @@ class StatusDelivery extends \yii\db\ActiveRecord
         }
     }
 
-    private function setPaginationParams($params = [])
+    /**
+     * Set pagination params
+     *
+     * @params parameters for pagination
+     */
+    private function setPaginationParams($query, $params = [])
     {
+        // default values
+        $defauftParams = [
+            'limitRec' => 10,
+            'offsetRec' => 0
+        ];
+
         foreach ($this->assocStatusDelivery as $name => $value) {
             switch ($name) {
                 case 'limitRec':
-                    if (array_key_exists($value, $params) && preg_match("/^[0-9]*$/",$params[$value])) {
-                        $this->$name = $params[$value];
-                    } else {
-                        // default value
-                        $this->$name = 10;
-                    }
-                    break;
                 case 'offsetRec':
                     if (array_key_exists($value, $params) && preg_match("/^[0-9]*$/",$params[$value])) {
-                        $this->$name = $params[$value];
+                        $query->limit($params[$value]);
                     } else {
                         // default value
-                        $this->$name = 0;
+                        $query->limit($defauftParams[$name]);
                     }
             }
         }
