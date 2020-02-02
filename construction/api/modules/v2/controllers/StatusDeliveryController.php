@@ -122,27 +122,17 @@ class StatusDeliveryController extends Controller
      */
     public function actionUpdate()
     {
-        // init model with user and request params
         try {
+            // init model with user and request params
             $modelUserRequestData = new UserRequestData();
-        } catch (InvalidArgumentException $e) {
-            return $e->getMessage();
-        }
-
-        // Check rights
-        try {
+            // Check rights
             $modelUserRequestData->checkUserRightsByRole(array('admin'));
-        } catch (InvalidArgumentException $e) {
-            return $e->getMessage();
-        }
-
-        // get request params
-        $putParams = $modelUserRequestData->getRequestParams();
-        // Get model StatusDelivery by id
-        $modelStatusDelivery = new StatusDelivery();
-        $modelStatusDeliveryById = $modelStatusDelivery->getDataStatusDeliveryById();
-        // Update object by id
-        try {
+            // get request params
+            $putParams = $modelUserRequestData->getRequestParams();
+            // Get model StatusDelivery by id
+            $modelStatusDelivery = new StatusDelivery();
+            $modelStatusDeliveryById = $modelStatusDelivery->getDataStatusDeliveryById($putParams);
+            // Update object by id
             return $modelStatusDeliveryById->updateDataStatusDelivery($putParams);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
