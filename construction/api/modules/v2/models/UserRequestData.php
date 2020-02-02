@@ -60,6 +60,8 @@ class UserRequestData extends Model
     {
         // Set properties: method, params
         $this->setProperties();
+        // Authorization user by token in params
+        $this->loginByParams();
     }
 
     /**
@@ -115,12 +117,12 @@ class UserRequestData extends Model
     {
         if (array_key_exists('token', $this->params)) {
             $this->userByToken = \Yii::$app->user->loginByAccessToken($this->params['token']);
-            if (!empty($this->userByToken)) {
-                return $this->userByToken;
-            }
         }
 
-        return null;
+        if (empty($this->userByToken)) {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Аутентификация не выполнена');
+            throw new InvalidArgumentException($this->modelResponseMessage->getErrorMessage());
+        }
     }
 
     /**

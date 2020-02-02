@@ -89,21 +89,10 @@ class StatusDeliveryController extends Controller
         } catch (InvalidArgumentException $e) {
             return Json::encode($e->getMessage());
         }
+
         $modelResponseMessage = new ResponseMessage();
 
-        // get request params
-        $getParams = $modelUserRequestData->getRequestParams();
-        if (empty($getParams)) {
-            $modelResponseMessage->saveErrorMessage('Ошибка: Запрос не содержит параметров');
-            return Json::encode($modelResponseMessage->getErrorMessage());
-        }
-
-        // authorization user by token in request params
-        $userByToken = $modelUserRequestData->loginByParams();
-        if (empty($userByToken)) {
-            $modelResponseMessage->saveErrorMessage('Ошибка: Аутентификация не выполнена');
-            return Json::encode($modelResponseMessage->getErrorMessage());
-        }
+        
 
         // Get array with user Roles
         $userRole = $modelUserRequestData->getUserRoles();
