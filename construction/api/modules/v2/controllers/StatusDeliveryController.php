@@ -79,14 +79,14 @@ class StatusDeliveryController extends Controller
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
-        // init message object
-        $modelResponseMessage = new ResponseMessage();
 
         // Check rights
-        if (!$modelUserRequestData->checkUserRightsByRole(array('admin'))) {
-            $modelResponseMessage->saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
-            return Json::encode($modelResponseMessage->getErrorMessage());
+        try {
+            $modelUserRequestData->checkUserRightsByRole(array('admin'));
+        } catch (UserException $e) {
+            return $e->getMessage();
         }
+
 
 
         // get request params

@@ -158,7 +158,9 @@ class UserRequestData extends Model
                 $flagRights = true;
             }
         }
-        if (static::CHECK_RIGHTS_RBAC) return $flagRights;
-        else return true;
+        if (static::CHECK_RIGHTS_RBAC && !$flagRights) {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
+            throw new UserException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
     }
 }
