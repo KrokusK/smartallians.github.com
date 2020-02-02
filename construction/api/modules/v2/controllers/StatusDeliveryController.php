@@ -6,7 +6,6 @@ use api\modules\v2\models\UserRequestData;
 use api\modules\v2\models\ResponseMessage;
 //use http\Message;
 use Yii;
-use yii\base\Exception;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
@@ -94,7 +93,7 @@ class StatusDeliveryController extends Controller
 
         // get request params
         $getParams = $modelUserRequestData->getRequestParams();
-        
+
 
         // Get array with user Roles
         $userRole = $modelUserRequestData->getUserRoles();

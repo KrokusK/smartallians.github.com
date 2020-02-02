@@ -5,6 +5,7 @@ use api\modules\v2\models\ResponseMessage;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Json;
+use yii\base\InvalidArgumentException;
 
 /**
  * This is the model class for processing request
