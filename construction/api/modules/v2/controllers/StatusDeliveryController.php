@@ -141,6 +141,34 @@ class StatusDeliveryController extends Controller
      */
     public function actionUpdate()
     {
+        // init model with user and request params
+        try {
+            $modelUserRequestData = new UserRequestData();
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+
+        // Check rights
+        try {
+            $modelUserRequestData->checkUserRightsByRole(array('admin'));
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+
+        // get request params
+        $putParams = $modelUserRequestData->getRequestParams();
+        // Get model StatusDelivery by id
+        $modelStatusDelivery = new StatusDelivery();
+        // Update object by id
+        try {
+            return $modelStatusDelivery->updateDataStatusDelivery($putParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+    }
+    /*
+    public function actionUpdate()
+    {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
         //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
 
@@ -162,15 +190,7 @@ class StatusDeliveryController extends Controller
             foreach($userAssigned as $userAssign){
                 array_push($userRole, $userAssign->roleName);
             }
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
-            // Check rights
-            // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию обновления'));
-            }
-            */
             $flagRights = false;
             foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
@@ -233,6 +253,7 @@ class StatusDeliveryController extends Controller
             return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
     }
+    */
 
 
     /**
