@@ -4,7 +4,6 @@ namespace api\modules\v2\controllers;
 use api\modules\v2\models\StatusDelivery;
 use api\modules\v2\models\UserRequestData;
 use api\modules\v2\models\ResponseMessage;
-//use http\Message;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -86,7 +85,7 @@ class StatusDeliveryController extends Controller
         try {
             $modelUserRequestData = new UserRequestData();
         } catch (InvalidArgumentException $e) {
-            return Json::encode($e->getMessage());
+            return $e->getMessage();
         }
 
         $modelResponseMessage = new ResponseMessage();

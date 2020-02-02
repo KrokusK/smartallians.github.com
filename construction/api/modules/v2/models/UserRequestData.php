@@ -107,7 +107,7 @@ class UserRequestData extends Model
 
         if (empty($this->params)) {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: Запрос не содержит параметров');
-            throw new InvalidArgumentException($this->modelResponseMessage->getErrorMessage());
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
     }
 
@@ -122,7 +122,7 @@ class UserRequestData extends Model
 
         if (empty($this->userByToken)) {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: Аутентификация не выполнена');
-            throw new InvalidArgumentException($this->modelResponseMessage->getErrorMessage());
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
     }
 
