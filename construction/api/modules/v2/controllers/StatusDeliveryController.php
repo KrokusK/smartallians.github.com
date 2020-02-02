@@ -122,7 +122,7 @@ class StatusDeliveryController extends Controller
         }
 
         // get request params
-        $postParams = $modelUserRequestData->addRequestParams();
+        $postParams = $modelUserRequestData->getRequestParams();
         // init model StatusDelivery
         $modelStatusDelivery = new StatusDelivery();
         // Save object by params
