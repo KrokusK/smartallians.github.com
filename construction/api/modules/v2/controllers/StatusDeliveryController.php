@@ -139,7 +139,7 @@ class StatusDeliveryController extends Controller
         // get request params
         $putParams = $modelUserRequestData->getRequestParams();
         // Get model StatusDelivery by id
-        $modelStatusDelivery = StatusDelivery::getStatusDelivery();
+        $modelStatusDelivery = StatusDelivery::getDataStatusDeliveryById();
         // Update object by id
         try {
             return $modelStatusDelivery->updateDataStatusDelivery($putParams);
