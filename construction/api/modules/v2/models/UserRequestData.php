@@ -73,7 +73,7 @@ class UserRequestData extends Model
                 $this->params = Yii::$app->getRequest()->get();
                 break;
             case 'post':
-                $this->params = Yii::$app->getRequest()->post();
+                $this->params = json_decode(Yii::$app->getRequest()->post(), true);
                 break;
             case 'put':
             case 'patch':
