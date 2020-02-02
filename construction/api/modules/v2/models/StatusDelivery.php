@@ -105,17 +105,15 @@ class StatusDelivery extends \yii\db\ActiveRecord
         // Search data
         $query = StatusDelivery::find();
         foreach ($this->assocStatusDelivery as $name => $value) {
-            if (array_key_exists($value, $params) && $this->hasAttribute($name)) {
+            if (array_key_exists($value, $params) && ($this->hasAttribute($name) || $this->hasProperty($name))) {
                 $this->$name = $params[$value];
                 if (!$this->validate($name)) {
                     $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
                     throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
                 }
+                if ($this->hasAttribute($name)) {
                     $query->andWhere([$name => $params[$value]]);
-
-            } elseif (array_key_exists($value, $params) && $this->hasProperty($name)) {
-                $this->modelResponseMessage->saveErrorMessage('TEST ' . $value);
-                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
             }
         }
         // default value for limitRec and offsetRec
