@@ -21,8 +21,8 @@ class StatusDelivery extends \yii\db\ActiveRecord
     protected $assocStatusDelivery = [
         'id' => 'id',
         'name' => 'name',
-        'limitRec' => 'limit_rec',
-        'offsetRec' => 'offset_rec'
+        'limitRec' => 'limit',
+        'offsetRec' => 'offset'
     ];
 
     /**
