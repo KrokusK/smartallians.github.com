@@ -29,6 +29,8 @@ class StatusDelivery extends \yii\db\ActiveRecord
      * properties
      */
     protected $modelResponseMessage;
+    protected $limitRec;
+    protected $offsetRec;
 
      /**
      * {@inheritdoc}
@@ -54,6 +56,20 @@ class StatusDelivery extends \yii\db\ActiveRecord
                 'skipOnEmpty' => true
             ],
             [['name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
+            [
+                ['limitRec'],
+                'match',
+                'pattern' => '/^[0-9]*$/',
+                'message' => 'поле id  должно быть типа integer',
+                'skipOnEmpty' => true
+            ],
+            [
+                ['offsetRec'],
+                'match',
+                'pattern' => '/^[0-9]*$/',
+                'message' => 'поле id  должно быть типа integer',
+                'skipOnEmpty' => true
+            ],
         ];
 
     }
@@ -86,16 +102,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
      */
     public function getDataStatusDelivery($params = [], $limitRec = 10, $offsetRec = 0)
     {
-        // check $limitRec and $offsetRec
-        if (!preg_match("/^[0-9]*$/",$limitRec)) {
-            $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр limitRec');
-            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
-        }
-        if (!preg_match("/^[0-9]*$/",$offsetRec)) {
-            $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр offsetRec');
-            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
-        }
-
         // Search data
         $query = StatusDelivery::find();
         foreach ($this->assocStatusDelivery as $name => $value) {
@@ -105,12 +111,20 @@ class StatusDelivery extends \yii\db\ActiveRecord
                     $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
                     throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
                 }
-                $query->andWhere([$name => $params[$value]]);
+                if ($name != 'limitRec' && empty($params[$value])) {
+                    $this->limitRec = 10;
+                }
+                if ($name != 'offsetRec' && empty($params[$value])) {
+                    $this->offsetRec = 0;
+                }
+                if ($name != 'limitRec' && $name != 'offsetRec') {
+                    $query->andWhere([$name => $params[$value]]);
+                }
             }
         }
         $dataStatusDelivery = $query->orderBy('id')
-            ->limit($limitRec)
-            ->offset($offsetRec)
+            ->limit($this->limitRec)
+            ->offset($this->offsetRec)
             ->asArray()
             ->all();
 
