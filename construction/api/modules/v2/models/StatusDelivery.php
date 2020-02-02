@@ -56,20 +56,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
                 'skipOnEmpty' => true
             ],
             [['name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [
-                ['limitRec'],
-                'match',
-                'pattern' => '/^[0-9]*$/',
-                'message' => 'поле id  должно быть типа integer',
-                'skipOnEmpty' => true
-            ],
-            [
-                ['offsetRec'],
-                'match',
-                'pattern' => '/^[0-9]*$/',
-                'message' => 'поле id  должно быть типа integer',
-                'skipOnEmpty' => true
-            ],
         ];
 
     }
@@ -105,20 +91,32 @@ class StatusDelivery extends \yii\db\ActiveRecord
         // Search data
         $query = StatusDelivery::find();
         foreach ($this->assocStatusDelivery as $name => $value) {
-            if (array_key_exists($value, $params) && ($this->hasAttribute($name) || $this->hasProperty($name))) {
+            if (array_key_exists($value, $params) && $this->hasAttribute($name)) {
                 $this->$name = $params[$value];
                 if (!$this->validate($name)) {
                     $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
                     throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
                 }
-                if ($this->hasAttribute($name)) {
                     $query->andWhere([$name => $params[$value]]);
-                }
+            }
+            switch ($name) {
+                case 'limitRec':
+                    if (array_key_exists($value, $params) && preg_match("/^[0-9]*$/",$params[$value])) {
+                        $this->$name = $params[$value];
+                    } else {
+                        // default value
+                        $this->$name = 10;
+                    }
+                    break;
+                case 'offsetRec':
+                    if (array_key_exists($value, $params) && preg_match("/^[0-9]*$/",$params[$value])) {
+                        $this->$name = $params[$value];
+                    } else {
+                        // default value
+                        $this->$name = 0;
+                    }
             }
         }
-        // default value for limitRec and offsetRec
-        if (empty($this->limitRec)) $this->limitRec = 10;
-        if (empty($this->offsetRec)) $this->offsetRec = 0;
         // get data
         $dataStatusDelivery = $query->orderBy('id')
             ->limit($this->limitRec)
