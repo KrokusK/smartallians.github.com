@@ -73,6 +73,8 @@ class StatusDeliveryController extends Controller
      */
     public function actionView()
     {
+        throw new InvalidArgumentException('Test error message!!!');
+
         // init models
         $modelUserRequestData = new UserRequestData();
         $modelResponseMessage = new ResponseMessage();
