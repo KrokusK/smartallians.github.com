@@ -147,7 +147,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
         foreach ($this->assocStatusDelivery as $name => $value) {
             switch ($name) {
                 case 'limitRec':
-                    'offsetRec':
                     if (array_key_exists($value, $params) && preg_match("/^[0-9]*$/",$params[$value])) {
                         $query->limit($params[$value]);
                     } else {
