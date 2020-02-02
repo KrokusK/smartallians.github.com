@@ -3,6 +3,7 @@ namespace api\modules\v2\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
 use yii\base\InvalidArgumentException;
 
