@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\helpers\Json;
 use yii\base\InvalidArgumentException;
+use yii\base\UserException;
 
 /**
  * This is the model class for processing request
