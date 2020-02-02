@@ -186,7 +186,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
             }
         }
 
-        $this->saveDataObject();
+        return $this->saveDataObject();
     }
 
     /**
