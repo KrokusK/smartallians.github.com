@@ -73,9 +73,13 @@ class StatusDelivery extends \yii\db\ActiveRecord
     /**
      * Get StatusDelivery object properties by request params
      *
+     * @params parameters for filtering
+     * @limitRec limit records
+     * @offsetRec offset records
      *
+     * @throws InvalidArgumentException if data not found or parameters is not validated
      */
-    public function getDataStatusDelivery($params = [])
+    public function getDataStatusDelivery($params = [], $limitRec = 10, $offsetRec = 0)
     {
         // Search data
         $query = StatusDelivery::find();
@@ -90,6 +94,8 @@ class StatusDelivery extends \yii\db\ActiveRecord
             }
         }
         $dataStatusDelivery = $query->orderBy('id')
+            ->limit($limitRec)
+            ->offset($offsetRec)
             ->asArray()
             ->all();
 
