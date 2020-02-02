@@ -114,6 +114,10 @@ class StatusDelivery extends \yii\db\ActiveRecord
                 if ($name != 'limitRec' && $name != 'offsetRec') {
                     $query->andWhere([$name => $params[$value]]);
                 }
+                if ($name == 'limitRec' || $name == 'offsetRec') {
+                    $this->modelResponseMessage->saveErrorMessage('TEST ' . $value);
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
             }
         }
         // default value for limitRec and offsetRec
