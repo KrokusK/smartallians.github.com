@@ -90,6 +90,29 @@ class StatusDelivery extends \yii\db\ActiveRecord
     {
         // Search data
         $query = StatusDelivery::find();
+        // Add data filter
+        $query = setDataFilter($query, $params);
+        // Add pagination params
+        $query = setPaginationParams($params);
+        // get data
+        $dataStatusDelivery = $query->orderBy('id')
+            ->limit($this->limitRec)
+            ->offset($this->offsetRec)
+            ->asArray()
+            ->all();
+
+        // return data
+        if (!empty($dataStatusDelivery)) {
+            $this->modelResponseMessage->saveDataMessage(ArrayHelper::toArray($dataStatusDelivery));
+            return Json::encode($this->modelResponseMessage->getDataMessage());
+        } else {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Записи не найдены');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+    }
+
+    private function setDataFilter($query, $params = [])
+    {
         foreach ($this->assocStatusDelivery as $name => $value) {
             if (array_key_exists($value, $params) && $this->hasAttribute($name)) {
                 $this->$name = $params[$value];
@@ -97,8 +120,14 @@ class StatusDelivery extends \yii\db\ActiveRecord
                     $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
                     throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
                 }
-                    $query->andWhere([$name => $params[$value]]);
+                $query->andWhere([$name => $params[$value]]);
             }
+        }
+    }
+
+    private function setPaginationParams($params = [])
+    {
+        foreach ($this->assocStatusDelivery as $name => $value) {
             switch ($name) {
                 case 'limitRec':
                     if (array_key_exists($value, $params) && preg_match("/^[0-9]*$/",$params[$value])) {
@@ -116,21 +145,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
                         $this->$name = 0;
                     }
             }
-        }
-        // get data
-        $dataStatusDelivery = $query->orderBy('id')
-            ->limit($this->limitRec)
-            ->offset($this->offsetRec)
-            ->asArray()
-            ->all();
-
-        // return data
-        if (!empty($dataStatusDelivery)) {
-            $this->modelResponseMessage->saveDataMessage(ArrayHelper::toArray($dataStatusDelivery));
-            return Json::encode($this->modelResponseMessage->getDataMessage());
-        } else {
-            $this->modelResponseMessage->saveErrorMessage('Ошибка: Записи не найдены');
-            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
     }
 }
