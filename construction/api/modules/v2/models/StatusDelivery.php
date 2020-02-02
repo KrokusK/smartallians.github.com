@@ -266,7 +266,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
         // fill in the properties in the StatusDelivery object
         foreach ($this->assocStatusDelivery as $name => $value) {
             if (array_key_exists($value, $params) && $this->hasAttribute($name) && $name != 'id') {
-                $modelStatusDelivery->$name = $params[$value];
+                $this->$name = $params[$value];
                 if (!$this->validate($name)) {
                     $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
                     throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
@@ -274,6 +274,40 @@ class StatusDelivery extends \yii\db\ActiveRecord
             }
         }
 
-        return $this->saveDataObject();
+        return $this->updateDataObject();
+    }
+
+    /**
+     * Update StatusDelivery object
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    private function updateDataObject()
+    {
+        // Update StatusDelivery object
+        if ($this->validate()) {
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                $flagStatusDelivery = $this->save(false); // update StatusDelivery table
+
+                if ($flagStatusDelivery) {
+                    $transaction->commit();
+                } else {
+                    $transaction->rollBack();
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка: Статус поставки не может быть обновлен');
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+            } catch (Exception $ex) {
+                $transaction->rollBack();
+                $this->modelResponseMessage->saveErrorMessage('Ошибка: Статус поставки не может быть обновлен');
+                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+            }
+
+            $this->modelResponseMessage->saveDataMessage('Статус поставки успешно сохранен');
+            return Json::encode($this->modelResponseMessage->getDataMessage());
+        } else {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка валидации');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
     }
 }
