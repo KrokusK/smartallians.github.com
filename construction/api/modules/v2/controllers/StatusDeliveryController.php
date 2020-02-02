@@ -73,39 +73,24 @@ class StatusDeliveryController extends Controller
      */
     public function actionView()
     {
-        /*
-        try {
-            throw new Exception('Test error message!!!');
-        } catch (Exception $ex) {
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $ex->getMessage()));
-        }
-        */
-
-        // init models
+        // init model with user and request params
         try {
             $modelUserRequestData = new UserRequestData();
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
-
+        // init message object
         $modelResponseMessage = new ResponseMessage();
-
-        // get request params
-        $getParams = $modelUserRequestData->getRequestParams();
-
-
-        // Get array with user Roles
-        $userRole = $modelUserRequestData->getUserRoles();
-        if (empty($userRole)) {
-            $modelResponseMessage->saveErrorMessage('Ошибка: У пользователя отсутствуют роли');
-            return Json::encode($modelResponseMessage->getErrorMessage());
-        }
 
         // Check rights
         if (!$modelUserRequestData->checkUserRightsByRole(array('admin'))) {
             $modelResponseMessage->saveErrorMessage('Ошибка: Не хватает прав на операцию просмотра');
             return Json::encode($modelResponseMessage->getErrorMessage());
         }
+
+
+        // get request params
+        $getParams = $modelUserRequestData->getRequestParams();
 
         // Because the field names may match within a single query,
         // the parameter names may not match the table field names.

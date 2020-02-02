@@ -63,6 +63,8 @@ class UserRequestData extends Model
         $this->setProperties();
         // Authorization user by token in params
         $this->loginByParams();
+        // Get user roles
+        $this->getUserRoles();
     }
 
     /**
@@ -137,11 +139,12 @@ class UserRequestData extends Model
             foreach($userAssigned as $userAssign) {
                 array_push($this->userRole, $userAssign->roleName);
             }
-
-            return $this->userRole;
         }
 
-        return null;
+        if (empty($this->userRole)) {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: У пользователя отсутствуют роли');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
     }
 
     /**
