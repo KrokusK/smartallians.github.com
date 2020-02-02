@@ -18,7 +18,12 @@ class StatusDelivery extends \yii\db\ActiveRecord
     * the parameter names may not match the table field names.
     * To solve this problem let's create an associative array
     */
-    protected $assocStatusDelivery = array ('id' => 'id', 'name' => 'name');
+    protected $assocStatusDelivery = [
+        'id' => 'id',
+        'name' => 'name',
+        'limitRec' => 'limit_rec',
+        'offsetRec' => 'offset_rec'
+    ];
 
     /**
      * properties
