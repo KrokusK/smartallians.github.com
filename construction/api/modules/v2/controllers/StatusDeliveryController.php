@@ -92,6 +92,8 @@ class StatusDeliveryController extends Controller
 
         $modelResponseMessage = new ResponseMessage();
 
+        // get request params
+        $getParams = $modelUserRequestData->getRequestParams();
         
 
         // Get array with user Roles
