@@ -118,7 +118,7 @@ class UserRequestData extends Model
      */
     public function loginByParams()
     {
-        if (array_key_exists('token', $this->params)) {
+        if (array_key_exists('token', $this->params) && is_string($token)) {
             $this->userByToken = \Yii::$app->user->loginByAccessToken($this->params['token']);
         }
 
