@@ -385,7 +385,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
     }
 
     /**
-     * Delete StatusDelivery object into the Db by params
+     * Delete StatusDelivery objects into the Db by params
      *
      * @params parameters with properties
      *
@@ -406,8 +406,19 @@ class StatusDelivery extends \yii\db\ActiveRecord
         $this->setPaginationParams($query, $params);
         // get data
         $dataStatusDelivery = $query->orderBy('id')->all();
-
         // delete records from database
+        return $this->deleteDataStatusDeliveryArray($dataStatusDelivery);
+    }
+
+    /**
+     * Delete StatusDelivery objects into the Db by params
+     *
+     * @dataStatusDelivery array of objects
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    private function deleteDataStatusDeliveryArray($dataStatusDelivery)
+    {
         if (!empty($dataStatusDelivery)) {
             foreach ($dataStatusDelivery as $dataRec) {
                 $transaction = \Yii::$app->db->beginTransaction();
