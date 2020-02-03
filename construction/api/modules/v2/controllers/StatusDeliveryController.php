@@ -159,7 +159,7 @@ class StatusDeliveryController extends Controller
             $modelStatusDelivery = new StatusDelivery();
             if ($modelStatusDelivery->isNullIdInParams($delParams)) {
                 // Delete object by other params
-                return $modelStatusDelivery->deleteDataStatusDeliveryByParams($delParams);
+               return $modelStatusDelivery->deleteDataStatusDeliveryByParams($delParams);
             } else {
                 // Delete object by id
                 $modelStatusDeliveryById = $modelStatusDelivery->getDataStatusDeliveryById($delParams);
@@ -169,92 +169,4 @@ class StatusDeliveryController extends Controller
             return $e->getMessage();
         }
     }
-
-
-    /**
-     * DELETE Method. StatusDelivery table.
-     * Delete records by another parameters
-     *
-     * @return json
-     */
-    /*
-    public function actionDeleteByParam()
-    {
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
-
-        if (is_array($bodyRaw)) {
-            if (array_key_exists('token', $bodyRaw)) {
-                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-                if (empty($userByToken)) {
-                    //return $this->goHome();
-                    return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-                }
-            } else {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-
-            // Get array with user Roles
-            $userRole =[];
-            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-            foreach($userAssigned as $userAssign){
-                array_push($userRole, $userAssign->roleName);
-            }
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
-            // Check rights
-            // If user have create right that his allowed to other actions to the Spacialization table
-
-            $flagRights = false;
-            foreach(array('admin') as $value) {
-                if (in_array($value, $userRole)) {
-                    $flagRights = true;
-                }
-            }
-            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayStatusDeliveryAssoc = array ('id' => 'id', 'name' => 'name');
-
-            // Search record by id in the database
-            $queryStatusDelivery = StatusDelivery::find();
-            $modelValidate = new StatusDelivery();
-            foreach ($arrayStatusDeliveryAssoc as $nameStatusDeliveryAssoc => $valueStatusDeliveryAssoc) {
-                if (array_key_exists($valueStatusDeliveryAssoc, $bodyRaw)) {
-                    if ($modelValidate->hasAttribute($nameStatusDeliveryAssoc)) {
-                        $modelValidate->$nameStatusDeliveryAssoc = $bodyRaw[$arrayStatusDeliveryAssoc[$nameStatusDeliveryAssoc]];
-                        if (!$modelValidate->validate($nameStatusDeliveryAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueStatusDeliveryAssoc));
-
-                        $queryStatusDelivery->andWhere([$nameStatusDeliveryAssoc => $bodyRaw[$arrayStatusDeliveryAssoc[$nameStatusDeliveryAssoc]]]);
-                    }
-                }
-
-            }
-            $modelsStatusDelivery = $queryStatusDelivery->all();
-
-            if (!empty($modelsStatusDelivery) && !empty($modelValidate)) {
-                foreach ($modelsStatusDelivery as $modelStatusDelivery) {
-                    $transaction = \Yii::$app->db->beginTransaction();
-                    try {
-                        // delete from StatusDelivery table.
-                         $countStatusDeliveryDelete = $modelStatusDelivery->delete();
-
-                        if ($countStatusDeliveryDelete > 0) {
-                            $transaction->commit();
-                        } else {
-                            $transaction->rollBack();
-                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Статус поставки не может быть удален'));
-                        }
-                    } catch (Exception $ex) {
-                        $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Статус поставки не может быть удален'));
-                    }
-                }
-
-                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Статус поставки успешно удален'));
-            }
-        }
-    }
-    */
-
 }

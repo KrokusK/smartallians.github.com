@@ -330,6 +330,23 @@ class StatusDelivery extends \yii\db\ActiveRecord
     }
 
     /**
+     * Check other parameters in addition to the token
+     *
+     * @params parameters with properties
+     *
+     * @bool return true if id is null
+     */
+    public function isOtherParams($params = [])
+    {
+        if (array_key_exists($params['token'])
+            && count($params) > 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Delete StatusDelivery object into the Db by id
      *
      * @params parameters with properties
@@ -369,6 +386,11 @@ class StatusDelivery extends \yii\db\ActiveRecord
      */
     public function deleteDataStatusDeliveryByParams($params = [])
     {
+        if (!$this->isOtherParams($delParams)) {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Отсутствуют параметры для фильтра');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+
         // Search records by params in the database
         $query = StatusDelivery::find();
         // Add data filter
