@@ -159,11 +159,11 @@ class StatusDeliveryController extends Controller
             $modelStatusDelivery = new StatusDelivery();
             if ($modelStatusDelivery->isNullIdInParams($delParams)) {
                 // Delete object by other params
-                return $modelStatusDelivery->deleteDataStatusDeliveryByParams($putParams);
+                return $modelStatusDelivery->deleteDataStatusDeliveryByParams($delParams);
             } else {
                 // Delete object by id
                 $modelStatusDeliveryById = $modelStatusDelivery->getDataStatusDeliveryById($delParams);
-                return $modelStatusDeliveryById->deleteDataStatusDeliveryById($putParams);
+                return $modelStatusDeliveryById->deleteDataStatusDeliveryById($delParams);
             }
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
