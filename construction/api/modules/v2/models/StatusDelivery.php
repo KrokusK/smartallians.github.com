@@ -369,42 +369,39 @@ class StatusDelivery extends \yii\db\ActiveRecord
      */
     public function deleteDataStatusDeliveryByParams($params = [])
     {
-        // Search record by id in the database
-        $queryStatusDelivery = StatusDelivery::find();
-        $modelValidate = new StatusDelivery();
-        foreach ($arrayStatusDeliveryAssoc as $nameStatusDeliveryAssoc => $valueStatusDeliveryAssoc) {
-            if (array_key_exists($valueStatusDeliveryAssoc, $bodyRaw)) {
-                if ($modelValidate->hasAttribute($nameStatusDeliveryAssoc)) {
-                    $modelValidate->$nameStatusDeliveryAssoc = $bodyRaw[$arrayStatusDeliveryAssoc[$nameStatusDeliveryAssoc]];
-                    if (!$modelValidate->validate($nameStatusDeliveryAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueStatusDeliveryAssoc));
+        // Search records by params in the database
+        $query = StatusDelivery::find();
+        // Add data filter
+        $this->setDataFilter($query, $params);
+        // Add pagination params
+        $this->setPaginationParams($query, $params);
+        // get data
+        $dataStatusDelivery = $query->orderBy('id')->all();
 
-                    $queryStatusDelivery->andWhere([$nameStatusDeliveryAssoc => $bodyRaw[$arrayStatusDeliveryAssoc[$nameStatusDeliveryAssoc]]]);
-                }
-            }
-
-        }
-        $modelsStatusDelivery = $queryStatusDelivery->all();
-
-        if (!empty($modelsStatusDelivery) && !empty($modelValidate)) {
-            foreach ($modelsStatusDelivery as $modelStatusDelivery) {
+        // delete records from database
+        if (!empty($dataStatusDelivery)) {
+            foreach ($dataStatusDelivery as $dataRec) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     // delete from StatusDelivery table.
-                    $countStatusDeliveryDelete = $modelStatusDelivery->delete();
+                    $countStatusDeliveryDelete = $dataRec->delete();
 
                     if ($countStatusDeliveryDelete > 0) {
                         $transaction->commit();
                     } else {
                         $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Статус поставки не может быть удален'));
+                        $this->modelResponseMessage->saveErrorMessage('Ошибка: Статус поставки не может быть удален');
+                        throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
                     }
                 } catch (Exception $ex) {
                     $transaction->rollBack();
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Статус поставки не может быть удален'));
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка: Статус поставки не может быть удален');
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
                 }
             }
 
-            return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Статус поставки успешно удален'));
+            $this->modelResponseMessage->saveDataMessage('Статус поставки успешно удален');
+            return Json::encode($this->modelResponseMessage->getDataMessage());
         }
     }
 }
