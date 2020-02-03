@@ -2,7 +2,6 @@
 namespace frontend\controllers;
 
 use common\models\User;
-use frontend\models\UserRequestData;
 use frontend\modules\v2\models\Profile;
 use Yii;
 use yii\base\InvalidArgumentException;
