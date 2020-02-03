@@ -2,6 +2,7 @@
 namespace frontend\controllers;
 
 use common\models\User;
+use frontend\models\UserRequestData;
 use frontend\modules\v2\models\Profile;
 use Yii;
 use yii\base\InvalidArgumentException;
@@ -16,6 +17,7 @@ use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
+use frontend\models\UserRequestData;
 use frontend\models\ContactForm;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
@@ -268,6 +270,20 @@ class SiteController extends Controller
         return $this->render('signup', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Verify email
+     *
+     * @return mixed
+     */
+    public function actionEmailVerify()
+    {
+        $modelUserRequestData = new UserRequestData();
+        $modelSignupForm = new SignupForm();
+
+        $params = Yii::$app->request->post();
+        return = $model->sendEmailVerifyCode($params);
     }
 
     /**

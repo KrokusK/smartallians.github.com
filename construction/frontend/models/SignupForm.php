@@ -76,4 +76,21 @@ class SignupForm extends Model
             ->setSubject('Account registration at ' . Yii::$app->name)
             ->send();
     }
+
+    /**
+     * Sends confirmation email to user
+     * @params parametrs of email letter
+     * @return bool whether the email was sent
+     */
+    public function sendEmailVerifyCode($params)
+    {
+        return Yii::$app
+            ->mailer
+            ->compose()
+            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
+            ->setTo($params['email'])
+            ->setSubject('Подтверждение почты: ' . Yii::$app->name)
+            ->setTextBody('Пожалуйста, введите следующий код подтверждения ' . $params['key'] . ' на странице регистрации.')
+            ->send();
+    }
 }

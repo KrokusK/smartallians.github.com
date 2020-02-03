@@ -8,7 +8,6 @@ use yii\filters\VerbFilter;
 use api\modules\v2\models\StatusDelivery;
 use api\modules\v2\models\UserRequestData;
 
-
 /**
  * API StatusDelivery controller
  */

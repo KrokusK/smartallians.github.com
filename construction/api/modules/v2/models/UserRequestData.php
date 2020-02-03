@@ -162,6 +162,4 @@ class UserRequestData extends Model
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
     }
-
-
 }
