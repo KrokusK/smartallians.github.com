@@ -340,7 +340,14 @@ class StatusDelivery extends \yii\db\ActiveRecord
     {
         if (array_key_exists('token',$params)
             && count($params) > 1) {
-            return true;
+            $flag = false;
+            foreach ($this->assocStatusDelivery as $name => $value) {
+                if (array_key_exists($value, $params) && $this->hasAttribute($name)) {
+                    $flag = true;
+                }
+            }
+
+            return $flag;
         } else {
             return false;
         }
