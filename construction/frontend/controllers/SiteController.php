@@ -290,6 +290,24 @@ class SiteController extends Controller
     }
 
     /**
+     * Verify phone
+     *
+     * @return mixed
+     */
+    public function actionPhoneVerify()
+    {
+        try {
+            $modelUserRequestData = new UserRequestData();
+            $modelSignupForm = new SignupForm();
+
+            $params = $modelUserRequestData->getRequestParams();
+            return $modelSignupForm->sendPhoneVerifyCode($params);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    /**
      * Requests password reset.
      *
      * @return mixed

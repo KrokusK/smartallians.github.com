@@ -1,10 +1,10 @@
 <?php
 namespace frontend\models;
 
-use api\modules\v2\models\ResponseMessage;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Json;
+use yii\httpclient\Client;
 use common\models\User;
 
 /**
@@ -110,6 +110,36 @@ class SignupForm extends Model
             return Json::encode($this->modelResponseMessage->getDataMessage());
         } else {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: не возможно отправить почту');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+    }
+
+    /**
+     * Sends confirmation sms to user
+     * @params parametrs of sms
+     * @return bool whether the sms was sent
+     */
+    public function sendPhoneVerifyCode($params)
+    {
+        $client = new Client();
+        $response = $client->createRequest()
+            ->setMethod('GET')
+            ->setUrl('http://example.com/api/1.0/users')
+            ->setData([
+                'api_id' => '20A77165-3182-6775-558D-623A2BC81EDB',
+                'to' => $params['phone'],
+                'msg' => $params['code'],
+                'json' => '1'
+            ])
+            ->send();
+        $flag = $response->isOk;
+        $statusSMS = $response->data['status'];
+
+        if ($flag) {
+            $this->modelResponseMessage->saveDataMessage('Письмо с верификационным кодом отправлено на телефон' . $params['phone']);
+            return Json::encode($this->modelResponseMessage->getDataMessage());
+        } else {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: не возможно отправить sms');
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
     }
