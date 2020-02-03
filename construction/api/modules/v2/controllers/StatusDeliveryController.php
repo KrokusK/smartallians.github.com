@@ -170,12 +170,14 @@ class StatusDeliveryController extends Controller
         }
     }
 
+
     /**
      * DELETE Method. StatusDelivery table.
      * Delete records by another parameters
      *
      * @return json
      */
+    /*
     public function actionDeleteByParam()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -202,11 +204,7 @@ class StatusDeliveryController extends Controller
 
             // Check rights
             // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
-            }
-            */
+
             $flagRights = false;
             foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
@@ -257,5 +255,6 @@ class StatusDeliveryController extends Controller
             }
         }
     }
+    */
 
 }
