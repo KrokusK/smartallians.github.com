@@ -4,6 +4,7 @@ namespace frontend\models;
 use api\modules\v2\models\ResponseMessage;
 use Yii;
 use yii\base\Model;
+use yii\helpers\Json;
 use common\models\User;
 
 /**
