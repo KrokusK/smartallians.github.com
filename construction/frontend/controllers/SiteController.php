@@ -284,7 +284,7 @@ class SiteController extends Controller
             $modelSignupForm = new SignupForm();
 
             $params = $modelUserRequestData->getRequestParams();
-            return = $modelSignupForm->sendEmailVerifyCode($params);
+            return $modelSignupForm->sendEmailVerifyCode($params);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
