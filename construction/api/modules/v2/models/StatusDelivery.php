@@ -338,7 +338,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
      */
     public function isOtherParams($params = [])
     {
-        if (array_key_exists($params['token'])
+        if (array_key_exists('token',$params)
             && count($params) > 1) {
             return true;
         } else {
