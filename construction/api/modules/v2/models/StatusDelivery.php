@@ -230,7 +230,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if returned error
      */
-    public function getDataStatusDeliveryById($params = [], $idNotEmpty = true)
+    public function getDataStatusDeliveryById($params = [])
     {
         if (array_key_exists($this->assocStatusDelivery['id'], $params)) {
             // check id parametr
@@ -248,11 +248,9 @@ class StatusDelivery extends \yii\db\ActiveRecord
             }
 
             return $modelStatusDelivery;
-        } elseif ($idNotEmpty) {
+        } else {
             $this->modelResponseMessage->saveErrorMessage('Отсутствет id параметр в запросе');
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
-        } else {
-            return null;
         }
     }
 
@@ -315,14 +313,98 @@ class StatusDelivery extends \yii\db\ActiveRecord
     }
 
     /**
+     * Check Id in params. Is this null?
+     *
+     * @params parameters with properties
+     *
+     * @bool return true if id is null
+     */
+    public function isNullIdInParams($params = [])
+    {
+        if (array_key_exists($this->assocStatusDelivery['id'], $params)
+            && !empty($params[$this->assocStatusDelivery['id']])) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Delete StatusDelivery object into the Db by id
      *
      * @params parameters with properties
      *
      * @throws InvalidArgumentException if returned error
      */
-    public function deleteDataStatusDelivery($params = [])
+    public function deleteDataStatusDeliveryById($params = [])
     {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            // delete from StatusDelivery table
+            $countStatusDeliveryDelete = $this->delete($this->id);
 
+            if ($countStatusDeliveryDelete > 0) {
+                $transaction->commit();
+            } else {
+                $transaction->rollBack();
+                $this->modelResponseMessage->saveErrorMessage('Ошибка: Статус поставки не может быть удален');
+                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+            }
+        } catch (Exception $ex) {
+            $transaction->rollBack();
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Статус поставки не может быть удален');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+
+        $this->modelResponseMessage->saveDataMessage('Статус поставки успешно удален');
+        return Json::encode($this->modelResponseMessage->getDataMessage());
+    }
+
+    /**
+     * Delete StatusDelivery object into the Db by params
+     *
+     * @params parameters with properties
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    public function deleteDataStatusDeliveryByParams($params = [])
+    {
+        // Search record by id in the database
+        $queryStatusDelivery = StatusDelivery::find();
+        $modelValidate = new StatusDelivery();
+        foreach ($arrayStatusDeliveryAssoc as $nameStatusDeliveryAssoc => $valueStatusDeliveryAssoc) {
+            if (array_key_exists($valueStatusDeliveryAssoc, $bodyRaw)) {
+                if ($modelValidate->hasAttribute($nameStatusDeliveryAssoc)) {
+                    $modelValidate->$nameStatusDeliveryAssoc = $bodyRaw[$arrayStatusDeliveryAssoc[$nameStatusDeliveryAssoc]];
+                    if (!$modelValidate->validate($nameStatusDeliveryAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueStatusDeliveryAssoc));
+
+                    $queryStatusDelivery->andWhere([$nameStatusDeliveryAssoc => $bodyRaw[$arrayStatusDeliveryAssoc[$nameStatusDeliveryAssoc]]]);
+                }
+            }
+
+        }
+        $modelsStatusDelivery = $queryStatusDelivery->all();
+
+        if (!empty($modelsStatusDelivery) && !empty($modelValidate)) {
+            foreach ($modelsStatusDelivery as $modelStatusDelivery) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    // delete from StatusDelivery table.
+                    $countStatusDeliveryDelete = $modelStatusDelivery->delete();
+
+                    if ($countStatusDeliveryDelete > 0) {
+                        $transaction->commit();
+                    } else {
+                        $transaction->rollBack();
+                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Статус поставки не может быть удален'));
+                    }
+                } catch (Exception $ex) {
+                    $transaction->rollBack();
+                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Статус поставки не может быть удален'));
+                }
+            }
+
+            return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Статус поставки успешно удален'));
+        }
     }
 }
