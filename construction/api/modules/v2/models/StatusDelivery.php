@@ -386,7 +386,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
      */
     public function deleteDataStatusDeliveryByParams($params = [])
     {
-        if (!$this->isOtherParams($delParams)) {
+        if (!$this->isOtherParams($params)) {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: Отсутствуют параметры для фильтра');
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
