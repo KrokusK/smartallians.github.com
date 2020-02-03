@@ -124,11 +124,11 @@ class SignupForm extends Model
         $client = new Client();
         $response = $client->createRequest()
             ->setMethod('GET')
-            ->setUrl('http://example.com/api/1.0/users')
+            ->setUrl('https://sms.ru/sms/send')
             ->setData([
                 'api_id' => '20A77165-3182-6775-558D-623A2BC81EDB',
                 'to' => $params['phone'],
-                'msg' => $params['code'],
+                'msg' => $params['msg'],
                 'json' => '1'
             ])
             ->send();
