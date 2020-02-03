@@ -279,11 +279,15 @@ class SiteController extends Controller
      */
     public function actionEmailVerify()
     {
-        $modelUserRequestData = new UserRequestData();
-        $modelSignupForm = new SignupForm();
+        try {
+            $modelUserRequestData = new UserRequestData();
+            $modelSignupForm = new SignupForm();
 
-        $params = Yii::$app->request->post();
-        return = $model->sendEmailVerifyCode($params);
+            $params = $modelUserRequestData->getRequestParams();
+            return = $modelSignupForm->sendEmailVerifyCode($params);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
     }
 
     /**

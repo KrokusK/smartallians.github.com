@@ -1,6 +1,7 @@
 <?php
 namespace frontend\models;
 
+use api\modules\v2\models\ResponseMessage;
 use Yii;
 use yii\base\Model;
 use common\models\User;
@@ -35,6 +36,15 @@ class SignupForm extends Model
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
         ];
+    }
+
+    /**
+     * Create a model
+     */
+    public function __construct()
+    {
+        // Set property
+        $this->modelResponseMessage = new ResponseMessage();
     }
 
     /**
@@ -84,7 +94,7 @@ class SignupForm extends Model
      */
     public function sendEmailVerifyCode($params)
     {
-        return Yii::$app
+        $flag = Yii::$app
             ->mailer
             ->compose()
             ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
@@ -92,5 +102,13 @@ class SignupForm extends Model
             ->setSubject('Подтверждение почты: ' . Yii::$app->name)
             ->setTextBody('Пожалуйста, введите следующий код подтверждения ' . $params['key'] . ' на странице регистрации.')
             ->send();
+
+        if ($flag) {
+            $this->modelResponseMessage->saveDataMessage('Письмо с верификационным кодом отправлено на почту' . $params['email']);
+            return Json::encode($this->modelResponseMessage->getDataMessage());
+        } else {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: не возможно отправить почту');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
     }
 }
