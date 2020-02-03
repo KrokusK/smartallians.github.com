@@ -424,6 +424,9 @@ class StatusDelivery extends \yii\db\ActiveRecord
 
             $this->modelResponseMessage->saveDataMessage('Статус поставки успешно удален');
             return Json::encode($this->modelResponseMessage->getDataMessage());
+        } else {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: В БД не найден Статус поставки по параметрам');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
     }
 }
