@@ -6,6 +6,7 @@ use yii\base\Model;
 use yii\helpers\Json;
 use yii\httpclient\Client;
 use common\models\User;
+use yii\base\InvalidArgumentException;
 
 /**
  * Signup form
