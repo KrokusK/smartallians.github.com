@@ -15,6 +15,7 @@ use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
+use frontend\models\SignupAccount;
 use frontend\models\ModuleSMS;
 use frontend\models\UserRequestData;
 use frontend\models\ContactForm;
