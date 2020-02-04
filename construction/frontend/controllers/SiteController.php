@@ -325,7 +325,8 @@ class SiteController extends Controller
             ];
             $postSMS = (object) $paramsSMS;
             $responseSMS = $modelSMS->send_one($postSMS);
-            return ArrayHelper::toArray($responseSMS);
+            return var_dump($responseSMS);
+            //return ArrayHelper::toArray($responseSMS);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
