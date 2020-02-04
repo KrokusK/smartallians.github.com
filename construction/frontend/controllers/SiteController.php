@@ -323,7 +323,7 @@ class SiteController extends Controller
                 'to' => $paramsRequest['to'],
                 'msg' => $paramsRequest['msg']
             ];
-            return $modelSignupForm->sendPhoneVerifyCode($paramsSMS);
+            return $modelSMS->send_one($paramsSMS);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
