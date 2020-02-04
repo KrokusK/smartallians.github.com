@@ -14,6 +14,7 @@ class SignupAccount extends Model
 {
     public $username;
     public $email;
+    public $phone;
     public $password;
     public $modelResponseMessage;
 
