@@ -59,19 +59,39 @@ class SignupAccount extends Model
      *
      * @return bool whether the creating new account was successful and email was sent
      */
-    public function signup()
+    public function signup($params)
     {
         if (!$this->validate()) {
-            return null;
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: не возможно сохранить пользователя');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
         
         $user = new User();
-        $user->username = $this->username;
-        $user->email = $this->email;
-        $user->setPassword($this->password);
+        $user->username = $params['email'];
+        $user->email = $params['email'];
+        $user->setPassword($params['password']);
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
-        return $user->save() && $this->sendEmail($user);
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $flagSave = $user->save();
+            $flagEmail = $this->sendEmail($user);
+
+            if ($flagSave && $flagEmail) {
+                $transaction->commit();
+            } else {
+                $transaction->rollBack();
+                $this->modelResponseMessage->saveErrorMessage('Ошибка: не возможно сохранить пользователя');
+                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+            }
+        } catch (Exception $ex) {
+            $transaction->rollBack();
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: не возможно сохранить пользователя');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+
+        $this->modelResponseMessage->saveDataMessage('Пользователь успешно сохранен. На почту выслано письмо с подтверждением');
+        return Json::encode($this->modelResponseMessage->getDataMessage());
     }
 
     /**
