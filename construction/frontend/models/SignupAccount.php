@@ -63,10 +63,19 @@ class SignupAccount extends Model
      */
     public function signup($params)
     {
-        $this->username = $params['email'];
-        $this->email = $params['email'];
-        $this->phone = $params['phone'];
-        $this->password = $params['password'];
+        foreach ($params as $key => $value) {
+            switch ($key) {
+                case 'email':
+                    $this->username = $params['email'];
+                    $this->email = $params['email'];
+                    break;
+                case 'phone':
+                    $this->phone = $params['phone'];
+                    break;
+                case 'password':
+                    $this->password = $params['password'];
+            }
+        }
 
         if (!$this->validate()) {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: не возможно сохранить пользователя');
