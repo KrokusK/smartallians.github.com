@@ -1,7 +1,6 @@
 <?php
 namespace frontend\controllers;
 
-use common\models\User;
 use frontend\modules\v2\models\Profile;
 use Yii;
 use yii\base\InvalidArgumentException;
@@ -16,6 +15,7 @@ use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
+use frontend\models\ModuleSMS;
 use frontend\models\UserRequestData;
 use frontend\models\ContactForm;
 use frontend\models\ResendVerificationEmailForm;
@@ -290,6 +290,24 @@ class SiteController extends Controller
     }
 
     /**
+     * Verify phone. Old
+     *
+     * @return mixed
+     */
+    public function actionPhoneVerifyOld()
+    {
+        try {
+            $modelUserRequestData = new UserRequestData();
+            $modelSignupForm = new SignupForm();
+
+            $params = $modelUserRequestData->getRequestParams();
+            return $modelSignupForm->sendPhoneVerifyCode($params);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    /**
      * Verify phone
      *
      * @return mixed
@@ -298,10 +316,14 @@ class SiteController extends Controller
     {
         try {
             $modelUserRequestData = new UserRequestData();
-            $modelSignupForm = new SignupForm();
+            $modelSMS = new ModuleSMS('20A77165-3182-6775-558D-623A2BC81EDB');
 
-            $params = $modelUserRequestData->getRequestParams();
-            return $modelSignupForm->sendPhoneVerifyCode($params);
+            $paramsRequest = $modelUserRequestData->getRequestParams();
+            $paramsSMS = [
+                'to' => $paramsRequest['to'],
+                'msg' => $paramsRequest['msg']
+            ]
+            return $modelSignupForm->sendPhoneVerifyCode($paramsSMS);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
