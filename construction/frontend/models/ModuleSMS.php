@@ -9,7 +9,7 @@ use yii\helpers\Json;
  * Класс для работы с API сайта sms.ru для PHP 5.3 и выше
  * Разработчик WebProgrammer (kl.dm.vl@yandex.ru), легкие корректировки - Роман Гудев <rgudev@bk.ru>
  */
-class SMSRU extends Model
+class ModuleSMS extends Model
 {
 
     private $ApiKey;
