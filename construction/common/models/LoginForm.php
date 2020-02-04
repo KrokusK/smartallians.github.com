@@ -77,7 +77,8 @@ class LoginForm extends Model
         if ($this->_user === null) {
             //$this->_user = User::findByUsername($this->username);
 
-            if (preg_match("/^\+7\s\([0-9]{3}\)\s[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/", $this->email_phone)) {
+            //if (preg_match("/^\+7\s\([0-9]{3}\)\s[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/", $this->email_phone)) {
+            if (preg_match("/^\+7[0-9]{3}[0-9]{3}[0-9]{2}[0-9]{2}$/", $this->email_phone)) {
                 $this->_user = User::findOne(['phone' => $this->email_phone, 'status' => self::STATUS_ACTIVE]);
             }
             elseif (preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/i", $this->email_phone)) {

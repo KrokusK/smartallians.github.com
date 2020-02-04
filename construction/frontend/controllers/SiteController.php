@@ -254,11 +254,11 @@ class SiteController extends Controller
     }
 
     /**
-     * Signs user up.
-     *
-     * @return mixed
-     */
-    public function actionSignup()
+ * Signs user up.
+ *
+ * @return mixed
+ */
+    public function actionSignupOther()
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
@@ -272,6 +272,25 @@ class SiteController extends Controller
     }
 
     /**
+     * Signs user up.
+     *
+     * @return mixed
+     */
+    public function actionSignup()
+    {
+        $modelUserRequestData = new UserRequestData();
+        $modelSignupAccount = new SignupAccount();
+
+        $params = $modelUserRequestData->getRequestParams();
+        if ($modelSignupAccount->signup($params)) {
+            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+            return 'good';
+        }
+
+        return 'bad';
+    }
+
+    /**
      * Verify email
      *
      * @return mixed
@@ -280,21 +299,21 @@ class SiteController extends Controller
     {
         try {
             $modelUserRequestData = new UserRequestData();
-            $modelSignupForm = new SignupForm();
+            $modelSignupAccount = new SignupAccount();
 
             $params = $modelUserRequestData->getRequestParams();
-            return $modelSignupForm->sendEmailVerifyCode($params);
+            return $modelSignupAccount->sendEmailVerifyCode($params);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
     }
 
     /**
-     * Verify phone. Old
+     * Verify phone.
      *
      * @return mixed
      */
-    public function actionPhoneVerifyOld()
+    public function actionPhoneVerifyClient()
     {
         try {
             $modelUserRequestData = new UserRequestData();
@@ -325,8 +344,6 @@ class SiteController extends Controller
             ];
             $postSMS = (object) $paramsSMS;
             $responseSMS = $modelSMS->send_one($postSMS);
-            //return var_dump($responseSMS);
-            //return var_dump(ArrayHelper::toArray($responseSMS));
             return Json::encode(ArrayHelper::toArray($responseSMS));
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
