@@ -323,7 +323,10 @@ class SiteController extends Controller
                 'to' => $paramsRequest['to'],
                 'msg' => $paramsRequest['msg']
             ];
-            return $modelSMS->send_one($paramsSMS);
+            $post = new stdClass();
+            $post->to = $paramsRequest['to'];
+            $post->msg = $paramsRequest['msg'];
+            return $modelSMS->send_one($post);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
