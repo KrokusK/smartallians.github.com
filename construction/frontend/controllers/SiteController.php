@@ -315,19 +315,20 @@ class SiteController extends Controller
     public function actionPhoneVerify()
     {
         try {
-            $modelUserRequestData = new UserRequestData();
-            $modelSMS = new ModuleSMS('20A77165-3182-6775-558D-623A2BC81EDB');
-
+            $modelUserRequestData = new UserRequestData();   
             $paramsRequest = $modelUserRequestData->getRequestParams();
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+
+            $modelSMS = new ModuleSMS('20A77165-3182-6775-558D-623A2BC81EDB');
             $paramsSMS = [
                 'to' => $paramsRequest['to'],
                 'msg' => $paramsRequest['msg']
             ];
             $post = (object) $paramsSMS;
             return $modelSMS->send_one($post);
-        } catch (InvalidArgumentException $e) {
-            return $e->getMessage();
-        }
+
     }
 
     /**
