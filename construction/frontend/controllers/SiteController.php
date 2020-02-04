@@ -284,7 +284,7 @@ class SiteController extends Controller
 
             $params = $modelUserRequestData->getRequestParams();
             $msg = $modelSignupAccount->signup($params);
-            //Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
             return $msg;
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
