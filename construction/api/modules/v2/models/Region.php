@@ -385,7 +385,7 @@ class Region extends \yii\db\ActiveRecord
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
 
-        $this->modelResponseMessage->saveSucсessMessage('Регион успешно удален');
+        $this->modelResponseMessage->saveSuccessMessage('Регион успешно удален');
         return Json::encode($this->modelResponseMessage->getDataMessage());
     }
 
@@ -445,7 +445,7 @@ class Region extends \yii\db\ActiveRecord
                 }
             }
 
-            $this->modelResponseMessage->saveSucсessMessage('Регион успешно удален');
+            $this->modelResponseMessage->saveSuccessMessage('Регион успешно удален');
             return Json::encode($this->modelResponseMessage->getDataMessage());
         } else {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: В БД не найден Регион по параметрам');
