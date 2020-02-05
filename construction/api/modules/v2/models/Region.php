@@ -248,7 +248,7 @@ class Region extends \yii\db\ActiveRecord
             $queryRegion = Region::find()->where(['id' => $params[$this->assocRegion['id']]]);
             $modelRegion = $queryRegion->one();
             if (empty($modelRegion)) {
-                $this->modelResponseMessage->saveErrorMessage('Ошибка: В БД не найден Статус поставки по id');
+                $this->modelResponseMessage->saveErrorMessage('Ошибка: В БД не найден Регион по id');
                 throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
             }
 
@@ -300,16 +300,16 @@ class Region extends \yii\db\ActiveRecord
                     $transaction->commit();
                 } else {
                     $transaction->rollBack();
-                    $this->modelResponseMessage->saveErrorMessage('Ошибка: Статус поставки не может быть обновлен');
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка: Регион не может быть обновлен');
                     throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
                 }
             } catch (Exception $ex) {
                 $transaction->rollBack();
-                $this->modelResponseMessage->saveErrorMessage('Ошибка: Статус поставки не может быть обновлен');
+                $this->modelResponseMessage->saveErrorMessage('Ошибка: Регион не может быть обновлен');
                 throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
             }
 
-            $this->modelResponseMessage->saveSuccessMessage('Статус поставки успешно сохранен');
+            $this->modelResponseMessage->saveSuccessMessage('Регион успешно сохранен');
             return Json::encode($this->modelResponseMessage->getDataMessage());
         } else {
             $this->modelResponseMessage->saveErrorMessage('Ошибка валидации');
