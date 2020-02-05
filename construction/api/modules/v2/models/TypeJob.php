@@ -316,4 +316,140 @@ class TypeJob extends \yii\db\ActiveRecord
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
     }
+
+    /**
+     * Check Id in params. Is this null?
+     *
+     * @params parameters with properties
+     *
+     * @bool return true if id is null
+     */
+    public function isNullIdInParams($params = [])
+    {
+        if (array_key_exists($this->assocTypeJob['id'], $params)
+            && !empty($params[$this->assocTypeJob['id']])) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Check other parameters in addition to the token
+     *
+     * @params parameters with properties
+     *
+     * @bool return true if id is null
+     */
+    public function isOtherParams($params = [])
+    {
+        if (array_key_exists('token',$params)
+            && count($params) > 1) {
+            $flag = false;
+            foreach ($this->assocTypeJob as $name => $value) {
+                if (array_key_exists($value, $params) && $this->hasAttribute($name)) {
+                    $flag = true;
+                }
+            }
+
+            return $flag;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Delete TypeJob object into the Db by id
+     *
+     * @params parameters with properties
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    public function deleteDataTypeJobById($params = [])
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            // delete from TypeJob table
+            $countTypeJobDelete = $this->delete($this->id);
+
+            if ($countTypeJobDelete > 0) {
+                $transaction->commit();
+            } else {
+                $transaction->rollBack();
+                $this->modelResponseMessage->saveErrorMessage('Ошибка: Форма работы не может быть удалена');
+                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+            }
+        } catch (Exception $ex) {
+            $transaction->rollBack();
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Форма работы не может быть удалена');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+
+        $this->modelResponseMessage->saveSuccessMessage('Форма работы успешно удалена');
+        return Json::encode($this->modelResponseMessage->getDataMessage());
+    }
+
+    /**
+     * Delete TypeJob objects into the Db by params
+     *
+     * @params parameters with properties
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    public function deleteDataTypeJobByParams($params = [])
+    {
+        if (!$this->isOtherParams($params)) {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Отсутствуют параметры для фильтра');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+
+        // Search records by params in the database
+        $query = TypeJob::find();
+        // Add data filter
+        $this->setDataFilter($query, $params);
+        // Add pagination params
+        $this->setPaginationParams($query, $params);
+        // get data
+        $dataTypeJob = $query->orderBy('id')->all();
+        // delete records from database
+        return $this->deleteDataTypeJobArray($dataTypeJob);
+    }
+
+    /**
+     * Delete TypeJob objects into the Db by params
+     *
+     * @dataTypeJob array of objects
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    private function deleteDataTypeJobArray($dataTypeJob)
+    {
+        if (!empty($dataTypeJob)) {
+            foreach ($dataTypeJob as $dataRec) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    // delete from TypeJob table.
+                    $countTypeJobDelete = $dataRec->delete();
+
+                    if ($countTypeJobDelete > 0) {
+                        $transaction->commit();
+                    } else {
+                        $transaction->rollBack();
+                        $this->modelResponseMessage->saveErrorMessage('Ошибка: Форма работы не может быть удалена');
+                        throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                    }
+                } catch (Exception $ex) {
+                    $transaction->rollBack();
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка: Форма работы не может быть удалена');
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+            }
+
+            $this->modelResponseMessage->saveSuccessMessage('Форма работы успешно удалена');
+            return Json::encode($this->modelResponseMessage->getDataMessage());
+        } else {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: В БД не найден Форма работы по параметрам');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+    }
 }

@@ -129,98 +129,6 @@ class TypeJobController extends Controller
             return $e->getMessage();
         }
     }
-    /*
-    public function actionUpdate()
-    {
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
-
-        if (is_array($bodyRaw)) {
-            // check user is a guest
-            if (array_key_exists('token', $bodyRaw)) {
-                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-                if (empty($userByToken)) {
-                    //return $this->goHome();
-                    return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-                }
-            } else {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-
-            // Get array with user Roles
-            $userRole =[];
-            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-            foreach($userAssigned as $userAssign){
-                array_push($userRole, $userAssign->roleName);
-            }
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
-            // Check rights
-            // If user have create right that his allowed to other actions to the Spacialization table
-
-            $flagRights = false;
-            foreach(array('admin') as $value) {
-                if (in_array($value, $userRole)) {
-                    $flagRights = true;
-                }
-            }
-            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayTypeJobAssoc = array ('id' => 'id', 'name' => 'name');
-
-            if (array_key_exists($arrayTypeJobAssoc['id'], $bodyRaw)) {
-                // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayTypeJobAssoc['id']])) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
-                }
-
-                // Search record by id in the database
-                $queryTypeJob = TypeJob::find()->where(['id' => $bodyRaw[$arrayTypeJobAssoc['id']]]);
-                $modelTypeJob = $queryTypeJob->one();
-
-                if (empty($modelTypeJob)) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Форма работы по id'));
-                }
-
-                foreach ($arrayTypeJobAssoc as $nameTypeJobAssoc => $valueTypeJobAssoc) {
-                    if (array_key_exists($valueTypeJobAssoc, $bodyRaw)) {
-                        if ($modelTypeJob->hasAttribute($nameTypeJobAssoc)) {
-                            $modelTypeJob->$nameTypeJobAssoc = $bodyRaw[$arrayTypeJobAssoc[$nameTypeJobAssoc]];
-                            if (!$modelTypeJob->validate($nameTypeJobAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
-                        }
-                    }
-                }
-
-                // Save TypeJob object
-                if ($modelTypeJob->validate()) {
-                    $transaction = \Yii::$app->db->beginTransaction();
-                    try {
-                        $flagTypeJob = $modelTypeJob->save(false); // update TypeJob table
-
-                        if ($flagTypeJob) {
-                            $transaction->commit();
-                        } else {
-                            $transaction->rollBack();
-                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Форма работы не может быть обновлена'));
-                        }
-                    } catch (Exception $ex) {
-                        $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Форма работы не может быть обновлена'));
-                    }
-                } else {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
-                }
-
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Форма работы успешно сохранена'));
-            } else {
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id параметр в запросе'));
-            }
-        } else {
-            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
-        }
-    }
-    */
 
     /**
      * DELETE Method. TypeJob table.
@@ -229,6 +137,38 @@ class TypeJobController extends Controller
      *
      * @return json
      */
+    public function actionDelete()
+    {
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
+            // Check rights
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get request params
+            $delParams = $modelUserRequestData->getRequestParams();
+            // Get model TypeJob by id
+            $modelTypeJob = new TypeJob();
+            if ($modelTypeJob->isNullIdInParams($delParams)) {
+                // Delete object by other params
+                return $modelTypeJob->deleteDataTypeJobByParams($delParams);
+            } else {
+                // Delete object by id
+                $modelTypeJobById = $modelTypeJob->getDataTypeJobById($delParams);
+                return $modelTypeJobById->deleteDataTypeJobById($delParams);
+            }
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * DELETE Method. TypeJob table.
+     * Delete records by id parameter
+     * or by another parameters
+     *
+     * @return json
+     */
+    /*
     public function actionDelete()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -256,11 +196,7 @@ class TypeJobController extends Controller
 
             // Check rights
             // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
-            }
-            */
+
             $flagRights = false;
             foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
@@ -316,6 +252,7 @@ class TypeJobController extends Controller
         }
         //}
     }
+    */
 
     /**
      * DELETE Method. TypeJob table.
@@ -323,6 +260,7 @@ class TypeJobController extends Controller
      *
      * @return json
      */
+    /*
     public function actionDeleteByParam()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -349,11 +287,7 @@ class TypeJobController extends Controller
 
             // Check rights
             // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
-            }
-            */
+
             $flagRights = false;
             foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
@@ -404,5 +338,6 @@ class TypeJobController extends Controller
             }
         }
     }
+    */
 
 }
