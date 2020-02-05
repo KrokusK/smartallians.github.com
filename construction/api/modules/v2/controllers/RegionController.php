@@ -1,6 +1,7 @@
 <?php
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\Region;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -111,7 +112,30 @@ class RegionController extends Controller
         }
     }
 
-
+    /**
+     * PUT, PATCH Method. Region table.
+     * Update record by id parameter
+     *
+     * @return json
+     */
+    public function actionUpdate()
+    {
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
+            // Check rights
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get request params
+            $putParams = $modelUserRequestData->getRequestParams();
+            // Get model Region by id
+            $modelRegion = new Region();
+            $modelRegionById = $modelRegion->getDataRegionById($putParams);
+            // Update object by id
+            return $modelRegionById->updateDataRegion($putParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+    }
 
     /**
      * PUT, PATCH Method. Region table.
@@ -119,6 +143,7 @@ class RegionController extends Controller
      *
      * @return json
      */
+    /*
     public function actionUpdate()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -146,11 +171,7 @@ class RegionController extends Controller
 
             // Check rights
             // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию обновления'));
-            }
-            */
+
             $flagRights = false;
             foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
@@ -213,7 +234,7 @@ class RegionController extends Controller
             return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
     }
-
+    */
 
     /**
      * DELETE Method. Region table.

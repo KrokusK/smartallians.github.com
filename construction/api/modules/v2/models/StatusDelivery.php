@@ -209,7 +209,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
                 throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
             }
 
-            $this->modelResponseMessage->saveDataMessage('Статус поставки успешно сохранен');
+            $this->modelResponseMessage->saveSucessMessage('Статус поставки успешно сохранен');
             return Json::encode($this->modelResponseMessage->getDataMessage());
         } else {
             $this->modelResponseMessage->saveErrorMessage('Ошибка валидации');
@@ -299,7 +299,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
                 throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
             }
 
-            $this->modelResponseMessage->saveDataMessage('Статус поставки успешно сохранен');
+            $this->modelResponseMessage->saveSucessMessage('Статус поставки успешно сохранен');
             return Json::encode($this->modelResponseMessage->getDataMessage());
         } else {
             $this->modelResponseMessage->saveErrorMessage('Ошибка валидации');
@@ -375,7 +375,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
 
-        $this->modelResponseMessage->saveDataMessage('Статус поставки успешно удален');
+        $this->modelResponseMessage->saveSucessMessage('Статус поставки успешно удален');
         return Json::encode($this->modelResponseMessage->getDataMessage());
     }
 
@@ -435,7 +435,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
                 }
             }
 
-            $this->modelResponseMessage->saveDataMessage('Статус поставки успешно удален');
+            $this->modelResponseMessage->saveSucessMessage('Статус поставки успешно удален');
             return Json::encode($this->modelResponseMessage->getDataMessage());
         } else {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: В БД не найден Статус поставки по параметрам');
