@@ -137,103 +137,35 @@ class RegionController extends Controller
     }
 
     /**
-     * PUT, PATCH Method. Region table.
-     * Update record by id parameter
+     * DELETE Method. Region table.
+     * Delete records by id parameter
+     * or by another parameters
      *
      * @return json
      */
-    /*
-    public function actionUpdate()
+    public function actionDelete()
     {
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
-
-        if (is_array($bodyRaw)) {
-            // check user is a guest
-            if (array_key_exists('token', $bodyRaw)) {
-                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-                if (empty($userByToken)) {
-                    //return $this->goHome();
-                    return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-                }
-            } else {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-
-            // Get array with user Roles
-            $userRole =[];
-            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-            foreach($userAssigned as $userAssign){
-                array_push($userRole, $userAssign->roleName);
-            }
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
             // Check rights
-            // If user have create right that his allowed to other actions to the Spacialization table
-
-            $flagRights = false;
-            foreach(array('admin') as $value) {
-                if (in_array($value, $userRole)) {
-                    $flagRights = true;
-                }
-            }
-            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRegionAssoc = array ('id' => 'id', 'name' => 'name');
-
-            if (array_key_exists($arrayRegionAssoc['id'], $bodyRaw)) {
-                // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayRegionAssoc['id']])) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
-                }
-
-                // Search record by id in the database
-                $queryRegion = Region::find()->where(['id' => $bodyRaw[$arrayRegionAssoc['id']]]);
-                $modelRegion = $queryRegion->one();
-
-                if (empty($modelRegion)) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найдена Область по id'));
-                }
-
-                foreach ($arrayRegionAssoc as $nameRegionAssoc => $valueRegionAssoc) {
-                    if (array_key_exists($valueRegionAssoc, $bodyRaw)) {
-                        if ($modelRegion->hasAttribute($nameRegionAssoc)) {
-                            $modelRegion->$nameRegionAssoc = $bodyRaw[$arrayRegionAssoc[$nameRegionAssoc]];
-                            if (!$modelRegion->validate($nameRegionAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
-                        }
-                    }
-                }
-
-                // Save Region object
-                if ($modelRegion->validate()) {
-                    $transaction = \Yii::$app->db->beginTransaction();
-                    try {
-                        $flagRegion = $modelRegion->save(false); // update Region table
-
-                        if ($flagRegion) {
-                            $transaction->commit();
-                        } else {
-                            $transaction->rollBack();
-                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть обновлена'));
-                        }
-                    } catch (Exception $ex) {
-                        $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть обновлена'));
-                    }
-                } else {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
-                }
-
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Область успешно сохранена'));
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get request params
+            $delParams = $modelUserRequestData->getRequestParams();
+            // Get model Region by id
+            $modelRegion = new Region();
+            if ($modelRegion->isNullIdInParams($delParams)) {
+                // Delete object by other params
+                return $modelRegion->deleteDataRegionByParams($delParams);
             } else {
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id параметр в запросе'));
+                // Delete object by id
+                $modelRegionById = $modelRegion->getDataRegionById($delParams);
+                return $modelRegionById->deleteDataRegionById($delParams);
             }
-        } else {
-            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
         }
     }
-    */
 
     /**
      * DELETE Method. Region table.
@@ -242,6 +174,7 @@ class RegionController extends Controller
      *
      * @return json
      */
+    /*
     public function actionDelete()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -269,11 +202,7 @@ class RegionController extends Controller
 
             // Check rights
             // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
-            }
-            */
+
             $flagRights = false;
             foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
@@ -329,6 +258,7 @@ class RegionController extends Controller
         }
         //}
     }
+    */
 
     /**
      * DELETE Method. Region table.
@@ -336,6 +266,7 @@ class RegionController extends Controller
      *
      * @return json
      */
+    /*
     public function actionDeleteByParam()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -362,11 +293,7 @@ class RegionController extends Controller
 
             // Check rights
             // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
-            }
-            */
+
             $flagRights = false;
             foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
@@ -417,5 +344,6 @@ class RegionController extends Controller
             }
         }
     }
+    */
 
 }

@@ -316,4 +316,140 @@ class Region extends \yii\db\ActiveRecord
             throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
         }
     }
+
+    /**
+     * Check Id in params. Is this null?
+     *
+     * @params parameters with properties
+     *
+     * @bool return true if id is null
+     */
+    public function isNullIdInParams($params = [])
+    {
+        if (array_key_exists($this->assocRegion['id'], $params)
+            && !empty($params[$this->assocRegion['id']])) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Check other parameters in addition to the token
+     *
+     * @params parameters with properties
+     *
+     * @bool return true if id is null
+     */
+    public function isOtherParams($params = [])
+    {
+        if (array_key_exists('token',$params)
+            && count($params) > 1) {
+            $flag = false;
+            foreach ($this->assocRegion as $name => $value) {
+                if (array_key_exists($value, $params) && $this->hasAttribute($name)) {
+                    $flag = true;
+                }
+            }
+
+            return $flag;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Delete Region object into the Db by id
+     *
+     * @params parameters with properties
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    public function deleteDataRegionById($params = [])
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            // delete from Region table
+            $countRegionDelete = $this->delete($this->id);
+
+            if ($countRegionDelete > 0) {
+                $transaction->commit();
+            } else {
+                $transaction->rollBack();
+                $this->modelResponseMessage->saveErrorMessage('Ошибка: Регион не может быть удален');
+                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+            }
+        } catch (Exception $ex) {
+            $transaction->rollBack();
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Регион не может быть удален');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+
+        $this->modelResponseMessage->saveSucessMessage('Регион успешно удален');
+        return Json::encode($this->modelResponseMessage->getDataMessage());
+    }
+
+    /**
+     * Delete Region objects into the Db by params
+     *
+     * @params parameters with properties
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    public function deleteDataRegionByParams($params = [])
+    {
+        if (!$this->isOtherParams($params)) {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Отсутствуют параметры для фильтра');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+
+        // Search records by params in the database
+        $query = Region::find();
+        // Add data filter
+        $this->setDataFilter($query, $params);
+        // Add pagination params
+        $this->setPaginationParams($query, $params);
+        // get data
+        $dataRegion = $query->orderBy('id')->all();
+        // delete records from database
+        return $this->deleteDataRegionArray($dataRegion);
+    }
+
+    /**
+     * Delete Region objects into the Db by params
+     *
+     * @dataRegion array of objects
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    private function deleteDataRegionArray($dataRegion)
+    {
+        if (!empty($dataRegion)) {
+            foreach ($dataRegion as $dataRec) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    // delete from Region table.
+                    $countRegionDelete = $dataRec->delete();
+
+                    if ($countRegionDelete > 0) {
+                        $transaction->commit();
+                    } else {
+                        $transaction->rollBack();
+                        $this->modelResponseMessage->saveErrorMessage('Ошибка: Регион не может быть удален');
+                        throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                    }
+                } catch (Exception $ex) {
+                    $transaction->rollBack();
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка: Регион не может быть удален');
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+            }
+
+            $this->modelResponseMessage->saveSucessMessage('Регион успешно удален');
+            return Json::encode($this->modelResponseMessage->getDataMessage());
+        } else {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: В БД не найден Регион по параметрам');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+    }
 }
