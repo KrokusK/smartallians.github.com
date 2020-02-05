@@ -309,7 +309,7 @@ class TypeJob extends \yii\db\ActiveRecord
                 throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
             }
 
-            $this->modelResponseMessage->saveSuccessMessage('Форма работы успешно сохранен');
+            $this->modelResponseMessage->saveSuccessMessage('Форма работы успешно сохранена');
             return Json::encode($this->modelResponseMessage->getDataMessage());
         } else {
             $this->modelResponseMessage->saveErrorMessage('Ошибка валидации');
