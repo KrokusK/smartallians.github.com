@@ -169,4 +169,61 @@ class Region extends \yii\db\ActiveRecord
             }
         }
     }
+
+    /**
+     * Set Region properties and
+     * save object into the Db
+     *
+     * @params parameters with properties
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    public function addDataRegion($params = [])
+    {
+        // fill in the properties in the Region object
+        foreach ($this->assocRegion as $name => $value) {
+            if (array_key_exists($value, $params) && $this->hasAttribute($name) && $name != 'id') {
+                $this->$name = $params[$value];
+                if (!$this->validate($name)) {
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+            }
+        }
+
+        return $this->saveDataObject();
+    }
+
+    /**
+     * Save Region object
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    private function saveDataObject()
+    {
+        if ($this->validate()) {
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                $flagRegion = $this->save(false); // insert into Region table
+
+                if ($flagRegion == true) {
+                    $transaction->commit();
+                } else {
+                    $transaction->rollBack();
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка: Регион не может быть сохранен');
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+            } catch (Exception $ex) {
+                $transaction->rollBack();
+                $this->modelResponseMessage->saveErrorMessage('Ошибка: Регион не может быть сохранен');
+                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+            }
+
+            $this->modelResponseMessage->saveArrayMessage('Регион успешно сохранен');
+            return Json::encode($this->modelResponseMessage->getDataMessage());
+        } else {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка валидации');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+    }
 }

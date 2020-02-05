@@ -1,8 +1,6 @@
 <?php
 namespace api\modules\v2\controllers;
 
-use api\modules\v2\models\Region;
-use api\modules\v2\models\UserRequestData;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -12,6 +10,8 @@ use yii\filters\AccessControl;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use api\modules\v2\models\Region;
+use api\modules\v2\models\UserRequestData;
 
 /**
  * API Region controller
@@ -78,7 +78,7 @@ class RegionController extends Controller
             $modelUserRequestData->checkUserRightsByRole(['admin']);
             // get request params
             $getParams = $modelUserRequestData->getRequestParams();
-            // init model StatusDelivery
+            // init model Region
             $modelRegion = new Region();
             // Search data
             return $modelRegion->getDataRegion($getParams);
@@ -87,7 +87,30 @@ class RegionController extends Controller
         }
     }
 
+    /**
+     * POST Method. Region table.
+     * Insert records
+     *
+     * @return json
+     */
+    public function actionCreate()
+    {
 
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
+            // Check rights
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get request params
+            $postParams = $modelUserRequestData->getRequestParams();
+            // init model Region
+            $modelRegion = new Region();
+            // Save object by params
+            return $modelRegion->addDataRegion($postParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+    }
 
     /**
      * POST Method. Region table.

@@ -58,7 +58,6 @@ class StatusDeliveryController extends Controller
         ];
     }
 
-
     /**
      * GET Method. StatusDelivery table.
      * Get records by parameters
@@ -82,7 +81,6 @@ class StatusDeliveryController extends Controller
             return $e->getMessage();
         }
     }
-
 
     /**
      * POST Method. StatusDelivery table.
