@@ -29,8 +29,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
      * properties
      */
     protected $modelResponseMessage;
-    protected $limitRec;
-    protected $offsetRec;
 
      /**
      * {@inheritdoc}
@@ -45,7 +43,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-
         return [
             [['name'], 'required', 'message' => 'Поле должно быть заполнено'],
             [
@@ -57,7 +54,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
             ],
             [['name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
         ];
-
     }
 
     /**
@@ -81,8 +77,6 @@ class StatusDelivery extends \yii\db\ActiveRecord
      * Get StatusDelivery object properties by request params
      *
      * @params parameters for filtering
-     * @limitRec limit records
-     * @offsetRec offset records
      *
      * @throws InvalidArgumentException if data not found or parameters is not validated
      */
@@ -135,6 +129,7 @@ class StatusDelivery extends \yii\db\ActiveRecord
      * Set pagination params
      *
      * @params parameters for pagination
+     * @query object with data filter
      */
     private function setPaginationParams($query, $params = [])
     {

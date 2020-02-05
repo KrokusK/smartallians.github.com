@@ -2,6 +2,7 @@
 namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\Region;
+use api\modules\v2\models\UserRequestData;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -62,13 +63,13 @@ class RegionController extends Controller
         ];
     }
 
-
     /**
      * GET Method. Region table.
      * Get records by parameters
      *
      * @return json
      */
+    /*
     public function actionView()
     {
         $getParams = Yii::$app->getRequest()->get();
@@ -94,10 +95,7 @@ class RegionController extends Controller
 
         // Check rights
         // If user have create right that his allowed to other actions to the Region table
-        /*if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
-        }
-        */
+
         $flagRights = false;
         foreach(array('admin') as $value) {
             if (in_array($value, $userRole)) {
@@ -149,6 +147,25 @@ class RegionController extends Controller
             array_push($RequestResponse, ArrayHelper::toArray($modelRegion));
 
             return Json::encode($RequestResponse);
+        }
+    }
+    */
+
+    public function actionView()
+    {
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
+            // Check rights
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get request params
+            $getParams = $modelUserRequestData->getRequestParams();
+            // init model StatusDelivery
+            $modelRegion = new Region();
+            // Search data
+            return $modelRegion->getDataRegion($getParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
         }
     }
 

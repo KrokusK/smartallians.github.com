@@ -71,7 +71,7 @@ class StatusDeliveryController extends Controller
             // init model with user and request params
             $modelUserRequestData = new UserRequestData();
             // Check rights
-            $modelUserRequestData->checkUserRightsByRole(array('admin'));
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
             // get request params
             $getParams = $modelUserRequestData->getRequestParams();
             // init model StatusDelivery
@@ -97,7 +97,7 @@ class StatusDeliveryController extends Controller
             // init model with user and request params
             $modelUserRequestData = new UserRequestData();
             // Check rights
-            $modelUserRequestData->checkUserRightsByRole(array('admin'));
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
             // get request params
             $postParams = $modelUserRequestData->getRequestParams();
             // init model StatusDelivery
@@ -121,7 +121,7 @@ class StatusDeliveryController extends Controller
             // init model with user and request params
             $modelUserRequestData = new UserRequestData();
             // Check rights
-            $modelUserRequestData->checkUserRightsByRole(array('admin'));
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
             // get request params
             $putParams = $modelUserRequestData->getRequestParams();
             // Get model StatusDelivery by id
@@ -147,7 +147,7 @@ class StatusDeliveryController extends Controller
             // init model with user and request params
             $modelUserRequestData = new UserRequestData();
             // Check rights
-            $modelUserRequestData->checkUserRightsByRole(array('admin'));
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
             // get request params
             $delParams = $modelUserRequestData->getRequestParams();
             // Get model StatusDelivery by id
