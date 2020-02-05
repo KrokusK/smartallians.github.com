@@ -69,88 +69,6 @@ class RegionController extends Controller
      *
      * @return json
      */
-    
-    public function actionView()
-    {
-        $getParams = Yii::$app->getRequest()->get();
-
-        // check user is a guest
-        if (array_key_exists('token', $getParams)) {
-            $userByToken = \Yii::$app->user->loginByAccessToken($getParams['token']);
-            if (empty($userByToken)) {
-                //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-        } else {
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
-        // Get array with user Roles
-        $userRole =[];
-        $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-        foreach($userAssigned as $userAssign){
-            array_push($userRole, $userAssign->roleName);
-        }
-        //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
-        // Check rights
-        // If user have create right that his allowed to other actions to the Region table
-
-        $flagRights = false;
-        foreach(array('admin') as $value) {
-            if (in_array($value, $userRole)) {
-                $flagRights = true;
-            }
-        }
-        if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
-
-        unset($getParams['token']);
-
-        if (count($getParams) > 0) {
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRegionAssoc = array ('id' => 'id', 'name' => 'name');
-
-            $query = Region::find();
-            $modelValidate = new Region();
-            foreach ($arrayRegionAssoc as $nameRegionAssoc => $valueRegionAssoc) {
-                if (array_key_exists($valueRegionAssoc, $getParams)) {
-                    if ($modelValidate->hasAttribute($nameRegionAssoc)) {
-                        $modelValidate->$nameRegionAssoc = $getParams[$arrayRegionAssoc[$nameRegionAssoc]];
-                        if (!$modelValidate->validate($nameRegionAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
-
-                        $query->andWhere([$nameRegionAssoc => $getParams[$arrayRegionAssoc[$nameRegionAssoc]]]);
-                    }
-                }
-            }
-
-            $modelRegion = $query->orderBy('id')
-                ->asArray()
-                ->all();
-
-            // get properties from Region object
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelRegion));
-            //array_push($RequestResponse, var_dump($modelRequest));
-
-            return Json::encode($RequestResponse);
-
-        } else {
-            // Search all records in the database
-            $query = Region::find();
-
-            $modelRegion = $query->orderBy('id')
-                ->asArray()
-                ->all();
-
-            // get properties from Region object
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelRegion));
-
-            return Json::encode($RequestResponse);
-        }
-    }
-
-    /*
     public function actionView()
     {
         try {
@@ -168,7 +86,7 @@ class RegionController extends Controller
             return $e->getMessage();
         }
     }
-*/
+
 
 
     /**
