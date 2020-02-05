@@ -1,7 +1,6 @@
 <?php
 namespace api\modules\v2\controllers;
 
-use api\modules\v2\models\TypeJob;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -11,18 +10,14 @@ use yii\filters\AccessControl;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use api\modules\v2\models\TypeJob;
+use api\modules\v2\models\UserRequestData;
 
 /**
  * API TypeJob controller
  */
 class TypeJobController extends Controller
 {
-    /**
-     * Constants
-     */
-
-    const CHECK_RIGHTS_RBAC = false;  // Enable check rights by rbac model
-
     /**
      * {@inheritdoc}
      */
@@ -62,6 +57,29 @@ class TypeJobController extends Controller
         ];
     }
 
+    /**
+     * GET Method. TypeJob table.
+     * Get records by parameters
+     *
+     * @return json
+     */
+    public function actionView()
+    {
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
+            // Check rights
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get request params
+            $getParams = $modelUserRequestData->getRequestParams();
+            // init model TypeJob
+            $modelTypeJob = new TypeJob();
+            // Search data
+            return $modelTypeJob->getDataTypeJob($getParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+    }
 
     /**
      * GET Method. TypeJob table.
@@ -69,6 +87,7 @@ class TypeJobController extends Controller
      *
      * @return json
      */
+    /*
     public function actionView()
     {
         $getParams = Yii::$app->getRequest()->get();
@@ -94,10 +113,7 @@ class TypeJobController extends Controller
 
         // Check rights
         // If user have create right that his allowed to other actions to the TypeJob table
-        /*if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
-        }
-        */
+
         $flagRights = false;
         foreach(array('admin') as $value) {
             if (in_array($value, $userRole)) {
@@ -151,7 +167,7 @@ class TypeJobController extends Controller
             return Json::encode($RequestResponse);
         }
     }
-
+    */
 
     /**
      * POST Method. TypeJob table.
