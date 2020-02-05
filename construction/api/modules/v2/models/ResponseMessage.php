@@ -21,7 +21,7 @@ class ResponseMessage extends Model
     public function setMessage($status = 1, $data = '') {
         switch ($status) {
             case 0:
-                $this->message = [
+                $this->data = [
                     'method' => strtolower(Yii::$app->getRequest()->getMethod()),
                     'status' => $status,
                     'type' => 'success',
@@ -29,7 +29,7 @@ class ResponseMessage extends Model
                 ];
                 break;
             case 1:
-                $this->message = [
+                $this->data = [
                     'method' => strtolower(Yii::$app->getRequest()->getMethod()),
                     'status' => $status,
                     'type' => 'error',
@@ -58,7 +58,7 @@ class ResponseMessage extends Model
      */
     public function getDataMessage()
     {
-        return $this->message;
+        return $this->data;
     }
 
     /**
@@ -67,6 +67,6 @@ class ResponseMessage extends Model
      */
     public function getErrorMessage()
     {
-        return $this->message;
+        return $this->data;
     }
 }
