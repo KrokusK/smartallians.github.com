@@ -309,7 +309,7 @@ class Region extends \yii\db\ActiveRecord
                 throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
             }
 
-            $this->modelResponseMessage->saveSucessMessage('Статус поставки успешно сохранен');
+            $this->modelResponseMessage->saveSuccessMessage('Статус поставки успешно сохранен');
             return Json::encode($this->modelResponseMessage->getDataMessage());
         } else {
             $this->modelResponseMessage->saveErrorMessage('Ошибка валидации');
