@@ -69,7 +69,6 @@ class RegionController extends Controller
      *
      * @return json
      */
-    /*
     public function actionView()
     {
         $getParams = Yii::$app->getRequest()->get();
@@ -149,8 +148,8 @@ class RegionController extends Controller
             return Json::encode($RequestResponse);
         }
     }
-    */
 
+    /*
     public function actionView()
     {
         try {
@@ -168,6 +167,7 @@ class RegionController extends Controller
             return $e->getMessage();
         }
     }
+    */
 
 
     /**
