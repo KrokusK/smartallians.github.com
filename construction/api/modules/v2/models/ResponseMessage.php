@@ -13,19 +13,19 @@ class ResponseMessage extends Model
     /**
      * properties
      */
-    protected $message;
+    protected $data;
 
     /**
      * Set text message
      */
-    public function setMessage($status = 1, $message = '') {
+    public function setMessage($status = 1, $data = '') {
         switch ($status) {
             case 0:
                 $this->message = [
                     'method' => strtolower(Yii::$app->getRequest()->getMethod()),
                     'status' => $status,
                     'type' => 'success',
-                    'message' => $message
+                    'message' => $data
                 ];
                 break;
             case 1:
@@ -33,7 +33,7 @@ class ResponseMessage extends Model
                     'method' => strtolower(Yii::$app->getRequest()->getMethod()),
                     'status' => $status,
                     'type' => 'error',
-                    'message' => $message
+                    'message' => $data
                 ];
         }
     }
@@ -41,15 +41,15 @@ class ResponseMessage extends Model
     /**
      * Set text message with data
      */
-    public function saveDataMessage($message = '') {
-        $this->setMessage(0, $message);
+    public function saveDataMessage($data = '') {
+        $this->setMessage(0, $data);
     }
 
     /**
      * Set text error message
      */
-    public function saveErrorMessage($message = '') {
-        $this->setMessage(1, $message);
+    public function saveErrorMessage($data = '') {
+        $this->setMessage(1, $data);
     }
 
     /**
