@@ -93,10 +93,9 @@ class RegionController extends Controller
      *
      * @return json
      */
-    /*
+    /
     public function actionCreate()
     {
-
         try {
             // init model with user and request params
             $modelUserRequestData = new UserRequestData();
@@ -112,93 +111,8 @@ class RegionController extends Controller
             return $e->getMessage();
         }
     }
-    */
 
-    /**
-     * POST Method. Region table.
-     * Insert records
-     *
-     * @return json
-     */
 
-    public function actionCreate()
-    {
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-
-        if (is_array($bodyRaw)) {
-            // check user is a guest
-            if (array_key_exists('token', $bodyRaw)) {
-                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-                if (empty($userByToken)) {
-                    //return $this->goHome();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-                }
-            } else {
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-
-            // Get array with user Roles
-            $userRole =[];
-            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-            foreach($userAssigned as $userAssign){
-                array_push($userRole, $userAssign->roleName);
-            }
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
-            // Check rights
-
-            $flagRights = false;
-            foreach(array('admin') as $value) {
-                if (in_array($value, $userRole)) {
-                    $flagRights = true;
-                }
-            }
-            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayRegionAssoc = array ('id' => 'id', 'name' => 'name');
-
-            $modelRegion = new Region();
-
-            // fill in the properties in the Region object
-            foreach ($arrayRegionAssoc as $nameRegionAssoc => $valueRegionAssoc) {
-                if (array_key_exists($valueRegionAssoc, $bodyRaw)) {
-                    if ($modelRegion->hasAttribute($nameRegionAssoc)) {
-                        if ($nameRegionAssoc != 'id') {
-                            $modelRegion->$nameRegionAssoc = $bodyRaw[$valueRegionAssoc];
-
-                            if (!$modelRegion->validate($nameRegionAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRegionAssoc));
-                        }
-                    }
-                }
-            }
-
-            if ($modelRegion->validate()) {
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    $flagRegion = $modelRegion->save(false); // insert into Region table
-
-                    if ($flagRegion == true) {
-                        $transaction->commit();
-                    } else {
-                        $transaction->rollBack();
-                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть сохранена'));
-                    }
-                } catch (Exception $ex) {
-                    $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Область не может быть сохранена'));
-                }
-
-                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Область успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelRegion))));
-                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Область успешно сохранена'));
-            } else {
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
-            }
-        } else {
-            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
-        }
-    }
-    
 
     /**
      * PUT, PATCH Method. Region table.
