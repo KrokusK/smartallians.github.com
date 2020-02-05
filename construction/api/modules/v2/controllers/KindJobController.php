@@ -1,7 +1,6 @@
 <?php
 namespace api\modules\v2\controllers;
 
-use api\modules\v2\models\KindJob;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -11,18 +10,14 @@ use yii\filters\AccessControl;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use api\modules\v2\models\KindJob;
+use api\modules\v2\models\UserRequestData;
 
 /**
  * API KindJob controller
  */
 class KindJobController extends Controller
 {
-    /**
-     * Constants
-     */
-
-    const CHECK_RIGHTS_RBAC = false;  // Enable check rights by rbac model
-
     /**
      * {@inheritdoc}
      */
@@ -62,7 +57,6 @@ class KindJobController extends Controller
         ];
     }
 
-
     /**
      * GET Method. KindJob table.
      * Get records by parameters
@@ -71,87 +65,21 @@ class KindJobController extends Controller
      */
     public function actionView()
     {
-        $getParams = Yii::$app->getRequest()->get();
-
-        // check user is a guest
-        if (array_key_exists('token', $getParams)) {
-            $userByToken = \Yii::$app->user->loginByAccessToken($getParams['token']);
-            if (empty($userByToken)) {
-                //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-        } else {
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
-        // Get array with user Roles
-        $userRole =[];
-        $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-        foreach($userAssigned as $userAssign){
-            array_push($userRole, $userAssign->roleName);
-        }
-        //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
-        // Check rights
-        // If user have create right that his allowed to other actions to the KindJob table
-        /*if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
-        }
-        */
-        $flagRights = false;
-        foreach(array('admin') as $value) {
-            if (in_array($value, $userRole)) {
-                $flagRights = true;
-            }
-        }
-        if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
-
-        unset($getParams['token']);
-
-        if (count($getParams) > 0) {
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayKindJobAssoc = array ('id' => 'id', 'name' => 'name');
-
-            $query = KindJob::find();
-            $modelValidate = new KindJob();
-            foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
-                if (array_key_exists($valueKindJobAssoc, $getParams)) {
-                    if ($modelValidate->hasAttribute($nameKindJobAssoc)) {
-                        $modelValidate->$nameKindJobAssoc = $getParams[$arrayKindJobAssoc[$nameKindJobAssoc]];
-                        if (!$modelValidate->validate($nameKindJobAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
-
-                        $query->andWhere([$nameKindJobAssoc => $getParams[$arrayKindJobAssoc[$nameKindJobAssoc]]]);
-                    }
-                }
-            }
-
-            $modelKindJob = $query->orderBy('id')
-                ->asArray()
-                ->all();
-
-            // get properties from KindJob object
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelKindJob));
-            //array_push($RequestResponse, var_dump($modelRequest));
-
-            return Json::encode($RequestResponse);
-
-        } else {
-            // Search all records in the database
-            $query = KindJob::find();
-
-            $modelKindJob = $query->orderBy('id')
-                ->asArray()
-                ->all();
-
-            // get properties from KindJob object
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelKindJob));
-
-            return Json::encode($RequestResponse);
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
+            // Check rights
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get request params
+            $getParams = $modelUserRequestData->getRequestParams();
+            // init model KindJob
+            $modelKindJob = new KindJob();
+            // Search data
+            return $modelKindJob->getDataKindJob($getParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
         }
     }
-
 
     /**
      * POST Method. KindJob table.
@@ -161,86 +89,21 @@ class KindJobController extends Controller
      */
     public function actionCreate()
     {
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-
-        if (is_array($bodyRaw)) {
-            // check user is a guest
-            if (array_key_exists('token', $bodyRaw)) {
-                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-                if (empty($userByToken)) {
-                    //return $this->goHome();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-                }
-            } else {
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-
-            // Get array with user Roles
-            $userRole =[];
-            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-            foreach($userAssigned as $userAssign){
-                array_push($userRole, $userAssign->roleName);
-            }
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
             // Check rights
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-            }
-            */
-            $flagRights = false;
-            foreach(array('admin') as $value) {
-                if (in_array($value, $userRole)) {
-                    $flagRights = true;
-                }
-            }
-            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayKindJobAssoc = array ('id' => 'id', 'name' => 'name');
-
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get request params
+            $postParams = $modelUserRequestData->getRequestParams();
+            // init model KindJob
             $modelKindJob = new KindJob();
-
-            // fill in the properties in the KindJob object
-            foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
-                if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
-                    if ($modelKindJob->hasAttribute($nameKindJobAssoc)) {
-                        if ($nameKindJobAssoc != 'id') {
-                            $modelKindJob->$nameKindJobAssoc = $bodyRaw[$valueKindJobAssoc];
-
-                            if (!$modelKindJob->validate($nameKindJobAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueKindJobAssoc));
-                        }
-                    }
-                }
-            }
-
-            if ($modelKindJob->validate()) {
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    $flagKindJob = $modelKindJob->save(false); // insert into KindJob table
-
-                    if ($flagKindJob == true) {
-                        $transaction->commit();
-                    } else {
-                        $transaction->rollBack();
-                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вид работы не может быть сохранен'));
-                    }
-                } catch (Exception $ex) {
-                    $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вид работы не может быть сохранен'));
-                }
-
-                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Вид работы успешно сохранен', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelKindJob))));
-                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Вид работы успешно сохранен'));
-            } else {
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
-            }
-        } else {
-            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
+            // Save object by params
+            return $modelKindJob->addDataKindJob($postParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
         }
     }
-
 
     /**
      * PUT, PATCH Method. KindJob table.
@@ -250,99 +113,22 @@ class KindJobController extends Controller
      */
     public function actionUpdate()
     {
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
-
-        if (is_array($bodyRaw)) {
-            // check user is a guest
-            if (array_key_exists('token', $bodyRaw)) {
-                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-                if (empty($userByToken)) {
-                    //return $this->goHome();
-                    return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-                }
-            } else {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-
-            // Get array with user Roles
-            $userRole =[];
-            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-            foreach($userAssigned as $userAssign){
-                array_push($userRole, $userAssign->roleName);
-            }
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
             // Check rights
-            // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию обновления'));
-            }
-            */
-            $flagRights = false;
-            foreach(array('admin') as $value) {
-                if (in_array($value, $userRole)) {
-                    $flagRights = true;
-                }
-            }
-            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayKindJobAssoc = array ('id' => 'id', 'name' => 'name');
-
-            if (array_key_exists($arrayKindJobAssoc['id'], $bodyRaw)) {
-                // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayKindJobAssoc['id']])) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
-                }
-
-                // Search record by id in the database
-                $queryKindJob = KindJob::find()->where(['id' => $bodyRaw[$arrayKindJobAssoc['id']]]);
-                $modelKindJob = $queryKindJob->one();
-
-                if (empty($modelKindJob)) {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Вид работы по id'));
-                }
-
-                foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
-                    if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
-                        if ($modelKindJob->hasAttribute($nameKindJobAssoc)) {
-                            $modelKindJob->$nameKindJobAssoc = $bodyRaw[$arrayKindJobAssoc[$nameKindJobAssoc]];
-                            if (!$modelKindJob->validate($nameKindJobAssoc)) return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
-                        }
-                    }
-                }
-
-                // Save KindJob object
-                if ($modelKindJob->validate()) {
-                    $transaction = \Yii::$app->db->beginTransaction();
-                    try {
-                        $flagKindJob = $modelKindJob->save(false); // update KindJob table
-
-                        if ($flagKindJob) {
-                            $transaction->commit();
-                        } else {
-                            $transaction->rollBack();
-                            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вид работы не может быть обновлен'));
-                        }
-                    } catch (Exception $ex) {
-                        $transaction->rollBack();
-                        return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вид работы не может быть обновлен'));
-                    }
-                } else {
-                    return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
-                }
-
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 0, 'type' => 'success', 'message' => 'Вид работы успешно сохранен'));
-            } else {
-                return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id параметр в запросе'));
-            }
-        } else {
-            return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get request params
+            $putParams = $modelUserRequestData->getRequestParams();
+            // Get model KindJob by id
+            $modelKindJob = new KindJob();
+            $modelKindJobById = $modelKindJob->getDataKindJobById($putParams);
+            // Update object by id
+            return $modelKindJobById->updateDataKindJob($putParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
         }
     }
-
 
     /**
      * DELETE Method. KindJob table.
@@ -353,178 +139,25 @@ class KindJobController extends Controller
      */
     public function actionDelete()
     {
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
-
-        if (is_array($bodyRaw)) {
-            // check user is a guest
-            if (array_key_exists('token', $bodyRaw)) {
-                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-                if (empty($userByToken)) {
-                    //return $this->goHome();
-                    return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-                }
-            } else {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-
-            // Get array with user Roles
-            $userRole =[];
-            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-            foreach($userAssigned as $userAssign){
-                array_push($userRole, $userAssign->roleName);
-            }
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
             // Check rights
-            // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
-            }
-            */
-            $flagRights = false;
-            foreach(array('admin') as $value) {
-                if (in_array($value, $userRole)) {
-                    $flagRights = true;
-                }
-            }
-            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayKindJobAssoc = array ('id' => 'id', 'name' => 'name');
-
-            if (array_key_exists($arrayKindJobAssoc['id'], $bodyRaw)) {
-                // check id parametr
-                if (!preg_match("/^[0-9]*$/",$bodyRaw[$arrayKindJobAssoc['id']])) {
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: id'));
-                }
-
-                // Search record by id in the database
-                $queryKindJob = KindJob::find()->where(['id' => $bodyRaw[$arrayKindJobAssoc['id']]]);
-                $modelKindJob = $queryKindJob->one();
-
-                if (empty($modelKindJob)) {
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: В БД не найден Вид работы по id'));
-                }
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get request params
+            $delParams = $modelUserRequestData->getRequestParams();
+            // Get model KindJob by id
+            $modelKindJob = new KindJob();
+            if ($modelKindJob->isNullIdInParams($delParams)) {
+                // Delete object by other params
+                return $modelKindJob->deleteDataKindJobByParams($delParams);
             } else {
-                //return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Отсутствет id материала'));
-                return $this->actionDeleteByParam();
+                // Delete object by id
+                $modelKindJobById = $modelKindJob->getDataKindJobById($delParams);
+                return $modelKindJobById->deleteDataKindJobById($delParams);
             }
-
-            if (!empty($modelKindJob)) {
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    // delete from KindJob table
-                    $countKindJobDelete = $modelKindJob->delete($modelKindJob->id);
-
-                    if ($countKindJobDelete > 0) {
-                        $transaction->commit();
-                    } else {
-                        $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вид работы не может быть удален'));
-                    }
-                } catch (Exception $ex) {
-                    $transaction->rollBack();
-                    return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вид работы не может быть удален'));
-                }
-
-                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Вид работы успешно удален'));
-            } else {
-                return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вид работы не может быть удален'));
-            }
-        } else {
-            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
-        }
-        //}
-    }
-
-    /**
-     * DELETE Method. KindJob table.
-     * Delete records by another parameters
-     *
-     * @return json
-     */
-    public function actionDeleteByParam()
-    {
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        //$body = json_decode(Yii::$app->getRequest()->getBodyParams(), true);
-
-        if (is_array($bodyRaw)) {
-            if (array_key_exists('token', $bodyRaw)) {
-                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-                if (empty($userByToken)) {
-                    //return $this->goHome();
-                    return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-                }
-            } else {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-
-            // Get array with user Roles
-            $userRole =[];
-            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-            foreach($userAssigned as $userAssign){
-                array_push($userRole, $userAssign->roleName);
-            }
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
-            // Check rights
-            // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию удаления'));
-            }
-            */
-            $flagRights = false;
-            foreach(array('admin') as $value) {
-                if (in_array($value, $userRole)) {
-                    $flagRights = true;
-                }
-            }
-            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayKindJobAssoc = array ('id' => 'id', 'name' => 'name');
-
-            // Search record by id in the database
-            $queryKindJob = KindJob::find();
-            $modelValidate = new KindJob();
-            foreach ($arrayKindJobAssoc as $nameKindJobAssoc => $valueKindJobAssoc) {
-                if (array_key_exists($valueKindJobAssoc, $bodyRaw)) {
-                    if ($modelValidate->hasAttribute($nameKindJobAssoc)) {
-                        $modelValidate->$nameKindJobAssoc = $bodyRaw[$arrayKindJobAssoc[$nameKindJobAssoc]];
-                        if (!$modelValidate->validate($nameKindJobAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр ' . $valueKindJobAssoc));
-
-                        $queryKindJob->andWhere([$nameKindJobAssoc => $bodyRaw[$arrayKindJobAssoc[$nameKindJobAssoc]]]);
-                    }
-                }
-
-            }
-            $modelsKindJob = $queryKindJob->all();
-
-            if (!empty($modelsKindJob) && !empty($modelValidate)) {
-                foreach ($modelsKindJob as $modelKindJob) {
-                    $transaction = \Yii::$app->db->beginTransaction();
-                    try {
-                        // delete from KindJob table.
-                         $countKindJobDelete = $modelKindJob->delete();
-
-                        if ($countKindJobDelete > 0) {
-                            $transaction->commit();
-                        } else {
-                            $transaction->rollBack();
-                            return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вид работы не может быть удален'));
-                        }
-                    } catch (Exception $ex) {
-                        $transaction->rollBack();
-                        return Json::encode(array('method' => 'DELETE', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Вид работы не может быть удален'));
-                    }
-                }
-
-                return Json::encode(array('method' => 'DELETE', 'status' => 0, 'type' => 'success', 'message' => 'Вид работы успешно удален'));
-            }
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
         }
     }
-
 }
