@@ -93,7 +93,6 @@ class RegionController extends Controller
      *
      * @return json
      */
-    /
     public function actionCreate()
     {
         try {
