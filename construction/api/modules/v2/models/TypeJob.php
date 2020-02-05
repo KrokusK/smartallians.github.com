@@ -227,5 +227,93 @@ class TypeJob extends \yii\db\ActiveRecord
         }
     }
 
+    /**
+     * Get TypeJob object by id
+     *
+     * @params parameters with properties
+     * @notEmpty check on empty
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    public function getDataTypeJobById($params = [])
+    {
+        if (array_key_exists($this->assocTypeJob['id'], $params)) {
+            // check id parametr
+            if (!preg_match("/^[0-9]*$/", $params[$this->assocTypeJob['id']])) {
+                $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: id');
+                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+            }
 
+            // Search record by id in the database
+            $queryTypeJob = TypeJob::find()->where(['id' => $params[$this->assocTypeJob['id']]]);
+            $modelTypeJob = $queryTypeJob->one();
+            if (empty($modelTypeJob)) {
+                $this->modelResponseMessage->saveErrorMessage('Ошибка: В БД не найдена Форма работы по id');
+                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+            }
+
+            return $modelTypeJob;
+        } else {
+            $this->modelResponseMessage->saveErrorMessage('Отсутствет id параметр в запросе');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+    }
+
+    /**
+     * Set TypeJob properties and
+     * update object into the Db by id
+     *
+     * @params parameters with properties
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    public function updateDataTypeJob($params = [])
+    {
+        // fill in the properties in the TypeJob object
+        foreach ($this->assocTypeJob as $name => $value) {
+            if (array_key_exists($value, $params) && $this->hasAttribute($name) && $name != 'id') {
+                $this->$name = $params[$value];
+                if (!$this->validate($name)) {
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+            }
+        }
+
+        return $this->updateDataObject();
+    }
+
+    /**
+     * Update TypeJob object
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    private function updateDataObject()
+    {
+        // Update TypeJob object
+        if ($this->validate()) {
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                $flagTypeJob = $this->save(false); // update TypeJob table
+
+                if ($flagTypeJob) {
+                    $transaction->commit();
+                } else {
+                    $transaction->rollBack();
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка: Форма работы не может быть обновлена');
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+            } catch (Exception $ex) {
+                $transaction->rollBack();
+                $this->modelResponseMessage->saveErrorMessage('Ошибка: Форма работы не может быть обновлена');
+                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+            }
+
+            $this->modelResponseMessage->saveSuccessMessage('Форма работы успешно сохранен');
+            return Json::encode($this->modelResponseMessage->getDataMessage());
+        } else {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка валидации');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+    }
 }

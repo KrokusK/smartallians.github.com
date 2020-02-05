@@ -1,7 +1,6 @@
 <?php
 namespace api\modules\v2\controllers;
 
-use api\modules\v2\models\Region;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -107,96 +106,30 @@ class TypeJobController extends Controller
     }
 
     /**
-     * POST Method. TypeJob table.
-     * Insert records
-     *
-     * @return json
-     */
-    /*
-    public function actionCreate()
-    {
-        $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-
-        if (is_array($bodyRaw)) {
-            // check user is a guest
-            if (array_key_exists('token', $bodyRaw)) {
-                $userByToken = \Yii::$app->user->loginByAccessToken($bodyRaw['token']);
-                if (empty($userByToken)) {
-                    //return $this->goHome();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-                }
-            } else {
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-
-            // Get array with user Roles
-            $userRole =[];
-            $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-            foreach($userAssigned as $userAssign){
-                array_push($userRole, $userAssign->roleName);
-            }
-            //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
-            // Check rights
-            $flagRights = false;
-            foreach(array('admin') as $value) {
-                if (in_array($value, $userRole)) {
-                    $flagRights = true;
-                }
-            }
-            if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayTypeJobAssoc = array ('id' => 'id', 'name' => 'name');
-
-            $modelTypeJob = new TypeJob();
-
-            // fill in the properties in the TypeJob object
-            foreach ($arrayTypeJobAssoc as $nameTypeJobAssoc => $valueTypeJobAssoc) {
-                if (array_key_exists($valueTypeJobAssoc, $bodyRaw)) {
-                    if ($modelTypeJob->hasAttribute($nameTypeJobAssoc)) {
-                        if ($nameTypeJobAssoc != 'id') {
-                            $modelTypeJob->$nameTypeJobAssoc = $bodyRaw[$valueTypeJobAssoc];
-
-                            if (!$modelTypeJob->validate($nameTypeJobAssoc)) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueTypeJobAssoc));
-                        }
-                    }
-                }
-            }
-
-            if ($modelTypeJob->validate()) {
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    $flagTypeJob = $modelTypeJob->save(false); // insert into TypeJob table
-
-                    if ($flagTypeJob == true) {
-                        $transaction->commit();
-                    } else {
-                        $transaction->rollBack();
-                        return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Форма работы не может быть сохранена'));
-                    }
-                } catch (Exception $ex) {
-                    $transaction->rollBack();
-                    return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Форма работы не может быть сохранена'));
-                }
-
-                //return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Форма работы успешно сохранена', var_dump($bodyRaw), var_dump(ArrayHelper::toArray($modelTypeJob))));
-                return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Форма работы успешно сохранена'));
-            } else {
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации'));
-            }
-        } else {
-            return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
-        }
-    }
-    */
-
-    /**
      * PUT, PATCH Method. TypeJob table.
      * Update record by id parameter
      *
      * @return json
      */
+    public function actionUpdate()
+    {
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
+            // Check rights
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get request params
+            $putParams = $modelUserRequestData->getRequestParams();
+            // Get model TypeJob by id
+            $modelTypeJob = new TypeJob();
+            $modelTypeJobById = $modelTypeJob->getDataTypeJobById($putParams);
+            // Update object by id
+            return $modelTypeJobById->updateDataTypeJob($putParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+    }
+    /*
     public function actionUpdate()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -224,11 +157,7 @@ class TypeJobController extends Controller
 
             // Check rights
             // If user have create right that his allowed to other actions to the Spacialization table
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'PUT', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию обновления'));
-            }
-            */
+
             $flagRights = false;
             foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
@@ -291,7 +220,7 @@ class TypeJobController extends Controller
             return Json::encode(array('method' => 'PUT, PATCH', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
     }
-
+    */
 
     /**
      * DELETE Method. TypeJob table.
