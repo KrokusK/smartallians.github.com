@@ -93,6 +93,7 @@ class RegionController extends Controller
      *
      * @return json
      */
+    /*
     public function actionCreate()
     {
 
@@ -111,6 +112,7 @@ class RegionController extends Controller
             return $e->getMessage();
         }
     }
+    */
 
     /**
      * POST Method. Region table.
@@ -118,7 +120,7 @@ class RegionController extends Controller
      *
      * @return json
      */
-    /*
+
     public function actionCreate()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -144,7 +146,7 @@ class RegionController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            
+
             $flagRights = false;
             foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
@@ -196,7 +198,7 @@ class RegionController extends Controller
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
     }
-    */
+    
 
     /**
      * PUT, PATCH Method. Region table.
