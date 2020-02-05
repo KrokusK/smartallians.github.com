@@ -23,7 +23,7 @@ class ResponseMessage extends Model
             case 0:
                 $this->message = [
                     'method' => strtolower(Yii::$app->getRequest()->getMethod()),
-                    'status' => $status,
+                    'status' => 0,
                     'type' => 'success',
                     'data' => $message
                 ];
@@ -31,7 +31,7 @@ class ResponseMessage extends Model
             case 1:
                 $this->message = [
                     'method' => strtolower(Yii::$app->getRequest()->getMethod()),
-                    'status' => $status,
+                    'status' => 0,
                     'type' => 'success',
                     '0' => $message
                 ];
@@ -39,7 +39,7 @@ class ResponseMessage extends Model
             case 2:
                 $this->message = [
                     'method' => strtolower(Yii::$app->getRequest()->getMethod()),
-                    'status' => $status,
+                    'status' => 0,
                     'type' => 'success',
                     'message' => $message
                 ];
