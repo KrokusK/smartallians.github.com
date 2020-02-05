@@ -47,7 +47,7 @@ class ResponseMessage extends Model
             case 3:
                 $this->message = [
                     'method' => strtolower(Yii::$app->getRequest()->getMethod()),
-                    'status' => $status,
+                    'status' => 1,
                     'type' => 'error',
                     'message' => $message
                 ];
