@@ -1,6 +1,7 @@
 <?php
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\Region;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -82,92 +83,28 @@ class TypeJobController extends Controller
     }
 
     /**
-     * GET Method. TypeJob table.
-     * Get records by parameters
+     * POST Method. TypeJob table.
+     * Insert records
      *
      * @return json
      */
-    /*
-    public function actionView()
+    public function actionCreate()
     {
-        $getParams = Yii::$app->getRequest()->get();
-
-        // check user is a guest
-        if (array_key_exists('token', $getParams)) {
-            $userByToken = \Yii::$app->user->loginByAccessToken($getParams['token']);
-            if (empty($userByToken)) {
-                //return $this->goHome();
-                return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-            }
-        } else {
-            return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
-        }
-
-        // Get array with user Roles
-        $userRole =[];
-        $userAssigned = Yii::$app->authManager->getAssignments($userByToken->id);
-        foreach($userAssigned as $userAssign){
-            array_push($userRole, $userAssign->roleName);
-        }
-        //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
-
-        // Check rights
-        // If user have create right that his allowed to other actions to the TypeJob table
-
-        $flagRights = false;
-        foreach(array('admin') as $value) {
-            if (in_array($value, $userRole)) {
-                $flagRights = true;
-            }
-        }
-        if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
-
-        unset($getParams['token']);
-
-        if (count($getParams) > 0) {
-            // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
-            $arrayTypeJobAssoc = array ('id' => 'id', 'name' => 'name');
-
-            $query = TypeJob::find();
-            $modelValidate = new TypeJob();
-            foreach ($arrayTypeJobAssoc as $nameTypeJobAssoc => $valueTypeJobAssoc) {
-                if (array_key_exists($valueTypeJobAssoc, $getParams)) {
-                    if ($modelValidate->hasAttribute($nameTypeJobAssoc)) {
-                        $modelValidate->$nameTypeJobAssoc = $getParams[$arrayTypeJobAssoc[$nameTypeJobAssoc]];
-                        if (!$modelValidate->validate($nameTypeJobAssoc)) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка валидации: параметр '.$valueRequestAssoc));
-
-                        $query->andWhere([$nameTypeJobAssoc => $getParams[$arrayTypeJobAssoc[$nameTypeJobAssoc]]]);
-                    }
-                }
-            }
-
-            $modelTypeJob = $query->orderBy('id')
-                ->asArray()
-                ->all();
-
-            // get properties from TypeJob object
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelTypeJob));
-            //array_push($RequestResponse, var_dump($modelRequest));
-
-            return Json::encode($RequestResponse);
-
-        } else {
-            // Search all records in the database
-            $query = TypeJob::find();
-
-            $modelTypeJob = $query->orderBy('id')
-                ->asArray()
-                ->all();
-
-            // get properties from TypeJob object
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelTypeJob));
-
-            return Json::encode($RequestResponse);
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
+            // Check rights
+            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get request params
+            $postParams = $modelUserRequestData->getRequestParams();
+            // init model TypeJob
+            $modelTypeJob = new TypeJob();
+            // Save object by params
+            return $modelTypeJob->addDataTypeJob($postParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
         }
     }
-    */
 
     /**
      * POST Method. TypeJob table.
@@ -175,6 +112,7 @@ class TypeJobController extends Controller
      *
      * @return json
      */
+    /*
     public function actionCreate()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -200,11 +138,6 @@ class TypeJobController extends Controller
             //return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => $userRole));
 
             // Check rights
-            /*
-            if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createContractor')) {
-                return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-            }
-            */
             $flagRights = false;
             foreach(array('admin') as $value) {
                 if (in_array($value, $userRole)) {
@@ -256,7 +189,7 @@ class TypeJobController extends Controller
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
     }
-
+    */
 
     /**
      * PUT, PATCH Method. TypeJob table.
