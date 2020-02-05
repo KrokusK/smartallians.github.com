@@ -32,8 +32,22 @@ class ResponseMessage extends Model
                 $this->message = [
                     'method' => strtolower(Yii::$app->getRequest()->getMethod()),
                     'status' => $status,
+                    'type' => 'success',
+                    '0' => $message
+                ];
+            case 2:
+                $this->message = [
+                    'method' => strtolower(Yii::$app->getRequest()->getMethod()),
+                    'status' => $status,
+                    'type' => 'success',
+                    'message' => $message
+                ];
+            case 3:
+                $this->message = [
+                    'method' => strtolower(Yii::$app->getRequest()->getMethod()),
+                    'status' => $status,
                     'type' => 'error',
-                    'data' => $message
+                    'message' => $message
                 ];
         }
     }
@@ -46,10 +60,24 @@ class ResponseMessage extends Model
     }
 
     /**
+     * Set text message in array format
+     */
+    public function saveArrayMessage($message = '') {
+        $this->setMessage(1, $message);
+    }
+
+    /**
+     * Set text message
+     */
+    public function saveSuccessMessage($message = '') {
+        $this->setMessage(2, $message);
+    }
+
+    /**
      * Set text error message
      */
     public function saveErrorMessage($message = '') {
-        $this->setMessage(1, $message);
+        $this->setMessage(3, $message);
     }
 
     /**

@@ -105,7 +105,7 @@ class Region extends \yii\db\ActiveRecord
 
         // return data
         if (!empty($dataRegion)) {
-            $this->modelResponseMessage->saveDataMessage(ArrayHelper::toArray($dataRegion));
+            $this->modelResponseMessage->saveArrayMessage(ArrayHelper::toArray($dataRegion));
             return Json::encode($this->modelResponseMessage->getDataMessage());
         } else {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: Записи не найдены');
