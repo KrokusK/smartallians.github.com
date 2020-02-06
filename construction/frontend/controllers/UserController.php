@@ -74,7 +74,7 @@ class UserController extends Controller
                 ->asArray()
                 ->one();
 
-            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Успешно!', 'id_user' => Yii::$app->user->getId(), 'id_profile' => $userData['id'], 'id_kind_user' => $userData['kind_user_id'], 'fio' => $userData['fio'], 'username' => $userData['users']['username'], 'email' => $userData['users']['email'], 'token' => $userData['users']['verification_token'], 'avatar' => $userData['avatar']));
+            return Json::encode(array('method' => 'POST', 'status' => 0, 'type' => 'success', 'message' => 'Успешно!', 'id_user' => Yii::$app->user->getId(), 'id_profile' => $userData['id'], 'id_kind_user' => $userData['kind_user_id'], 'last_name' => $userData['last_name'], 'first_name' => $userData['first_name'], 'middle_name' => $userData['middle_name'], 'username' => $userData['users']['username'], 'email' => $userData['users']['email'], 'token' => $userData['users']['verification_token'], 'avatar' => $userData['avatar']));
         } else {
             return Json::encode(array('status' => 1, 'type' => 'error', 'message' => 'Ошибка: Аутентификация не выполнена'));
         }
