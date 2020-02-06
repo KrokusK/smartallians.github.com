@@ -120,11 +120,13 @@ class ContractorController extends Controller
             $modelUserRequestData = new UserRequestData();
             // Check rights
             $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get user roles
+            $userRoles = $modelUserRequestData->getUserRoles();
             // get request params
             $putParams = $modelUserRequestData->getRequestParams();
             // Get model Contractor by id
             $modelContractor = new Contractor();
-            $modelContractorById = $modelContractor->getDataContractorById($putParams);
+            $modelContractorById = $modelContractor->getDataContractorById($putParams, $userRoles);
             // Update object by id
             return $modelContractorById->updateDataContractor($putParams);
         } catch (InvalidArgumentException $e) {
@@ -146,16 +148,18 @@ class ContractorController extends Controller
             $modelUserRequestData = new UserRequestData();
             // Check rights
             $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get user roles
+            $userRoles = $modelUserRequestData->getUserRoles();
             // get request params
             $delParams = $modelUserRequestData->getRequestParams();
             // Get model Contractor by id
             $modelContractor = new Contractor();
             if ($modelContractor->isNullIdInParams($delParams)) {
                 // Delete object by other params
-                return $modelContractor->deleteDataContractorByParams($delParams);
+                return $modelContractor->deleteDataContractorByParams($delParams, $userRoles);
             } else {
                 // Delete object by id
-                $modelContractorById = $modelContractor->getDataContractorById($delParams);
+                $modelContractorById = $modelContractor->getDataContractorById($delParams, $userRoles);
                 return $modelContractorById->deleteDataContractorById($delParams);
             }
         } catch (InvalidArgumentException $e) {

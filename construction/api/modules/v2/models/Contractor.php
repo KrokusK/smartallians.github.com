@@ -296,7 +296,7 @@ class Contractor extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if returned error
      */
-    public function getDataContractorById($params = [])
+    public function getDataContractorById($params = [], $userRoles = [])
     {
         if (array_key_exists($this->assocContractor['id'], $params)) {
             // check id parametr
@@ -307,6 +307,9 @@ class Contractor extends \yii\db\ActiveRecord
 
             // Search record by id in the database
             $queryContractor = Contractor::find()->where(['id' => $params[$this->assocContractor['id']]]);
+            // Get only owner records if user role isn't admin
+            if (!in_array('admin', $userRoles))
+                $queryContractor->andWhere(['created_by' => Yii::$app->user->getId()]);
             $modelContractor = $queryContractor->one();
             if (empty($modelContractor)) {
                 $this->modelResponseMessage->saveErrorMessage('Ошибка: В БД не найден Исполнитель по id');
@@ -457,7 +460,7 @@ class Contractor extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if returned error
      */
-    public function deleteDataContractorByParams($params = [])
+    public function deleteDataContractorByParams($params = [], $userRoles)
     {
         if (!$this->isOtherParams($params)) {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: Отсутствуют параметры для фильтра');
@@ -466,6 +469,8 @@ class Contractor extends \yii\db\ActiveRecord
 
         // Search records by params in the database
         $query = Contractor::find();
+        // Get only owner records if user role isn't admin
+        if (!in_array('admin', $userRoles)) $query->Where(['created_by' => Yii::$app->user->getId()]);
         // Add data filter
         $this->setDataFilter($query, $params);
         // Add pagination params
