@@ -153,7 +153,7 @@ class Contractor extends \yii\db\ActiveRecord
         // Search data
         $query = Contractor::find();
         // Get only owner records if user role isn't admin
-        if (!in_array('admin', $userRoles)) $query->Where(['profile.created_by' => Yii::$app->user->getId()]);
+        if (!in_array('admin', $userRoles)) $query->Where(['created_by' => Yii::$app->user->getId()]);
         // Add data filter
         $this->setDataFilter($query, $params);
         // Add pagination params
