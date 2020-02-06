@@ -106,10 +106,12 @@ class Position extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if data not found or parameters is not validated
      */
-    public function getDataPosition($params = [])
+    public function getDataPosition($params = [], $userRoles = [])
     {
         // Search data
         $query = Position::find();
+        // Get only owner records if user role isn't admin
+        if (!in_array('admin', $userRoles)) $query->Where(['created_by' => Yii::$app->user->getId()]);
         // Add data filter
         $this->setDataFilter($query, $params);
         // Add pagination params
@@ -252,7 +254,7 @@ class Position extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if returned error
      */
-    public function getDataPositionById($params = [])
+    public function getDataPositionById($params = [], $userRoles = [])
     {
         if (array_key_exists($this->assocPosition['id'], $params)) {
             // check id parametr
@@ -263,6 +265,9 @@ class Position extends \yii\db\ActiveRecord
 
             // Search record by id in the database
             $queryPosition = Position::find()->where(['id' => $params[$this->assocPosition['id']]]);
+            // Get only owner records if user role isn't admin
+            if (!in_array('admin', $userRoles))
+                $queryPosition->andWhere(['created_by' => Yii::$app->user->getId()]);
             $modelPosition = $queryPosition->one();
             if (empty($modelPosition)) {
                 $this->modelResponseMessage->saveErrorMessage('Ошибка: В БД не найдена Позиция по id');
@@ -413,7 +418,7 @@ class Position extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if returned error
      */
-    public function deleteDataPositionByParams($params = [])
+    public function deleteDataPositionByParams($params = [], $userRoles = [])
     {
         if (!$this->isOtherParams($params)) {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: Отсутствуют параметры для фильтра');
@@ -422,6 +427,8 @@ class Position extends \yii\db\ActiveRecord
 
         // Search records by params in the database
         $query = Position::find();
+        // Get only owner records if user role isn't admin
+        if (!in_array('admin', $userRoles)) $query->Where(['created_by' => Yii::$app->user->getId()]);
         // Add data filter
         $this->setDataFilter($query, $params);
         // Add pagination params

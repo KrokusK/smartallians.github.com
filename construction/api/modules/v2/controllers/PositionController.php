@@ -70,12 +70,14 @@ class PositionController extends Controller
             $modelUserRequestData = new UserRequestData();
             // Check rights
             $modelUserRequestData->checkUserRightsByRole(['admin', 'customer', 'contractor', 'mediator']);
+            // get user roles
+            $userRoles = $modelUserRequestData->getUserRoles();
             // get request params
             $getParams = $modelUserRequestData->getRequestParams();
             // init model Position
             $modelPosition = new Position();
             // Search data
-            return $modelPosition->getDataPosition($getParams);
+            return $modelPosition->getDataPosition($getParams, $userRoles);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
@@ -118,11 +120,13 @@ class PositionController extends Controller
             $modelUserRequestData = new UserRequestData();
             // Check rights
             $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get user roles
+            $userRoles = $modelUserRequestData->getUserRoles();
             // get request params
             $putParams = $modelUserRequestData->getRequestParams();
             // Get model Position by id
             $modelPosition = new Position();
-            $modelPositionById = $modelPosition->getDataPositionById($putParams);
+            $modelPositionById = $modelPosition->getDataPositionById($putParams, $userRoles);
             // Update object by id
             return $modelPositionById->updateDataPosition($putParams);
         } catch (InvalidArgumentException $e) {
@@ -144,16 +148,18 @@ class PositionController extends Controller
             $modelUserRequestData = new UserRequestData();
             // Check rights
             $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get user roles
+            $userRoles = $modelUserRequestData->getUserRoles();
             // get request params
             $delParams = $modelUserRequestData->getRequestParams();
             // Get model Position by id
             $modelPosition = new Position();
             if ($modelPosition->isNullIdInParams($delParams)) {
                 // Delete object by other params
-                return $modelPosition->deleteDataPositionByParams($delParams);
+                return $modelPosition->deleteDataPositionByParams($delParams, $userRoles);
             } else {
                 // Delete object by id
-                $modelPositionById = $modelPosition->getDataPositionById($delParams);
+                $modelPositionById = $modelPosition->getDataPositionById($delParams, $userRoles);
                 return $modelPositionById->deleteDataPositionById($delParams);
             }
         } catch (InvalidArgumentException $e) {
