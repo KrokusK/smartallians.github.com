@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 use yii\base\InvalidArgumentException;
 
 /**
- * This is the model class for table "contractor".
+ * This is the model class for table "portfolio".
  *
  */
 class Portfolio extends \yii\db\ActiveRecord
@@ -36,7 +36,7 @@ class Portfolio extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%contractor}}';
+        return '{{%portfolio}}';
     }
 
     /**
