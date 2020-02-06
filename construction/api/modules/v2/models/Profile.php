@@ -317,16 +317,28 @@ class Profile extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if data not found or parameters is not validated
      */
-    public function getDataProfile($params = [])
+    public function getDataProfile($params = [], $userRole = [])
     {
         // Search data
-        $query = Profile::find();
-        // Add data filter
-        $this->setDataFilter($query, $params);
+        $query = Profile::find()
+            ->leftJoin('contractor','contractor.profile_id = profile.id')
+            ->leftJoin('profile_city','profile_city.profile_id = profile.id')
+            ->leftJoin('profile_specialization','profile_specialization.profile_id = profile.id');
+        // Get only owner records if user role isn't admin
+        if (!in_array('admin', $userRole)) $query->Where(['profile.created_by' => Yii::$app->user->getId()]);
+        // Add data filter for profile table
+        $this->setProfileFilter($query, $params);
+        // Add data filter for contractor table
+        $this->setContractorFilter($query, $params);
+        // Add data filter for city table
+        $this->setProfileCityFilter($query, $params);
+        // Add data filter for specialization table
+        $this->setsetProfileSpecializationFilter($query, $params);
         // Add pagination params
         $this->setPaginationParams($query, $params);
         // get data
-        $dataProfile = $query->orderBy('name')
+        $dataProfile = $query->orderBy('created_at')
+            ->with('contractors','cities','specializations')
             ->asArray()
             ->all();
 
@@ -341,15 +353,18 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     /**
-     * Set data filter
+     * Set data filter for profile table
      *
      * @params parameters for filtering
      * @query object with data filter
      *
      * @throws InvalidArgumentException if data not found or parameters is not validated
      */
-    private function setDataFilter($query, $params = [])
+    private function setProfileFilter($query, $params = [])
     {
+        // ilike parameters
+        $ilikeParams = ['last_name', 'first_name', 'middle_name', 'firm_name', 'inn'];
+
         foreach ($this->assocProfile as $name => $value) {
             if (array_key_exists($value, $params) && $this->hasAttribute($name)) {
                 $this->$name = $params[$value];
@@ -357,7 +372,77 @@ class Profile extends \yii\db\ActiveRecord
                     $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
                     throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
                 }
-                $query->andWhere([$name => $params[$value]]);
+                if (in_array($name, $ilikeParams)) {
+                    $query->andWhere(['ilike', $this->assocProfile, $name => $params[$value]]);
+                } else {
+                    $query->andWhere([$name => $params[$value]]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Set data filter for contractor table
+     *
+     * @params parameters for filtering
+     * @query object with data filter
+     *
+     * @throws InvalidArgumentException if data not found or parameters is not validated
+     */
+    private function setContractorFilter($query, $params = [])
+    {
+        foreach ($this->assocContractor as $name => $value) {
+            if (array_key_exists($value, $params) && $this->hasAttribute($name)) {
+                $this->$name = $params[$value];
+                if (!$this->validate($name)) {
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+                $query->andWhere(['contractor.'.$name => $params[$value]]);
+            }
+        }
+    }
+
+    /**
+     * Set data filter for city table
+     *
+     * @params parameters for filtering
+     * @query object with data filter
+     *
+     * @throws InvalidArgumentException if data not found or parameters is not validated
+     */
+    private function setProfileCityFilter($query, $params = [])
+    {
+        foreach ($this->assocProfileCity as $name => $value) {
+            if (array_key_exists($value, $params) && $this->hasAttribute($name)) {
+                $this->$name = $params[$value];
+                if (!$this->validate($name)) {
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+                $query->andWhere(['profile_city.'.$name => $params[$value]]);
+            }
+        }
+    }
+
+    /**
+     * Set data filter for specialization table
+     *
+     * @params parameters for filtering
+     * @query object with data filter
+     *
+     * @throws InvalidArgumentException if data not found or parameters is not validated
+     */
+    private function setProfileSpecializationFilter($query, $params = [])
+    {
+        foreach ($this->assocProfileSpecialization as $name => $value) {
+            if (array_key_exists($value, $params) && $this->hasAttribute($name)) {
+                $this->$name = $params[$value];
+                if (!$this->validate($name)) {
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+                $query->andWhere(['profile_specialization.'.$name => $params[$value]]);
             }
         }
     }
