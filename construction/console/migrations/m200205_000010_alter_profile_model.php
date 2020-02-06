@@ -33,9 +33,6 @@ class m200205_000010_alter_profile_model extends Migration
         $this->update('profile', ['last_name' => 'Медведев'], ['id' => 5]);
         $this->update('profile', ['first_name' => 'Дмитрий'], ['id' => 5]);
         $this->update('profile', ['middle_name' => 'Анатольевич'], ['id' => 5]);
-        $this->update('profile', ['last_name' => 'Иванов'], ['id' => 6]);
-        $this->update('profile', ['first_name' => 'Иван'], ['id' => 6]);
-        $this->update('profile', ['middle_name' => 'Иванович'], ['id' => 6]);
     }
 
     /**
