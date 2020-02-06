@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 use yii\base\InvalidArgumentException;
 
 /**
- * This is the model class for table "region".
+ * This is the model class for table "city".
  *
  */
 class City extends \yii\db\ActiveRecord
@@ -36,7 +36,7 @@ class City extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%region}}';
+        return '{{%city}}';
     }
 
     /**
