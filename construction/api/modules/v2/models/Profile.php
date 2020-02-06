@@ -12,6 +12,39 @@ use yii\db\ActiveRecord;
 class Profile extends \yii\db\ActiveRecord
 {
     /**
+     * Because the field names may match within a single query,
+     * the parameter names may not match the table field names.
+     * To solve this problem let's create an associative array
+     */
+    protected $assocProfile = [
+        'id' => 'id',
+        'user_id' => 'user_id',
+        'kind_user_id' => 'kind_user_id',
+        'type_job_id' => 'type_job_id',
+        'fio' => 'fio',
+        'firm_name' => 'firm_name',
+        'inn' => 'inn',
+        'site' => 'site',
+        'avatar' => 'avatar',
+        'about' => 'about',
+        'last_name' => 'last_name',
+        'first_name' => 'first_name',
+        'middle_name' => 'middle_name'
+    ];
+    protected $assocContractor = [
+        'experience' => 'experience',
+        'cost' => 'cost',
+        'passport' => 'passport'
+    ];
+    protected $assocProfileCity = ['city_id' => 'city'];
+    protected $assocProfileSpecialization = ['specialization_id' => 'specialization'];
+
+    /**
+     * properties
+     */
+    protected $modelResponseMessage;
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -26,9 +59,32 @@ class Profile extends \yii\db\ActiveRecord
     {
 
         return [
-            [['user_id', 'kind_user_id', 'type_job_id', 'last_name', 'first_name', 'middle_name', 'avatar', 'updated_at', 'created_at'], 'required', 'message' => 'Поле должно быть заполнено'],
-            [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
-            [['user_id'], 'in', 'range' =>
+            [
+                [
+                    'user_id',
+                    'kind_user_id',
+                    'type_job_id',
+                    'last_name',
+                    'first_name',
+                    'middle_name',
+                    'avatar',
+                    'updated_at',
+                    'created_at'
+                ],
+                'required',
+                'message' => 'Поле должно быть заполнено'
+            ],
+            [
+                ['id'],
+                'match',
+                'pattern' => '/^[0-9]*$/',
+                'message' => 'поле id  должно быть типа integer',
+                'skipOnEmpty' => true
+            ],
+            [
+                ['user_id'],
+                'in',
+                'range' =>
                 function ( $attribute, $params ) {
                     $statusesUserId = User::find()->select(['id'])->asArray()->all();
                     $statusesUserIdStr = [];
@@ -37,8 +93,12 @@ class Profile extends \yii\db\ActiveRecord
                     }
                     return $statusesUserIdStr;
                 },
-                'message' => 'Пользователь не выбран из списка'],
-            [['kind_user_id'], 'in', 'range' =>
+                'message' => 'Пользователь не выбран из списка'
+            ],
+            [
+                ['kind_user_id'],
+                'in',
+                'range' =>
                 function ( $attribute, $params ) {
                     $statusesKindUserId = KindUser::find()->select(['id'])->asArray()->all();
                     $statusesKindUserIdStr = [];
@@ -47,8 +107,12 @@ class Profile extends \yii\db\ActiveRecord
                     }
                     return $statusesKindUserIdStr;
                 },
-                'message' => 'Вид пользователя не выбран из списка'],
-            [['type_job_id'], 'in', 'range' =>
+                'message' => 'Вид пользователя не выбран из списка'
+            ],
+            [
+                ['type_job_id'],
+                'in',
+                'range' =>
                 function ( $attribute, $params ) {
                     $statusesTypeJobId = TypeJob::find()->select(['id'])->asArray()->all();
                     $statusesTypeJobIdStr = [];
@@ -57,20 +121,88 @@ class Profile extends \yii\db\ActiveRecord
                     }
                     return $statusesTypeJobIdStr;
                 },
-                'message' => 'Форма работы не выбрана из списка'],
-            [['fio'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
-            [['firm_name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
-            [['inn'], 'match', 'pattern' => '/^[0-9]{12}$/', 'message' => 'Число знаков не должно превышать 12, все знаки должны быть типа integer', 'skipOnEmpty' => true],
-            [['site'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
-            [['avatar'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
-            [['about'], 'string', 'max' => 512, 'message' => 'Число знаков не должно превышать 512'],
-            [['updated_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
-            [['created_at'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле должно быть типа integer'],
-            [['last_name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 15'],
-            [['first_name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 15'],
-            [['middle_name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 15'],
+                'message' => 'Форма работы не выбрана из списка'
+            ],
+            [
+                ['fio'],
+                'string',
+                'max' => 255,
+                'message' => 'Число знаков не должно превышать 255',
+                'skipOnEmpty' => true
+            ],
+            [
+                ['firm_name'],
+                'string',
+                'max' => 255,
+                'message' => 'Число знаков не должно превышать 255',
+                'skipOnEmpty' => true
+            ],
+            [
+                ['inn'],
+                'match',
+                'pattern' => '/^[0-9]{12}$/',
+                'message' => 'Число знаков не должно превышать 12, все знаки должны быть типа integer',
+                'skipOnEmpty' => true
+            ],
+            [
+                ['site'],
+                'string',
+                'max' => 255,
+                'message' => 'Число знаков не должно превышать 255',
+                'skipOnEmpty' => true
+            ],
+            [
+                ['avatar'],
+                'string',
+                'max' => 255,
+                'message' => 'Число знаков не должно превышать 255'
+            ],
+            [
+                ['about'],
+                'string',
+                'max' => 512,
+                'message' => 'Число знаков не должно превышать 512'
+            ],
+            [
+                ['updated_at'],
+                'match',
+                'pattern' => '/^[0-9]*$/',
+                'message' => 'поле должно быть типа integer'
+            ],
+            [
+                ['created_at'],
+                'match',
+                'pattern' => '/^[0-9]*$/',
+                'message' => 'поле должно быть типа integer'
+            ],
+            [
+                ['last_name'],
+                'string',
+                'max' => 255,
+                'message' => 'Число знаков не должно превышать 15'
+            ],
+            [
+                ['first_name'],
+                'string',
+                'max' => 255,
+                'message' => 'Число знаков не должно превышать 15'
+            ],
+            [
+                ['middle_name'],
+                'string',
+                'max' => 255,
+                'message' => 'Число знаков не должно превышать 15'
+            ],
         ];
+    }
 
+    /**
+     * Create a model
+     */
+    public function __construct()
+    {
+        // Set property
+        $this->modelResponseMessage = new ResponseMessage();
     }
 
     /**
@@ -176,5 +308,92 @@ class Profile extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Order::className(), ['id' => 'delivery_id'])
             ->viaTable('profile_rrod', ['profile_id' => 'id']);
+    }
+
+    /**
+     * Get Profile object properties by request params
+     *
+     * @params parameters for filtering
+     *
+     * @throws InvalidArgumentException if data not found or parameters is not validated
+     */
+    public function getDataProfile($params = [])
+    {
+        // Search data
+        $query = Profile::find();
+        // Add data filter
+        $this->setDataFilter($query, $params);
+        // Add pagination params
+        $this->setPaginationParams($query, $params);
+        // get data
+        $dataProfile = $query->orderBy('name')
+            ->asArray()
+            ->all();
+
+        // return data
+        if (!empty($dataProfile)) {
+            $this->modelResponseMessage->saveArrayMessage(ArrayHelper::toArray($dataProfile));
+            return Json::encode($this->modelResponseMessage->getDataMessage());
+        } else {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка: Записи не найдены');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+    }
+
+    /**
+     * Set data filter
+     *
+     * @params parameters for filtering
+     * @query object with data filter
+     *
+     * @throws InvalidArgumentException if data not found or parameters is not validated
+     */
+    private function setDataFilter($query, $params = [])
+    {
+        foreach ($this->assocProfile as $name => $value) {
+            if (array_key_exists($value, $params) && $this->hasAttribute($name)) {
+                $this->$name = $params[$value];
+                if (!$this->validate($name)) {
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+                $query->andWhere([$name => $params[$value]]);
+            }
+        }
+    }
+
+    /**
+     * Set pagination params
+     *
+     * @params parameters for pagination
+     * @query object with data filter
+     */
+    private function setPaginationParams($query, $params = [])
+    {
+        // default values
+        $defauftParams = [
+            'limitRec' => 10,
+            'offsetRec' => 0
+        ];
+
+        foreach ($this->assocProfile as $name => $value) {
+            switch ($name) {
+                case 'limitRec':
+                    if (array_key_exists($value, $params) && preg_match("/^[0-9]*$/",$params[$value])) {
+                        $query->limit($params[$value]);
+                    } else {
+                        // default value
+                        $query->limit($defauftParams[$name]);
+                    }
+                    break;
+                case 'offsetRec':
+                    if (array_key_exists($value, $params) && preg_match("/^[0-9]*$/",$params[$value])) {
+                        $query->offset($params[$value]);
+                    } else {
+                        // default value
+                        $query->offset($defauftParams[$name]);
+                    }
+            }
+        }
     }
 }
