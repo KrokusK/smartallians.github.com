@@ -51,7 +51,7 @@ class Contractor extends \yii\db\ActiveRecord
             [['profile_id'], 'required', 'message' => 'Поле должно быть заполнено'],
             [['id'], 'match', 'pattern' => '/^[0-9]*$/', 'message' => 'поле id  должно быть типа integer', 'skipOnEmpty' => true],
             [['profile_id'], 'in', 'range' =>
-                function ( $attribute, $params ) {
+                function ($attribute, $params) {
                     $statusesProfileId = Profile::find()->select(['id'])->asArray()->all();
                     $statusesProfileIdStr = [];
                     foreach ($statusesProfileId as $item) {
@@ -64,7 +64,8 @@ class Contractor extends \yii\db\ActiveRecord
             [['cost'], 'double', 'message' => 'Значение должно быть числом', 'skipOnEmpty' => true],
             [['passport'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
         ];
-
+    }
+    
     /**
      * Create a model
      */
