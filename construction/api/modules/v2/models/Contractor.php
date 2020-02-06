@@ -24,6 +24,7 @@ class Contractor extends \yii\db\ActiveRecord
         'passport' => 'passport',
         'experience' => 'experience',
         'cost' => 'cost',
+        'created_by'=> 'created_by',
         'limitRec' => 'limit',
         'offsetRec' => 'offset'
     ];
@@ -212,11 +213,16 @@ class Contractor extends \yii\db\ActiveRecord
     {
         // fill in the properties in the Contractor object
         foreach ($this->assocContractor as $name => $value) {
-            if (array_key_exists($value, $params) && $this->hasAttribute($name) && $name != 'id') {
+            if (array_key_exists($value, $params)
+                && $this->hasAttribute($name)
+                && $name != 'id'
+                && $name != 'created_by') {
                 $this->$name = $params[$value];
                 if (!$this->validate($name)) {
                     $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
                     throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+
+                    $this->created_by = Yii::$app->user->getId();
                 }
             }
         }
@@ -301,7 +307,10 @@ class Contractor extends \yii\db\ActiveRecord
     {
         // fill in the properties in the Contractor object
         foreach ($this->assocContractor as $name => $value) {
-            if (array_key_exists($value, $params) && $this->hasAttribute($name) && $name != 'id') {
+            if (array_key_exists($value, $params)
+                && $this->hasAttribute($name)
+                && $name != 'id'
+                && $name != 'created_by') {
                 $this->$name = $params[$value];
                 if (!$this->validate($name)) {
                     $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
