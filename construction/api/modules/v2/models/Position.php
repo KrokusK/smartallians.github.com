@@ -115,7 +115,7 @@ class Position extends \yii\db\ActiveRecord
         // Add pagination params
         $this->setPaginationParams($query, $params);
         // get data
-        $dataPosition = $query->orderBy('name')
+        $dataPosition = $query->orderBy('id')
             ->asArray()
             ->all();
 
