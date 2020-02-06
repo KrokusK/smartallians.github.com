@@ -320,7 +320,7 @@ class Profile extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if data not found or parameters is not validated
      */
-    public function getDataProfile($params = [], $userRole = [])
+    public function getDataProfile($params = [], $userRoles = [])
     {
         // Search data
         $query = Profile::find()
@@ -328,7 +328,7 @@ class Profile extends \yii\db\ActiveRecord
             ->leftJoin('profile_city','profile_city.profile_id = profile.id')
             ->leftJoin('profile_specialization','profile_specialization.profile_id = profile.id');
         // Get only owner records if user role isn't admin
-        if (!in_array('admin', $userRole)) $query->Where(['profile.created_by' => Yii::$app->user->getId()]);
+        if (!in_array('admin', $userRoles)) $query->Where(['profile.created_by' => Yii::$app->user->getId()]);
         // Add data filter for profile table
         $this->setProfileFilter($query, $params);
         // Add data filter for contractor table
