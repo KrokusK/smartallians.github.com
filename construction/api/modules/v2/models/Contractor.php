@@ -148,10 +148,12 @@ class Contractor extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if data not found or parameters is not validated
      */
-    public function getDataContractor($params = [])
+    public function getDataContractor($params = [], $userRoles = [])
     {
         // Search data
         $query = Contractor::find();
+        // Get only owner records if user role isn't admin
+        if (!in_array('admin', $userRoles)) $query->Where(['profile.created_by' => Yii::$app->user->getId()]);
         // Add data filter
         $this->setDataFilter($query, $params);
         // Add pagination params

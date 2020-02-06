@@ -70,12 +70,14 @@ class ContractorController extends Controller
             $modelUserRequestData = new UserRequestData();
             // Check rights
             $modelUserRequestData->checkUserRightsByRole(['admin', 'customer', 'contractor', 'mediator']);
+            // get user roles
+            $userRoles = $modelUserRequestData->getUserRoles();
             // get request params
             $getParams = $modelUserRequestData->getRequestParams();
             // init model Contractor
             $modelContractor = new Contractor();
             // Search data
-            return $modelContractor->getDataContractor($getParams);
+            return $modelContractor->getDataContractor($getParams, $userRoles);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
