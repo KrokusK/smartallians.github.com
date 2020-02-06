@@ -81,12 +81,14 @@ class ProfileController extends Controller
             $modelUserRequestData = new UserRequestData();
             // Check rights
             $modelUserRequestData->checkUserRightsByPermission(['createCustomer', 'createContractor']);
+            // get user roles
+            $userRoles = $modelUserRequestData->getUserRoles();
             // get request params
             $getParams = $modelUserRequestData->getRequestParams();
             // init model Profile
             $modelProfile = new Profile();
             // Search data
-            return $modelProfile->getDataProfile($getParams);
+            return $modelProfile->getDataProfile($getParams, $userRoles);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
