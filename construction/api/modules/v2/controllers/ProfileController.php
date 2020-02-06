@@ -4,7 +4,6 @@ namespace api\modules\v2\controllers;
 use api\modules\v2\models\Profile;
 use api\modules\v2\models\Contractor;
 use api\modules\v2\models\City;
-use api\modules\v2\models\Region;
 use api\modules\v2\models\Specialization;
 use api\modules\v2\models\ProfileCity;
 use api\modules\v2\models\ProfileSpecialization;
@@ -70,7 +69,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * GET Method. Region table.
+     * GET Method. Profile table.
      * Get records by parameters
      *
      * @return json
@@ -84,10 +83,10 @@ class ProfileController extends Controller
             $modelUserRequestData->checkUserRightsByPermission(['createCustomer', 'createContractor']);
             // get request params
             $getParams = $modelUserRequestData->getRequestParams();
-            // init model Region
-            $modelRegion = new Region();
+            // init model Profile
+            $modelProfile = new Profile();
             // Search data
-            return $modelRegion->getDataRegion($getParams);
+            return $modelProfile->getDataProfile($getParams);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
