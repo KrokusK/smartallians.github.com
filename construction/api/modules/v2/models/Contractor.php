@@ -65,7 +65,7 @@ class Contractor extends \yii\db\ActiveRecord
             [['passport'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
         ];
     }
-    
+
     /**
      * Create a model
      */
@@ -129,7 +129,7 @@ class Contractor extends \yii\db\ActiveRecord
         // Add pagination params
         $this->setPaginationParams($query, $params);
         // get data
-        $dataContractor = $query->orderBy('name')
+        $dataContractor = $query->orderBy('id')
             ->asArray()
             ->all();
 
