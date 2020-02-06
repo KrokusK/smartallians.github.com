@@ -69,7 +69,7 @@ class StatusRequestController extends Controller
             // init model with user and request params
             $modelUserRequestData = new UserRequestData();
             // Check rights
-            $modelUserRequestData->checkUserRightsByRole(['admin']);
+            $modelUserRequestData->checkUserRightsByRole(['admin', 'customer', 'contractor', 'mediator']);
             // get request params
             $getParams = $modelUserRequestData->getRequestParams();
             // init model StatusRequest

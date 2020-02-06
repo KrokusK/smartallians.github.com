@@ -4,9 +4,11 @@ namespace api\modules\v2\controllers;
 use api\modules\v2\models\Profile;
 use api\modules\v2\models\Contractor;
 use api\modules\v2\models\City;
+use api\modules\v2\models\Region;
 use api\modules\v2\models\Specialization;
 use api\modules\v2\models\ProfileCity;
 use api\modules\v2\models\ProfileSpecialization;
+use api\modules\v2\models\UserRequestData;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -67,6 +69,29 @@ class ProfileController extends Controller
         ];
     }
 
+    /**
+     * GET Method. Region table.
+     * Get records by parameters
+     *
+     * @return json
+     */
+    public function actionView()
+    {
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
+            // Check rights
+            $modelUserRequestData->checkUserRightsByPermission(['createCustomer', 'createContractor']);
+            // get request params
+            $getParams = $modelUserRequestData->getRequestParams();
+            // init model Region
+            $modelRegion = new Region();
+            // Search data
+            return $modelRegion->getDataRegion($getParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+    }
 
     /**
      * GET Method. Profile table.
@@ -74,6 +99,7 @@ class ProfileController extends Controller
      *
      * @return json
      */
+    /*
     public function actionView()
     {
         $getParams = Yii::$app->getRequest()->get();
@@ -102,15 +128,6 @@ class ProfileController extends Controller
         if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
             return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
         }
-        /*
-        $flagRights = false;
-        foreach(array('admin', 'customer', 'contractor', 'mediator') as $value) {
-            if (in_array($value, $userRole)) {
-                $flagRights = true;
-            }
-        }
-        if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'GET', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию просмотра'));
-        */
 
         unset($getParams['token']);
 
@@ -225,7 +242,7 @@ class ProfileController extends Controller
             return Json::encode($RequestResponse);
         }
     }
-
+    */
 
     /**
      * POST Method. Profile table.
