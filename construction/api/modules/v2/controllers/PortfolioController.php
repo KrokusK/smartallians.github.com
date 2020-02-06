@@ -70,12 +70,14 @@ class PortfolioController extends Controller
             $modelUserRequestData = new UserRequestData();
             // Check rights
             $modelUserRequestData->checkUserRightsByRole(['admin', 'customer', 'contractor', 'mediator']);
+            // get user roles
+            $userRoles = $modelUserRequestData->getUserRoles();
             // get request params
             $getParams = $modelUserRequestData->getRequestParams();
             // init model Portfolio
             $modelPortfolio = new Portfolio();
             // Search data
-            return $modelPortfolio->getDataPortfolio($getParams);
+            return $modelPortfolio->getDataPortfolio($getParams, $userRoles);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
@@ -118,13 +120,15 @@ class PortfolioController extends Controller
             $modelUserRequestData = new UserRequestData();
             // Check rights
             $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get user roles
+            $userRoles = $modelUserRequestData->getUserRoles();
             // get request params
             $putParams = $modelUserRequestData->getRequestParams();
             // Get model Portfolio by id
             $modelPortfolio = new Portfolio();
-            $modelPortfolioById = $modelPortfolio->getDataPortfolioById($putParams);
+            $modelPortfolioById = $modelPortfolio->getDataPortfolioById($putParams, $userRoles);
             // Update object by id
-            return $modelPortfolioById->updateDataPortfolio($putParams);
+            return $modelPortfolioById->updateDataPortfolio($putParams, $userRoles);
         } catch (InvalidArgumentException $e) {
             return $e->getMessage();
         }
@@ -144,16 +148,18 @@ class PortfolioController extends Controller
             $modelUserRequestData = new UserRequestData();
             // Check rights
             $modelUserRequestData->checkUserRightsByRole(['admin']);
+            // get user roles
+            $userRoles = $modelUserRequestData->getUserRoles();
             // get request params
             $delParams = $modelUserRequestData->getRequestParams();
             // Get model Portfolio by id
             $modelPortfolio = new Portfolio();
             if ($modelPortfolio->isNullIdInParams($delParams)) {
                 // Delete object by other params
-                return $modelPortfolio->deleteDataPortfolioByParams($delParams);
+                return $modelPortfolio->deleteDataPortfolioByParams($delParams, $userRoles);
             } else {
                 // Delete object by id
-                $modelPortfolioById = $modelPortfolio->getDataPortfolioById($delParams);
+                $modelPortfolioById = $modelPortfolio->getDataPortfolioById($delParams, $userRoles);
                 return $modelPortfolioById->deleteDataPortfolioById($delParams);
             }
         } catch (InvalidArgumentException $e) {

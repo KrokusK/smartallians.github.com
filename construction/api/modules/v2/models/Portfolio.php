@@ -114,10 +114,12 @@ class Portfolio extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if data not found or parameters is not validated
      */
-    public function getDataPortfolio($params = [])
+    public function getDataPortfolio($params = [], $userRoles = [])
     {
         // Search data
         $query = Portfolio::find();
+        // Get only owner records if user role isn't admin
+        if (!in_array('admin', $userRoles)) $query->Where(['created_by' => Yii::$app->user->getId()]);
         // Add data filter
         $this->setDataFilter($query, $params);
         // Add pagination params
@@ -260,7 +262,7 @@ class Portfolio extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if returned error
      */
-    public function getDataPortfolioById($params = [])
+    public function getDataPortfolioById($params = [], $userRoles = [])
     {
         if (array_key_exists($this->assocPortfolio['id'], $params)) {
             // check id parametr
@@ -271,6 +273,9 @@ class Portfolio extends \yii\db\ActiveRecord
 
             // Search record by id in the database
             $queryPortfolio = Portfolio::find()->where(['id' => $params[$this->assocPortfolio['id']]]);
+            // Get only owner records if user role isn't admin
+            if (!in_array('admin', $userRoles))
+                $queryPortfolio->andWhere(['created_by' => Yii::$app->user->getId()]);
             $modelPortfolio = $queryPortfolio->one();
             if (empty($modelPortfolio)) {
                 $this->modelResponseMessage->saveErrorMessage('Ошибка: В БД не найдено Портфолио по id');
@@ -421,7 +426,7 @@ class Portfolio extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if returned error
      */
-    public function deleteDataPortfolioByParams($params = [])
+    public function deleteDataPortfolioByParams($params = [], $userRoles = [])
     {
         if (!$this->isOtherParams($params)) {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: Отсутствуют параметры для фильтра');
@@ -430,6 +435,8 @@ class Portfolio extends \yii\db\ActiveRecord
 
         // Search records by params in the database
         $query = Portfolio::find();
+        // Get only owner records if user role isn't admin
+        if (!in_array('admin', $userRoles)) $query->Where(['created_by' => Yii::$app->user->getId()]);
         // Add data filter
         $this->setDataFilter($query, $params);
         // Add pagination params

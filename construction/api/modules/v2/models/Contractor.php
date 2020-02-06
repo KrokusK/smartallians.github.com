@@ -460,7 +460,7 @@ class Contractor extends \yii\db\ActiveRecord
      *
      * @throws InvalidArgumentException if returned error
      */
-    public function deleteDataContractorByParams($params = [], $userRoles)
+    public function deleteDataContractorByParams($params = [], $userRoles = [])
     {
         if (!$this->isOtherParams($params)) {
             $this->modelResponseMessage->saveErrorMessage('Ошибка: Отсутствуют параметры для фильтра');
