@@ -206,6 +206,7 @@ class Position extends \yii\db\ActiveRecord
                 }
             }
         }
+        $this->created_by = Yii::$app->user->getId();
 
         return $this->saveDataObject();
     }
