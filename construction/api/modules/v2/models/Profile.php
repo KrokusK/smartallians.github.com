@@ -58,7 +58,7 @@ class Profile extends \yii\db\ActiveRecord
                     return $statusesTypeJobIdStr;
                 },
                 'message' => 'Форма работы не выбрана из списка'],
-            [['fio'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255'],
+            [['fio'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
             [['firm_name'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
             [['inn'], 'match', 'pattern' => '/^[0-9]{12}$/', 'message' => 'Число знаков не должно превышать 12, все знаки должны быть типа integer', 'skipOnEmpty' => true],
             [['site'], 'string', 'max' => 255, 'message' => 'Число знаков не должно превышать 255', 'skipOnEmpty' => true],
