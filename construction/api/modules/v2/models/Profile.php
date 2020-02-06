@@ -333,7 +333,7 @@ class Profile extends \yii\db\ActiveRecord
         // Add data filter for city table
         $this->setProfileCityFilter($query, $params);
         // Add data filter for specialization table
-        $this->setsetProfileSpecializationFilter($query, $params);
+        $this->setProfileSpecializationFilter($query, $params);
         // Add pagination params
         $this->setPaginationParams($query, $params);
         // get data
