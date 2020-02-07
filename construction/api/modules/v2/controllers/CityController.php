@@ -38,9 +38,6 @@ class CityController extends Controller
                 'actions' => [
                     'delete' => ['delete'],
                 ],
-                'actions' => [
-                    'delete-by-param' => ['delete'],
-                ],
             ],
         ];
     }
