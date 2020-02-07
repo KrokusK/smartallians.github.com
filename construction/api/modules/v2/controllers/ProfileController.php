@@ -457,7 +457,7 @@ class ProfileController extends Controller
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
     }
-    
+
 
     /**
      * PUT, PATCH Method. Profile table.
