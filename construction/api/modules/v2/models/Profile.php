@@ -39,6 +39,8 @@ class Profile extends \yii\db\ActiveRecord
         'cost' => 'cost',
         'passport' => 'passport'
     ];
+    protected $assocProfileCity = ['city_id' => 'city'];
+    protected $assocProfileSpecialization = ['specialization_id' => 'specialization'];
 
     /**
      * properties
