@@ -222,23 +222,30 @@ class ResponseController extends Controller
 
             // get properties from Response object
             if (!empty($modelResponse)) {
-                $RequestResponse = array(
+                $RequestResponse = [
                     'method' => 'GET',
                     'status' => 0,
-                    'type' => 'success',
-                    'id' => $modelResponse[0]['id'],
-                    'status_response' => $modelResponse[0]['statusResponse']['name'],
-                    'request_id' => $modelResponse[0]['request_id'],
-                    'description' => $modelResponse[0]['description'],
-                    'cost' => $modelResponse[0]['cost'],
-                    'period' => $modelResponse[0]['period'],
-                    'profile_id' => $modelResponse[0]['profiles'][0]['id'],
-                    'fio' => $modelResponse[0]['profiles'][0]['fio'],
-                    'firm_name' => $modelResponse[0]['profiles'][0]['firm_name'],
-                    'avatar' => $modelResponse[0]['profiles'][0]['avatar']
-                );
+                    'type' => 'success'
+                ];
+
                 //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
                 //array_push($RequestResponse, var_dump($modelRequest));
+
+                foreach ($modelResponse as $key => $valueResponse) {
+                    $dataResponse = [
+                        'id' => $valueResponse['id'],
+                        'status_response' => $valueResponse['statusResponse']['name'],
+                        'request_id' => $valueResponse['request_id'],
+                        'description' => $valueResponse['description'],
+                        'cost' => $valueResponse['cost'],
+                        'period' => $valueResponse['period'],
+                        'profile_id' => $valueResponse['profiles'][0]['id'],
+                        'fio' => $valueResponse['profiles'][0]['fio'],
+                        'firm_name' => $valueResponse['profiles'][0]['firm_name'],
+                        'avatar' => $valueResponse['profiles'][0]['avatar']
+                    ];
+                    array_push($RequestResponse, $dataResponse);
+                }
             } else {
                 $RequestResponse = array(
                     'method' => 'GET',
