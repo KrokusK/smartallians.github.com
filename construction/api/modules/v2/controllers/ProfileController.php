@@ -251,7 +251,7 @@ class ProfileController extends Controller
      *
      * @return json
      */
-    /*
+
     public function actionCreate()
     {
         try {
@@ -269,7 +269,7 @@ class ProfileController extends Controller
             return $e->getMessage();
         }
     }
-    */
+    
 
     /**
      * POST Method. Profile table.
@@ -277,6 +277,7 @@ class ProfileController extends Controller
      *
      * @return json
      */
+    /*
     public function actionCreate()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -457,7 +458,7 @@ class ProfileController extends Controller
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
     }
-
+    */
 
     /**
      * PUT, PATCH Method. Profile table.
