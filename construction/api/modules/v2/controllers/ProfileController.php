@@ -269,7 +269,7 @@ class ProfileController extends Controller
             return $e->getMessage();
         }
     }
-    
+
 
     /**
      * POST Method. Profile table.
