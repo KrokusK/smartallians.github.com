@@ -247,10 +247,35 @@ class ProfileController extends Controller
 
     /**
      * POST Method. Profile table.
+     * Insert records
+     *
+     * @return json
+     */
+    public function actionCreate()
+    {
+        try {
+            // init model with user and request params
+            $modelUserRequestData = new UserRequestData();
+            // Check rights
+            $modelUserRequestData->checkUserRightsByPermission(['createCustomer', 'createContractor']);
+            // get request params
+            $postParams = $modelUserRequestData->getRequestParams();
+            // init model Profile
+            $modelProfile = new Profile();
+            // Save object by params
+            return $modelProfile->addDataProfile($postParams);
+        } catch (InvalidArgumentException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * POST Method. Profile table.
      * Insert record
      *
      * @return json
      */
+    /*
     public function actionCreate()
     {
         $bodyRaw = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -280,7 +305,7 @@ class ProfileController extends Controller
             if (static::CHECK_RIGHTS_RBAC && !\Yii::$app->user->can('createCustomer') && !\Yii::$app->user->can('createContractor')) {
                 return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
             }
-            /*
+
             $flagRights = false;
             foreach(array('admin', 'customer', 'contractor') as $value) {
                 if (in_array($value, $userRole)) {
@@ -288,7 +313,7 @@ class ProfileController extends Controller
                 }
             }
             if (static::CHECK_RIGHTS_RBAC && !$flagRights) return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Не хватает прав на операцию добавления'));
-            */
+
 
             // Because the field names may match within a single query, the parameter names may not match the table field names. To solve this problem let's create an associative arrays
             $arrayProfileAssoc = [
@@ -431,7 +456,7 @@ class ProfileController extends Controller
             return Json::encode(array('method' => 'POST', 'status' => 1, 'type' => 'error', 'message' => 'Ошибка: Тело запроса не обработано'));
         }
     }
-
+    */
 
     /**
      * PUT, PATCH Method. Profile table.

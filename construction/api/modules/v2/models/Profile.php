@@ -39,8 +39,6 @@ class Profile extends \yii\db\ActiveRecord
         'cost' => 'cost',
         'passport' => 'passport'
     ];
-    protected $assocProfileCity = ['city_id' => 'city'];
-    protected $assocProfileSpecialization = ['specialization_id' => 'specialization'];
 
     /**
      * properties
@@ -482,6 +480,100 @@ class Profile extends \yii\db\ActiveRecord
                         $query->offset($defauftParams[$name]);
                     }
             }
+        }
+    }
+
+    /**
+     * Set Profile properties and
+     * save object into the Db
+     *
+     * @params parameters with properties
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    public function addDataProfile($params = [])
+    {
+        // fill in the properties in the Profile object
+        foreach ($this->assocProfile as $name => $value) {
+            if (array_key_exists($value, $params) && $this->hasAttribute($name) && $name != 'id') {
+                $this->$name = $params[$value];
+                if (!$this->validate($name)) {
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка валидации: параметр ' . $value);
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+            }
+        }
+        $this->created_by = Yii::$app->user->getId();
+        $this->created_at = time();
+        $this->updated_at = time();
+
+        return $this->saveDataObject($params);
+    }
+
+    /**
+     * Save object
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    private function saveDataObject($params = [])
+    {
+        if ($this->validate()) {
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                $flagProfile = $this->save(false); // insert into Profile table
+
+                // Contractor, City, Specialization objects
+                try {
+                    $this->saveDataDependedObjects($params, $this);
+                } catch (InvalidArgumentException $e) {
+                    $flagProfile == false;
+                }
+
+                if ($flagProfile == true) {
+                    $transaction->commit();
+                } else {
+                    $transaction->rollBack();
+                    $this->modelResponseMessage->saveErrorMessage('Ошибка: Профиль не может быть сохранен');
+                    throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+                }
+            } catch (Exception $ex) {
+                $transaction->rollBack();
+                $this->modelResponseMessage->saveErrorMessage('Ошибка: Профиль не может быть сохранен');
+                throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+            }
+
+            $this->modelResponseMessage->saveSuccessMessage('Профиль успешно сохранен');
+            return Json::encode($this->modelResponseMessage->getDataMessage());
+        } else {
+            $this->modelResponseMessage->saveErrorMessage('Ошибка валидации');
+            throw new InvalidArgumentException(Json::encode($this->modelResponseMessage->getErrorMessage()));
+        }
+    }
+
+    /**
+     * Save Contractor, City, Specialization objects
+     *
+     * @throws InvalidArgumentException if returned error
+     */
+    private function saveDataDependedObjects($params = [], $modelProfile)
+    {
+        // init model Contractor
+        $modelContractor = new Contractor();
+        // Save object by params
+        $modelContractor->addDataContractor($params);
+
+        // init model ProfileCity
+        $modelProfileCity = new ProfileCity();
+        // Save object by params
+        if (array_key_exists('cities', $params)) {
+            $modelProfileCity->addDataProfileCity($params['cities'], $modelProfile);
+        }
+
+        // init model ProfileSpecialization
+        $modelProfileSpecialization = new ProfileSpecialization();
+        // Save object by params
+        if (array_key_exists('specializations', $params)) {
+            $modelProfileSpecialization->addDataProfileSpecialization($params['specializations'], $modelProfile);
         }
     }
 }
