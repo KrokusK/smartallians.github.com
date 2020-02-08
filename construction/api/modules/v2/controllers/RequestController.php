@@ -237,7 +237,7 @@ class RequestController extends Controller
 
             foreach ($modelRequest as $keyRequest => $valueRequest) {
                 $dataRequest = [
-                    'id' => $valueResponse['id'],
+                    'id' => $valueRequest['id'],
                     //'status_request' => $valueRequest['statusRequest']['name'],
                     'status_request_id' => $valueRequest['status_request_id'],
                     //'city_id' => $valueRequest['cities']['name'],
