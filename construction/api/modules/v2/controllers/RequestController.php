@@ -201,7 +201,7 @@ class RequestController extends Controller
             }
 
             $modelRequest = $query->orderBy('created_at')
-                ->with('kindJob', 'materials', 'statusRequest')
+                ->with('kindJob', 'materials', 'statusRequest', 'cities')
                 ->asArray()
                 ->all();
 
@@ -210,9 +210,6 @@ class RequestController extends Controller
                 'status' => 0,
                 'type' => 'success'
             ];
-
-            //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
-            //array_push($RequestResponse, var_dump($modelRequest));
 
             foreach ($modelRequest as $keyRequest => $valueRequest) {
                 $listMaterials = '';
@@ -225,8 +222,8 @@ class RequestController extends Controller
                     'id' => $valueRequest['id'],
                     'status_request' => $valueRequest['statusRequest']['name'],
                     //'status_request_id' => $valueRequest['status_request_id'],
-                    //'city_id' => $valueRequest['cities']['name'],
-                    'city_id' => $valueRequest['city_id'],
+                    'city_id' => $valueRequest['cities']['name'],
+                    //'city_id' => $valueRequest['city_id'],
                     'address' => $valueRequest['address'],
                     'name' => $valueRequest['name'],
                     'description' => $valueRequest['description'],
@@ -243,7 +240,6 @@ class RequestController extends Controller
             }
 
             // get properties from Request object and from links
-            //$RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
             //array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
             //array_push($RequestResponse, var_dump($modelRequest));
 
@@ -258,8 +254,7 @@ class RequestController extends Controller
             }
 
             $modelRequest = $query->orderBy('created_at')
-                //->with('kindJob', 'statusRequest', 'materials', 'cities')
-                ->with('kindJob', 'materials', 'statusRequest')
+                ->with('kindJob', 'materials', 'statusRequest', 'cities')
                 ->asArray()
                 ->all();
 
@@ -268,9 +263,6 @@ class RequestController extends Controller
                 'status' => 0,
                 'type' => 'success'
             ];
-
-            //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
-            //array_push($RequestResponse, var_dump($modelRequest));
 
             foreach ($modelRequest as $keyRequest => $valueRequest) {
                 $listMaterials = '';
@@ -283,8 +275,8 @@ class RequestController extends Controller
                     'id' => $valueRequest['id'],
                     'status_request' => $valueRequest['statusRequest']['name'],
                     //'status_request_id' => $valueRequest['status_request_id'],
-                    //'city_id' => $valueRequest['cities']['name'],
-                    'city_id' => $valueRequest['city_id'],
+                    'city_id' => $valueRequest['cities']['name'],
+                    //'city_id' => $valueRequest['city_id'],
                     'address' => $valueRequest['address'],
                     'name' => $valueRequest['name'],
                     'description' => $valueRequest['description'],

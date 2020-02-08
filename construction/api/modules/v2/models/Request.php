@@ -82,7 +82,7 @@ class Request extends \yii\db\ActiveRecord
      *
      * Link to table city
      */
-    public function getCites()
+    public function getCities()
     {
         return $this->hasOne(City::className(), ['id' => 'city_id']);
     }
