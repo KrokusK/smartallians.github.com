@@ -205,9 +205,46 @@ class RequestController extends Controller
                 ->asArray()
                 ->all();
 
+            $RequestResponse = [
+                'method' => 'GET',
+                'status' => 0,
+                'type' => 'success'
+            ];
+
+            //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
+            //array_push($RequestResponse, var_dump($modelRequest));
+
+            foreach ($modelRequest as $keyRequest => $valueRequest) {
+                $listMaterials = '';
+                foreach ($valueRequest['materials'] as $keyMaterial => $valueMaterial) {
+                    if (!empty($listMaterials)) $listMaterials .= ', ';
+                    $listMaterials .= $valueMaterial['name'];
+                }
+
+                $dataRequest = [
+                    'id' => $valueRequest['id'],
+                    'status_request' => $valueRequest['statusRequest']['name'],
+                    'status_request_id' => $valueRequest['status_request_id'],
+                    'city_id' => $valueRequest['cities']['name'],
+                    'city_id' => $valueRequest['city_id'],
+                    'address' => $valueRequest['address'],
+                    'name' => $valueRequest['name'],
+                    'description' => $valueRequest['description'],
+                    'task' => $valueRequest['task'],
+                    'budjet' => $valueRequest['budjet'],
+                    'period' => $valueRequest['period'],
+                    'date_begin' => $valueRequest['date_begin'],
+                    'date_end' => $valueRequest['date_end'],
+                    'kindJob' => $valueRequest['kindJob'][0],
+                    'materials' => $listMaterials
+                ];
+
+                array_push($RequestResponse, $dataRequest);
+            }
+
             // get properties from Request object and from links
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
+            //$RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
+            //array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
             //array_push($RequestResponse, var_dump($modelRequest));
 
             return Json::encode($RequestResponse);
@@ -244,9 +281,9 @@ class RequestController extends Controller
 
                 $dataRequest = [
                     'id' => $valueRequest['id'],
-                    //'status_request' => $valueRequest['statusRequest']['name'],
+                    'status_request' => $valueRequest['statusRequest']['name'],
                     'status_request_id' => $valueRequest['status_request_id'],
-                    //'city_id' => $valueRequest['cities']['name'],
+                    'city_id' => $valueRequest['cities']['name'],
                     'city_id' => $valueRequest['city_id'],
                     'address' => $valueRequest['address'],
                     'name' => $valueRequest['name'],
