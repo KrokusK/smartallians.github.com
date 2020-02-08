@@ -245,7 +245,7 @@ class ProfileController extends Controller
             return Json::encode($RequestResponse);
         }
     }
-    
+
 
     /**
      * POST Method. Profile table.

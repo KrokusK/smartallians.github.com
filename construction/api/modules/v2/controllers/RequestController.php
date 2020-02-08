@@ -238,9 +238,9 @@ class RequestController extends Controller
                 $dataRequest = [
                     'id' => $valueResponse['id'],
                     //'status_request' => $valueResponse['statusRequest']['name'],
-                    'status_request_id' => $valueResponse['status_request_id']
+                    'status_request_id' => $valueResponse['status_request_id'],
                     //'city_id' => $valueResponse['cities']['name'],
-                    'city_id' => $valueResponse['city_id']
+                    'city_id' => $valueResponse['city_id'],
                     'address' => $valueResponse['address'],
                     'name' => $valueResponse['name'],
                     'description' => $valueResponse['description'],
