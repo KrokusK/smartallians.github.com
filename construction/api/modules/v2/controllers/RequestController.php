@@ -238,25 +238,24 @@ class RequestController extends Controller
             foreach ($modelRequest as $keyRequest => $valueRequest) {
                 $dataRequest = [
                     'id' => $valueResponse['id'],
-                    //'status_request' => $valueResponse['statusRequest']['name'],
-                    'status_request_id' => $valueResponse['status_request_id'],
-                    //'city_id' => $valueResponse['cities']['name'],
-                    'city_id' => $valueResponse['city_id'],
-                    'address' => $valueResponse['address'],
-                    'name' => $valueResponse['name'],
-                    'description' => $valueResponse['description'],
-                    'task' => $valueResponse['task'],
-                    'budjet' => $valueResponse['budjet'],
-                    'period' => $valueResponse['period'],
-                    'date_begin' => $valueResponse['date_begin'],
-                    'date_end' => $valueResponse['date_end'],
-                    'fio' => $valueResponse['kindJob'][0]
+                    //'status_request' => $valueRequest['statusRequest']['name'],
+                    'status_request_id' => $valueRequest['status_request_id'],
+                    //'city_id' => $valueRequest['cities']['name'],
+                    'city_id' => $valueRequest['city_id'],
+                    'address' => $valueRequest['address'],
+                    'name' => $valueRequest['name'],
+                    'description' => $valueRequest['description'],
+                    'task' => $valueRequest['task'],
+                    'budjet' => $valueRequest['budjet'],
+                    'period' => $valueRequest['period'],
+                    'date_begin' => $valueRequest['date_begin'],
+                    'date_end' => $valueRequest['date_end'],
+                    'fio' => $valueRequest['kindJob'][0]
                 ];
 
-
                 $listMaterials = '';
-                foreach ($valueResponse['materials'] as $keyMaterials => $valueRequest) {
-                    $listMaterials .= $valueRequest['name'];
+                foreach ($valueRequest['materials'] as $keyMaterial => $valueMaterial) {
+                    $listMaterials .= $valueMaterial['name'];
                 }
                 array_push($dataResponse, ['materials' => $listMaterials]);
                 array_push($RequestResponse, $dataResponse);
