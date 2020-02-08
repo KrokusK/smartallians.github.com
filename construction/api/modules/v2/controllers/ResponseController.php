@@ -177,9 +177,7 @@ class ResponseController extends Controller
                     'type' => 'success'
                 ];
 
-                //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
-                //array_push($RequestResponse, var_dump($modelRequest));
-
+                $arrayDataResponse = [];
                 foreach ($modelResponse as $key => $valueResponse) {
                     $dataResponse = [
                         'id' => $valueResponse['id'],
@@ -196,8 +194,12 @@ class ResponseController extends Controller
                         'firm_name' => $valueResponse['profiles'][0]['firm_name'],
                         'avatar' => $valueResponse['profiles'][0]['avatar']
                     ];
-                    array_push($RequestResponse, $dataResponse);
+                    array_push($arrayDataResponse, $dataResponse);
                 }
+
+                array_push($RequestResponse, $arrayDataResponse);
+                //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
+                //array_push($RequestResponse, var_dump($modelRequest));
             } else {
                 $RequestResponse = array(
                     'method' => 'GET',
@@ -231,9 +233,7 @@ class ResponseController extends Controller
                     'type' => 'success'
                 ];
 
-                //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
-                //array_push($RequestResponse, var_dump($modelRequest));
-
+                $arrayDataResponse = [];
                 foreach ($modelResponse as $key => $valueResponse) {
                     $dataResponse = [
                         'id' => $valueResponse['id'],
@@ -250,8 +250,11 @@ class ResponseController extends Controller
                         'firm_name' => $valueResponse['profiles'][0]['firm_name'],
                         'avatar' => $valueResponse['profiles'][0]['avatar']
                     ];
-                    array_push($RequestResponse, $dataResponse);
+                    array_push($arrayDataResponse, $dataResponse);
                 }
+                array_push($RequestResponse, $arrayDataResponse);
+                //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
+                //array_push($RequestResponse, var_dump($modelRequest));
             } else {
                 $RequestResponse = array(
                     'method' => 'GET',
