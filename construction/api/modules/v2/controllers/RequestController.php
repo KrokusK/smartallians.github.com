@@ -257,7 +257,7 @@ class RequestController extends Controller
                 foreach ($valueRequest['materials'] as $keyMaterial => $valueMaterial) {
                     $listMaterials .= $valueMaterial['name'];
                 }
-                array_push($dataResponse, ['materials' => $listMaterials]);
+                //array_push($dataResponse, ['materials' => $listMaterials]);
                 array_push($RequestResponse, $dataResponse);
             }
 
