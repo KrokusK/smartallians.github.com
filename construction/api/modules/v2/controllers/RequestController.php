@@ -211,6 +211,7 @@ class RequestController extends Controller
                 'type' => 'success'
             ];
 
+            $arrayDataRequest = [];
             foreach ($modelRequest as $keyRequest => $valueRequest) {
                 $listMaterials = '';
                 foreach ($valueRequest['materials'] as $keyMaterial => $valueMaterial) {
@@ -236,10 +237,11 @@ class RequestController extends Controller
                     'materials' => $listMaterials
                 ];
 
-                array_push($RequestResponse, $dataRequest);
+                array_push($arrayDataRequest, $dataRequest);
             }
 
             // get properties from Request object and from links
+            array_push($RequestResponse, $arrayDataRequest);
             //array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
             //array_push($RequestResponse, var_dump($modelRequest));
 
@@ -264,6 +266,7 @@ class RequestController extends Controller
                 'type' => 'success'
             ];
 
+            $arrayDataRequest = [];
             foreach ($modelRequest as $keyRequest => $valueRequest) {
                 $listMaterials = '';
                 foreach ($valueRequest['materials'] as $keyMaterial => $valueMaterial) {
@@ -289,10 +292,11 @@ class RequestController extends Controller
                     'materials' => $listMaterials
                 ];
 
-                array_push($RequestResponse, $dataRequest);
+                array_push($arrayDataRequest, $dataRequest);
             }
 
             // get properties from Request object
+            array_push($RequestResponse, $arrayDataRequest);
             //$RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
             //array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
 
