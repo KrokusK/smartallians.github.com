@@ -236,6 +236,12 @@ class RequestController extends Controller
             //array_push($RequestResponse, var_dump($modelRequest));
 
             foreach ($modelRequest as $keyRequest => $valueRequest) {
+                $listMaterials = '';
+                foreach ($valueRequest['materials'] as $keyMaterial => $valueMaterial) {
+                    if (!empty($listMaterials)) $listMaterials .= ', ';
+                    $listMaterials .= $valueMaterial['name'];
+                }
+
                 $dataRequest = [
                     'id' => $valueRequest['id'],
                     //'status_request' => $valueRequest['statusRequest']['name'],
@@ -250,14 +256,10 @@ class RequestController extends Controller
                     'period' => $valueRequest['period'],
                     'date_begin' => $valueRequest['date_begin'],
                     'date_end' => $valueRequest['date_end'],
-                    'fio' => $valueRequest['kindJob'][0]
+                    'kindJob' => $valueRequest['kindJob'][0],
+                    'materials' => $listMaterials
                 ];
 
-                $listMaterials = '';
-                foreach ($valueRequest['materials'] as $keyMaterial => $valueMaterial) {
-                    $listMaterials .= $valueMaterial['name'];
-                }
-                array_push($dataRequest, ['materials' => $listMaterials]);
                 array_push($RequestResponse, $dataRequest);
             }
 
