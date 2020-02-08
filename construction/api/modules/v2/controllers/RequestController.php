@@ -224,8 +224,8 @@ class RequestController extends Controller
                 $dataRequest = [
                     'id' => $valueRequest['id'],
                     'status_request' => $valueRequest['statusRequest']['name'],
-                    'status_request_id' => $valueRequest['status_request_id'],
-                    'city_id' => $valueRequest['cities']['name'],
+                    //'status_request_id' => $valueRequest['status_request_id'],
+                    //'city_id' => $valueRequest['cities']['name'],
                     'city_id' => $valueRequest['city_id'],
                     'address' => $valueRequest['address'],
                     'name' => $valueRequest['name'],
@@ -282,8 +282,8 @@ class RequestController extends Controller
                 $dataRequest = [
                     'id' => $valueRequest['id'],
                     'status_request' => $valueRequest['statusRequest']['name'],
-                    'status_request_id' => $valueRequest['status_request_id'],
-                    'city_id' => $valueRequest['cities']['name'],
+                    //'status_request_id' => $valueRequest['status_request_id'],
+                    //'city_id' => $valueRequest['cities']['name'],
                     'city_id' => $valueRequest['city_id'],
                     'address' => $valueRequest['address'],
                     'name' => $valueRequest['name'],
