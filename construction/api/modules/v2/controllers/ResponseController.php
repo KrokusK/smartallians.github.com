@@ -190,6 +190,9 @@ class ResponseController extends Controller
                         'period' => $valueResponse['period'],
                         'profile_id' => $valueResponse['profiles'][0]['id'],
                         'fio' => $valueResponse['profiles'][0]['fio'],
+                        'last_name' => $valueResponse['profiles'][0]['last_name'],
+                        'first_name' => $valueResponse['profiles'][0]['first_name'],
+                        'middle_name' => $valueResponse['profiles'][0]['middle_name'],
                         'firm_name' => $valueResponse['profiles'][0]['firm_name'],
                         'avatar' => $valueResponse['profiles'][0]['avatar']
                     ];
@@ -241,6 +244,9 @@ class ResponseController extends Controller
                         'period' => $valueResponse['period'],
                         'profile_id' => $valueResponse['profiles'][0]['id'],
                         'fio' => $valueResponse['profiles'][0]['fio'],
+                        'last_name' => $valueResponse['profiles'][0]['last_name'],
+                        'first_name' => $valueResponse['profiles'][0]['first_name'],
+                        'middle_name' => $valueResponse['profiles'][0]['middle_name'],
                         'firm_name' => $valueResponse['profiles'][0]['firm_name'],
                         'avatar' => $valueResponse['profiles'][0]['avatar']
                     ];

@@ -201,7 +201,7 @@ class RequestController extends Controller
             }
 
             $modelRequest = $query->orderBy('created_at')
-                ->with('kindJob')
+                ->with('kindJob','materials')
                 ->asArray()
                 ->all();
 
@@ -221,13 +221,49 @@ class RequestController extends Controller
             }
 
             $modelRequest = $query->orderBy('created_at')
-                ->with('kindJob')
+                ->with('kindJob', 'statusRequest', 'materials', 'cities')
                 ->asArray()
                 ->all();
 
+            $RequestResponse = [
+                'method' => 'GET',
+                'status' => 0,
+                'type' => 'success'
+            ];
+
+            //array_push($RequestResponse, ArrayHelper::toArray($modelResponse));
+            //array_push($RequestResponse, var_dump($modelRequest));
+
+            foreach ($modelRequest as $keyRequest => $valueRequest) {
+                $dataRequest = [
+                    'id' => $valueResponse['id'],
+                    //'status_request' => $valueResponse['statusRequest']['name'],
+                    'status_request_id' => $valueResponse['status_request_id']
+                    //'city_id' => $valueResponse['cities']['name'],
+                    'city_id' => $valueResponse['city_id']
+                    'address' => $valueResponse['address'],
+                    'name' => $valueResponse['name'],
+                    'description' => $valueResponse['description'],
+                    'task' => $valueResponse['task'],
+                    'budjet' => $valueResponse['budjet'],
+                    'period' => $valueResponse['period'],
+                    'date_begin' => $valueResponse['date_begin'],
+                    'date_end' => $valueResponse['date_end'],
+                    'fio' => $valueResponse['kindJob'][0]
+                ];
+
+
+                $listMaterials = '';
+                foreach ($valueResponse['materials'] as $keyMaterials => $valueRequest) {
+                    $listMaterials .= $valueRequest['name'];
+                }
+                array_push($dataResponse, ['materials' => $listMaterials]);
+                array_push($RequestResponse, $dataResponse);
+            }
+
             // get properties from Request object
-            $RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
-            array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
+            //$RequestResponse = array('method' => 'GET', 'status' => 0, 'type' => 'success');
+            //array_push($RequestResponse, ArrayHelper::toArray($modelRequest));
 
             return Json::encode($RequestResponse);
         }

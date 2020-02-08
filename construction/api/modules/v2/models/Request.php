@@ -124,4 +124,13 @@ class Request extends \yii\db\ActiveRecord
         return $this->hasMany(KindJob::className(), ['id' => 'kind_job_id'])
             ->viaTable('request_kind_job', ['request_id' => 'id']);
     }
+
+    /**
+     *
+     * Link to table materials
+     */
+    public function getMaterials()
+    {
+        return $this->hasMany(Materials::className(), ['request_id' => 'id']);
+    }
 }

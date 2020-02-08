@@ -74,6 +74,7 @@ class ProfileController extends Controller
      *
      * @return json
      */
+    /*
     public function actionView()
     {
         try {
@@ -93,6 +94,7 @@ class ProfileController extends Controller
             return $e->getMessage();
         }
     }
+    */
 
     /**
      * GET Method. Profile table.
@@ -100,7 +102,7 @@ class ProfileController extends Controller
      *
      * @return json
      */
-    /*
+
     public function actionView()
     {
         $getParams = Yii::$app->getRequest()->get();
@@ -243,7 +245,7 @@ class ProfileController extends Controller
             return Json::encode($RequestResponse);
         }
     }
-    */
+    
 
     /**
      * POST Method. Profile table.
