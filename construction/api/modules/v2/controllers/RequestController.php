@@ -221,7 +221,8 @@ class RequestController extends Controller
             }
 
             $modelRequest = $query->orderBy('created_at')
-                ->with('kindJob', 'statusRequest', 'materials', 'cities')
+                //->with('kindJob', 'statusRequest', 'materials', 'cities')
+                ->with('kindJob', 'materials')
                 ->asArray()
                 ->all();
 
