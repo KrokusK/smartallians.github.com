@@ -233,6 +233,7 @@ class RequestController extends Controller
                     'period' => $valueRequest['period'],
                     'date_begin' => $valueRequest['date_begin'],
                     'date_end' => $valueRequest['date_end'],
+                    'created_at' => $valueRequest['created_at'],
                     'kindJob' => $valueRequest['kindJob'][0],
                     'materials' => $listMaterials
                 ];
@@ -288,6 +289,7 @@ class RequestController extends Controller
                     'period' => $valueRequest['period'],
                     'date_begin' => $valueRequest['date_begin'],
                     'date_end' => $valueRequest['date_end'],
+                    'created_at' => $valueRequest['created_at'],
                     'kindJob' => $valueRequest['kindJob'][0],
                     'materials' => $listMaterials
                 ];
