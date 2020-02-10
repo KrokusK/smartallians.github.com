@@ -147,7 +147,7 @@ class RequestController extends Controller
             $arrayRequestKindJobAssoc = array ('kind_job_id' => 'kind_job_id');
 
             // Search record by id in the database
-            if (in_array('admin', $userRole)) {
+            if (in_array('admin', $userRole) || in_array('contractor', $userRole)) {
                 $query = Request::find()->leftJoin('request_kind_job','request_kind_job.request_id = request.id');  // get all records
             } else {
                 $query = Request::find()->leftJoin('request_kind_job','request_kind_job.request_id = request.id')->Where(['created_by' => $userByToken->id]);  // get records created by this user
@@ -250,7 +250,7 @@ class RequestController extends Controller
 
         } else {
             // Search all records in the database
-            if (in_array('admin', $userRole)) {
+            if (in_array('admin', $userRole) || in_array('contractor', $userRole)) {
                 $query = Request::find();  // get all records
             } else {
                 $query = Request::find()->Where(['created_by' => $userByToken->id]);  // get records created by this user
