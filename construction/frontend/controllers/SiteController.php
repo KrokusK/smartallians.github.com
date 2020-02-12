@@ -108,8 +108,7 @@ class SiteController extends Controller
         $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
         setcookie('_identity-frontend', 'data', time()+60*60*24*365, '/', $domain, false);
         setcookie('advanced-frontend', 'data', time()+60*60*24*365, '/', $domain, false);
-        setcookie('advanced-frontend', 'data', time()+60*60*24*365, '/', $domain, false);
-
+        
 
         // check user is a guest
         if (!Yii::$app->user->isGuest) {
