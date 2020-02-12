@@ -108,7 +108,15 @@ class SiteController extends Controller
         $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
         setcookie('_identity-frontend', 'data', time()+60*60*24*365, '/', $domain, false);
         setcookie('advanced-frontend', 'data', time()+60*60*24*365, '/', $domain, false);
-        
+
+        // получение коллекции (yii\web\CookieCollection) из компонента "response"
+        $cookies = Yii::$app->response->cookies;
+
+        // добавление новой куки в HTTP-ответ
+        $cookies->add(new \yii\web\Cookie([
+            'name' => 'test',
+            'value' => 'zh-CN',
+        ]));
 
         // check user is a guest
         if (!Yii::$app->user->isGuest) {
