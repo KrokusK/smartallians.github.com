@@ -117,7 +117,7 @@ class SiteController extends Controller
             'name' => 'test',
             'value' => 'zh-CN',
         ]));
-        Yii::$app->getResponse()->getCookies()->add($cookie);
+        Yii::$app->getResponse()->getCookies()->add($cookies);
 
         // check user is a guest
         if (!Yii::$app->user->isGuest) {
