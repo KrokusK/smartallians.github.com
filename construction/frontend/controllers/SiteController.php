@@ -105,6 +105,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        /*
         $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
         setcookie('_identity-frontend', 'data', time()+60*60*24*365, '/', $domain, false);
         setcookie('advanced-frontend', 'data', time()+60*60*24*365, '/', $domain, false);
@@ -118,6 +119,7 @@ class SiteController extends Controller
             'value' => 'zh-CN',
         ]));
         Yii::$app->getResponse()->getCookies()->add($cookies);
+        */
 
         // check user is a guest
         if (!Yii::$app->user->isGuest) {
